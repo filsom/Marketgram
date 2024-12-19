@@ -22,6 +22,7 @@ def members_registry_mapper(mapper: registry) -> None:
                 members_table.c.first6,
                 members_table.c.last4,
                 members_table.c.synonym,
+                default=None
             ),
             '_balance': query_expression(),
         }

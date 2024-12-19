@@ -18,7 +18,7 @@ from marketgram.trade.port.adapter.sqlalchemy_resources.operations_mapper import
 )
 
 
-class SQLAlchemyDealRepository:
+class SQLAlchemyDealsRepository:
     def __init__(
         self, 
         async_session: AsyncSession,

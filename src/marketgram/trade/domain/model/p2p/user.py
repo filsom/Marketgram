@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
@@ -12,11 +11,19 @@ from marketgram.trade.domain.model.exceptions import (
 )
 from marketgram.trade.domain.model.sell_card import SellCard
 from marketgram.trade.domain.model.p2p.ship_deal import ShipDeal
-from marketgram.trade.domain.model.rule.agreement.entry import EntryStatus, PostingEntry
+from marketgram.trade.domain.model.rule.agreement.entry import (
+    EntryStatus, 
+    PostingEntry
+)
 from marketgram.trade.domain.model.rule.agreement.money import Money
 from marketgram.trade.domain.model.p2p.payment import Payment
-from marketgram.trade.domain.model.rule.agreement.service_agreement import ServiceAgreement
-from marketgram.trade.domain.model.rule.agreement.types import AccountType, Operation
+from marketgram.trade.domain.model.rule.agreement.service_agreement import (
+    ServiceAgreement
+)
+from marketgram.trade.domain.model.rule.agreement.types import (
+    AccountType, 
+    Operation
+)
 
 if TYPE_CHECKING:
     from marketgram.trade.domain.model.p2p.qty_purchased import QtyPurchased

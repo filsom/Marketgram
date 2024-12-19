@@ -23,11 +23,10 @@ from marketgram.trade.domain.model.p2p.payout import Payout
 class Seller:
     def __init__(
         self, 
-        user_id: UUID,
-        paycard: Paycard
+        user_id: UUID
     ) -> None:
         self._user_id = user_id
-        self._paycard = paycard
+        self._paycard: Paycard = None
         self._is_blocked = False
         self._balance: Money = Money(0)
         self._agreement: ServiceAgreement = None

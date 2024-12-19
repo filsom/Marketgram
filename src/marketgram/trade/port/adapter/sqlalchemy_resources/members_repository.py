@@ -19,19 +19,24 @@ class SQLAlchemyMembersRepository:
     ) -> None:
         self._async_session = async_session
 
-    def add(self, seller: Seller) -> None:
-        self._async_session.add(seller)
+    def add(self, user: User) -> None:
+        self._async_session.add(user)
     
-    async def seller_with_id(self, user_id: UUID) -> Seller | None:
-        stmt = select(Seller).where(Seller._user_id == user_id)
+    async def seller_with_id(self, user_id: UUID) -> Seller:
+        stmt = select(Seller).where(and_(
+            Seller._user_id == user_id,
+        ))
         result = await self._async_session.execute(stmt)
         
-        return result.scalar_one_or_none()
+        return result.scalar()
 
-    async def seller_with_balance_and_id(self, user_id: UUID) -> Seller | None:
+    async def seller_with_balance_and_id(self, user_id: UUID) -> Seller:
         stmt = (
             select(Seller)
-            .where(Seller._user_id == user_id)
+            .where(and_(
+                Seller._user_id == user_id,
+                Seller._paycard != None
+            ))
             .options(with_expression(
                 Seller._balance, 
                 self._sum_query(user_id)
@@ -42,13 +47,13 @@ class SQLAlchemyMembersRepository:
         
         return result.scalar()
     
-    async def user_with_id(self, user_id: UUID) -> User | None:
+    async def user_with_id(self, user_id: UUID) -> User:
         stmt = select(User).where(User._user_id == user_id)
         result = await self._async_session.execute(stmt)
         
         return result.scalar_one_or_none()
     
-    async def user_with_balance_and_id(self, user_id: UUID) -> User | None:
+    async def user_with_balance_and_id(self, user_id: UUID) -> User:
         stmt = (
             select(User)
             .where(User._user_id == user_id)

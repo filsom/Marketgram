@@ -8,7 +8,7 @@ from marketgram.trade.domain.model.p2p.receipt_deal import ReceiptDeal
 from marketgram.trade.domain.model.p2p.ship_deal import ShipDeal
 
 
-class DealRepository(Protocol):
+class DealsRepository(Protocol):
     def add(self, deal: ShipDeal) -> None:
         raise NotImplementedError
 
