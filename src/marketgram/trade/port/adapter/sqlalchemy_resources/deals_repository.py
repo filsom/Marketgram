@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import and_, select, text
+from sqlalchemy import and_, select
 from sqlalchemy.orm import with_polymorphic
 
 from marketgram.trade.domain.model.p2p.cancellation_deal import CancellationDeal

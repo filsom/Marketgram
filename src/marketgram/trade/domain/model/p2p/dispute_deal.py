@@ -37,11 +37,11 @@ class DisputeDeal:
         self._is_disputed = is_disputed
         self._payout = payout
 
-    def open_dispute(self) -> None:   
+    def open_dispute(self, occurred_at: datetime) -> None:   
         if self._is_disputed:
             raise DomainError()
             
-        if self.dispute_deadline() < datetime.now():
+        if self.dispute_deadline() < occurred_at:
             raise DomainError()
          
         if self._deal_entries:
@@ -105,8 +105,11 @@ class DisputeDeal:
                 f'buyer_id={self._buyer_id}, ' 
                 f'seller_id={self._seller_id}, '
                 f'price={self._price}, ' 
+                f'time_tags={self._time_tags}, '
+                f'deadlines={self._deadlines}, ' 
                 f'deal_entries={self._deal_entries}, ' 
                 f'status={self._status}, '
+                f'is_disputed={self._is_disputed}, '
                 f'payout={self._payout}'
             ')'
         )

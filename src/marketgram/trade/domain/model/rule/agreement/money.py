@@ -3,6 +3,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from decimal import ROUND_HALF_EVEN, ROUND_HALF_UP, Decimal
 from enum import StrEnum, auto
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from marketgram.trade.domain.model.p2p.user import QtyPurchased
 
 
 class Currency(StrEnum):
@@ -35,13 +39,16 @@ class Money:
     def __abs__(self) -> Money:
         return Money(abs(self.number))
 
-    def __mul__(self, value: int | float | Decimal) -> Money:
-        if not isinstance(value, (int, float, Decimal)):
+    def __mul__(self, value: int | float | Decimal | QtyPurchased) -> Money:
+        if not isinstance(value, (int, float, Decimal, QtyPurchased)):
             raise TypeError
 
         if value == 0:
             raise ArithmeticError
         
+        if isinstance(value, QtyPurchased):
+            value = value.total
+
         return Money(
             self.number 
             * Decimal(str(value))

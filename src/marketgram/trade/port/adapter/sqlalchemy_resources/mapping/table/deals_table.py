@@ -22,6 +22,7 @@ deals_table = Table(
     Column('seller_id', UUID, ForeignKey('members.user_id'), nullable=False),
     Column('buyer_id', UUID, ForeignKey('members.user_id'), nullable=False),
     Column('card_id', UUID, nullable=False),
+    Column('qty_purchased', Integer, nullable=False),
     Column('type', String, nullable=False),
     Column('card_created_at', DateTime, nullable=False),
     Column('price', DECIMAL(20, 2), nullable=False),

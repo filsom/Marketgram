@@ -17,15 +17,16 @@ class ConfirmationDeal:
         card_created_at: datetime,
         time_tags: TimeTags,
         deadlines: Deadlines,
-        status: StatusDeal
+        status: StatusDeal,
+        entries: list[PostingEntry]
     ) -> None:
         self._deal_id = deal_id
         self._card_created_at = card_created_at
         self._time_tags = time_tags
         self._deadlines = deadlines
         self._status = status
+        self._entries = entries
         self._agreement: ServiceAgreement = None
-        self._entries: list[PostingEntry] = []
 
     def confirm_quality(self, occurred_at: datetime) -> None:
         if self.check_deadline() < occurred_at:
@@ -51,7 +52,20 @@ class ConfirmationDeal:
 
     def accept_agreement(self, agreement: ServiceAgreement) -> None:
         self._agreement = agreement
-        
+
+    def __repr__(self) -> str:
+        return (
+            f'ConfirmationDeal('
+                f'deal_id={self._deal_id}, '
+                f'card_created_at={self._card_created_at}, '
+                f'time_tags={self._time_tags}, '
+                f'deadlines={self._deadlines}, ' 
+                f'status={self._status}, '
+                f'entries={self._entries}, '
+                f'agreement={self._agreement}'
+            ')'
+        )
+    
     def __eq__(self, other: 'ConfirmationDeal') -> bool:
         if not isinstance(other, ConfirmationDeal):
             return False

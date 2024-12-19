@@ -1,4 +1,6 @@
+from dataclasses import dataclass
 from datetime import datetime
+from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
 
 from marketgram.trade.domain.model.exceptions import (
@@ -16,6 +18,9 @@ from marketgram.trade.domain.model.p2p.payment import Payment
 from marketgram.trade.domain.model.rule.agreement.service_agreement import ServiceAgreement
 from marketgram.trade.domain.model.rule.agreement.types import AccountType, Operation
 
+if TYPE_CHECKING:
+    from marketgram.trade.domain.model.p2p.qty_purchased import QtyPurchased
+
 
 class User:
     def __init__(self, user_id: UUID) -> None:
@@ -25,7 +30,7 @@ class User:
         self._agreement: ServiceAgreement = None
         self._entries: list[PostingEntry] = []
 
-    def make_deal(self, card: SellCard) -> ShipDeal:
+    def make_deal(self, qty: QtyPurchased, card: SellCard) -> ShipDeal:
         if self._user_id == card.owner_id:
             raise DomainError(BUY_FROM_YOURSELF)
 
@@ -39,13 +44,13 @@ class User:
         self._entries.append(
             PostingEntry(
                 self._user_id,
-                -card.price,
+                -card.price * qty,
                 datetime.now(),
                 AccountType.USER,
                 Operation.BUY,
                 EntryStatus.ACCEPTED
             )
-        )   
+        )
         card.buy()
 
         return ShipDeal(
@@ -55,7 +60,7 @@ class User:
             card.card_id,
             card.type_deal,
             card.created_in,
-            card.price,
+            card.price * qty,
             card.time_tags(datetime.now()),
             card.deadlines,
             card.status_deal

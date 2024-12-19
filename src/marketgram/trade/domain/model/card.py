@@ -45,7 +45,7 @@ class Card:
         self._is_archived = False
         self._is_purchased = False
         self._is_storage = StorageType.NOT_STORED
-        self._inventory_balances = []
+        # self._inventory_balances = []
 
     def set_discount(self, new_price: Money) -> None:
         initial_price = self._price
@@ -63,11 +63,12 @@ class Card:
     def add_inventory_balances(self):
         # Доделать
         
-        if not self._delivery.is_auto_link():
-            raise DomainError()
+        # if not self._delivery.is_auto_link():
+        #     raise DomainError()
         
-        self._inventory_balances.append(...)
-        self._is_storage = StorageType.STORED
+        # self._inventory_balances.append(...)
+        # self._is_storage = StorageType.STORED
+        pass
 
     def remove_discount(self) -> None:
         self._price = self._dirty_price

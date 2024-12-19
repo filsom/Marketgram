@@ -16,14 +16,15 @@ class CancellationDeal:
         buyer_id: UUID,
         price: Money,
         time_tags: TimeTags,
-        status: StatusDeal
+        status: StatusDeal,
+        entries: list[PostingEntry]
     ) -> None:
         self._deal_id = deal_id
         self._buyer_id = buyer_id
         self._price = price
         self._time_tags = time_tags
         self._status = status
-        self._entries: list[PostingEntry] = []
+        self._entries = entries
 
     def cancel(self, current_date: datetime) -> None:
         if self._entries:
@@ -45,11 +46,13 @@ class CancellationDeal:
         
     def __repr__(self) -> str:
         return (
-            f'DealAtStageShipping('
+            f'CancellationDeal('
                 f'deal_id={self._deal_id}, '
                 f'buyer_id={self._buyer_id}, ' 
                 f'price={self._price}, ' 
+                f'time_tags={self._time_tags}, '
                 f'status={self._status}, '
+                f'entries={self._entries}'
             ')'
         )
     

@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from marketgram.trade.domain.model.p2p_2.receipt_deal import ReceiptDeal
+from marketgram.trade.domain.model.p2p.receipt_deal import ReceiptDeal
 from marketgram.trade.domain.model.rule.agreement.limits import Limits
 from marketgram.trade.domain.model.rule.agreement.posting_rule import PostingRule
 from marketgram.trade.domain.model.rule.agreement.types import (

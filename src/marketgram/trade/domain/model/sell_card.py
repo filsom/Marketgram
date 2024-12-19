@@ -4,6 +4,7 @@ from uuid import UUID
 from marketgram.trade.domain.model.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.delivery import Delivery
+from marketgram.trade.domain.model.p2p.qty_purchased import QtyPurchased
 from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
 from marketgram.trade.domain.model.p2p.time_tags import TimeTags
 from marketgram.trade.domain.model.p2p.type_deal import TypeDeal
@@ -29,7 +30,7 @@ class SellCard:
         self._deadlines = deadlines
         self._delivery = delivery
 
-    def buy(self, count_purchase: int) -> None:
+    def buy(self, qty: QtyPurchased) -> None:
         if self._is_purchased:
             raise DomainError()
         
@@ -100,11 +101,11 @@ class SellStockCard(SellCard):
         self._count_item = count_item
         self._inventory_balances = []
 
-    def buy(self, count_purchase: int) -> None:
+    def buy(self, qty: QtyPurchased) -> None:
         if self._is_purchased:
             raise DomainError()
 
-        remainder = self._count_item - count_purchase
+        remainder = self._count_item - qty.total
         if remainder < 0:
             raise DomainError()
         

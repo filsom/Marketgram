@@ -9,6 +9,9 @@ class MembersRepository(Protocol):
     def add(self, seller: Seller) -> None:
         raise NotImplementedError
     
+    def next_identity(self) -> UUID:
+        raise NotImplementedError
+    
     async def seller_with_id(self, user_id: UUID) -> Seller | None:
         raise NotImplementedError
     
