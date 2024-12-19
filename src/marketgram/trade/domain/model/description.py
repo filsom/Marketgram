@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import StrEnum, auto
 
 
-class TransferFormat(StrEnum):
+class AccountFormat(StrEnum):
     Autoreg = auto()
 
 
@@ -19,7 +19,6 @@ class Region(StrEnum):
 class Description:
     title: str
     text_description: str
-    secret_data: str
-    transfer_format: TransferFormat
+    account_format: AccountFormat
     region: Region
     spam_block: bool

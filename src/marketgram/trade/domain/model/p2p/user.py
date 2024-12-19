@@ -53,12 +53,13 @@ class User:
             card.owner_id,
             self._user_id,
             card.card_id,
+            card.type_deal,
             card.created_in,
             card.price,
             card.time_tags(datetime.now()),
             card.deadlines,
             card.status_deal
-        )        
+        )  
 
     def new_payment(self, amount: Money) -> Payment:  
         limits = self._agreement.actual_limits()

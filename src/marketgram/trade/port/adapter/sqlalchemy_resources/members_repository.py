@@ -1,12 +1,11 @@
 from uuid import UUID
 
-from marketgram.trade.domain.model.p2p_2.seller import Seller
-from marketgram.trade.domain.model.p2p_2.user import User
-
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import and_, select, func
 from sqlalchemy.orm import with_expression
 
+from marketgram.trade.domain.model.p2p.seller import Seller
+from marketgram.trade.domain.model.p2p.user import User
 from marketgram.trade.domain.model.rule.agreement.entry_status import EntryStatus
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.entries_table import (
     entries_table
@@ -65,7 +64,7 @@ class SQLAlchemyMembersRepository:
             select(func.sum(entries_table.c.amount))
             .where(and_(
                 entries_table.c.user_id == user_id,
-                # entries_table.c.entry_status == EntryStatus.ACCEPTED
+                entries_table.c.entry_status == EntryStatus.ACCEPTED
             ))
             .scalar_subquery()
         )

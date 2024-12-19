@@ -19,7 +19,7 @@ from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.deals_tabl
 )
 
 
-def deal_registry_mapper(mapper: registry) -> None:
+def deals_registry_mapper(mapper: registry) -> None:
     ship_deal_mapper = mapper.map_imperatively(
         ShipDeal,
         deals_table,

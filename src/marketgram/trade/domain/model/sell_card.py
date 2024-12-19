@@ -17,7 +17,7 @@ class SellCard:
         owner_id: UUID,
         price: Money,
         is_purchased: bool,
-        created_in: datetime,
+        created_at: datetime,
         delivery: Delivery,
         deadlines: Deadlines
     ) -> None:
@@ -25,18 +25,14 @@ class SellCard:
         self._owner_id = owner_id
         self._price = price
         self._is_purchased = is_purchased
-        self._created_in = created_in
+        self._created_at = created_at
         self._deadlines = deadlines
         self._delivery = delivery
 
-    def buy(self) -> None:
+    def buy(self, count_purchase: int) -> None:
         if self._is_purchased:
             raise DomainError()
         
-        if self._delivery.from_stock():
-            # Проверка товарных позиций
-            pass
-
         self._is_purchased = True
 
     def time_tags(self, current_date: datetime) -> TimeTags:
@@ -68,7 +64,7 @@ class SellCard:
     
     @property
     def created_in(self) -> datetime:
-        return self._created_in
+        return self._created_at
 
     def __eq__(self, other: 'SellCard') -> bool:
         if not isinstance(other, SellCard):
@@ -78,3 +74,41 @@ class SellCard:
     
     def __hash__(self) -> int:
         return hash(self._card_id)
+    
+
+class SellStockCard(SellCard):
+    def __init__(
+        self,
+        card_id: UUID,
+        owner_id: UUID,
+        price: Money,
+        is_purchased: bool,
+        created_at: datetime,
+        delivery: Delivery,
+        deadlines: Deadlines,
+        count_item: int
+    ) -> None:
+        super().__init__(
+            card_id, 
+            owner_id, 
+            price, 
+            is_purchased, 
+            created_at, 
+            delivery, 
+            deadlines
+        )
+        self._count_item = count_item
+        self._inventory_balances = []
+
+    def buy(self, count_purchase: int) -> None:
+        if self._is_purchased:
+            raise DomainError()
+
+        remainder = self._count_item - count_purchase
+        if remainder < 0:
+            raise DomainError()
+        
+        if remainder == 0:
+            self._is_purchased = True
+            
+        self._inventory_balances.append(...)                

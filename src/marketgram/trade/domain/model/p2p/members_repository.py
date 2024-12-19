@@ -1,8 +1,8 @@
 from typing import Protocol
 from uuid import UUID
 
-from marketgram.trade.domain.model.p2p_2.seller import Seller
-from marketgram.trade.domain.model.p2p_2.user import User
+from marketgram.trade.domain.model.p2p.seller import Seller
+from marketgram.trade.domain.model.p2p.user import User
 
 
 class MembersRepository(Protocol):

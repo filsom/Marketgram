@@ -14,6 +14,8 @@ def operations_registry_mapper(mapper: registry) -> None:
     mapper.map_imperatively(
         Payout,
         operations_table,
+        polymorphic_on=operations_table.c.type,
+        polymorphic_identity='payout',
         properties={
             '_payout_id': operations_table.c.operation_id,
             '_user_id': operations_table.c.user_id,
@@ -27,7 +29,7 @@ def operations_registry_mapper(mapper: registry) -> None:
                 'PostingEntry',
                 secondary=operations_entries_table,
                 default_factory=list,
-                lazy='noload',
+                lazy='subquery',
                 overlaps='_entries'
             )
         }
@@ -35,6 +37,8 @@ def operations_registry_mapper(mapper: registry) -> None:
     mapper.map_imperatively(
         Payment,
         operations_table,
+        polymorphic_on=operations_table.c.type,
+        polymorphic_identity='payment',
         properties={
             '_payment_id': operations_table.c.operation_id,
             '_user_id': operations_table.c.user_id,

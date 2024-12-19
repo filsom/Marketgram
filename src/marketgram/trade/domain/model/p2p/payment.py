@@ -1,11 +1,16 @@
 from datetime import datetime
 from uuid import UUID
 
-from marketgram.trade.domain.model.p2p.payout import Payout
-from marketgram.trade.domain.model.rule.agreement.entry import EntryStatus, PostingEntry
+from marketgram.trade.domain.model.rule.agreement.entry import (
+    EntryStatus, 
+    PostingEntry
+)
 from marketgram.trade.domain.model.exceptions import DomainError
 from marketgram.trade.domain.model.rule.agreement.money import Money
-from marketgram.trade.domain.model.rule.agreement.types import AccountType, Operation
+from marketgram.trade.domain.model.rule.agreement.types import (
+    AccountType, 
+    Operation
+)
 
 
 class Payment:

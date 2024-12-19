@@ -1,5 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
+from enum import StrEnum, auto
 from uuid import UUID
 
 from marketgram.trade.domain.model.exceptions import (
@@ -11,6 +12,11 @@ from marketgram.trade.domain.model.p2p.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.delivery import Delivery
 from marketgram.trade.domain.model.rule.agreement.money import Money
 from marketgram.trade.domain.model.description import Description
+
+
+class StorageType(StrEnum):
+    STORED = auto()
+    NOT_STORED = auto()
 
 
 class Card:
@@ -38,6 +44,8 @@ class Card:
         self._dirty_price: Money | None = None
         self._is_archived = False
         self._is_purchased = False
+        self._is_storage = StorageType.NOT_STORED
+        self._inventory_balances = []
 
     def set_discount(self, new_price: Money) -> None:
         initial_price = self._price
@@ -51,6 +59,15 @@ class Card:
                 UNACCEPTABLE_DISCOUNT_RANGE.format(min_limit, max_limit)
             )    
         self._update_price(new_price)
+
+    def add_inventory_balances(self):
+        # Доделать
+        
+        if not self._delivery.is_auto_link():
+            raise DomainError()
+        
+        self._inventory_balances.append(...)
+        self._is_storage = StorageType.STORED
 
     def remove_discount(self) -> None:
         self._price = self._dirty_price
