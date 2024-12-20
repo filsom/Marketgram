@@ -11,3 +11,6 @@ class OperationRepository(Protocol):
 
     async def payout_with_seller_id(self, seller_id: UUID) -> Payout | None:
         raise NotImplementedError
+    
+    async def quantity_unprocessed_with_seller_id(self, seller_id: UUID) -> int:
+        raise NotImplementedError

@@ -1,4 +1,4 @@
-from marketgram.trade.application.id_provider import IdProvider
+from marketgram.trade.application.common.id_provider import IdProvider
 from marketgram.trade.domain.model.cards_repository import CardsRepository
 from marketgram.trade.domain.model.description import AccountFormat, Description, Region
 from marketgram.trade.domain.model.p2p.delivery import Delivery
@@ -34,14 +34,14 @@ class CardCreateHandler:
         self._cards_repository = cards_repository
 
     async def handle(self, command: CardCreateCommand) -> None:
-        exists_seller = await self._members_repository \
+        seller = await self._members_repository \
             .seller_with_id(self._id_provider.provided_id())
         
         delivery = Delivery(
             command.format,
             command.method
         )
-        new_card = exists_seller.make_card(
+        new_card = seller.make_card(
             Money(command.amount),
             Description(
                 command.title,

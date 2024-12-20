@@ -20,10 +20,10 @@ class MemberCreatedEventHandler:
         self._members_repository = members_repository
 
     async def handle(self, event: MemberCreatedEvent) -> None:
-        exists_member = await self._members_repository \
+        member = await self._members_repository \
             .user_with_id(event.member_id)
         
-        if exists_member is None:
+        if member is None:
             new_member = User(event.member_id)
 
             return self._members_repository.add(new_member)

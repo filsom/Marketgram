@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from marketgram.trade.application.exceptions import ApplicationError
-from marketgram.trade.application.id_provider import IdProvider
+from marketgram.trade.application.common.exceptions import ApplicationError
+from marketgram.trade.application.common.id_provider import IdProvider
 from marketgram.trade.domain.model.p2p.members_repository import (
     MembersRepository
 )
@@ -26,10 +26,10 @@ class AddPaycardHandler:
         self._members_repository = members_repository
 
     async def handle(self, command: AddPaycardCommand) -> None:
-        exists_seller = await self._members_repository \
+        seller = await self._members_repository \
             .seller_with_id(self._id_provider.provided_id()) 
          
-        return exists_seller.change_paycard(
+        return seller.change_paycard(
             Paycard(
                 command.first6,
                 command.last4,
