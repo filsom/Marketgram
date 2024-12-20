@@ -13,7 +13,7 @@ class ReceiptConfirmationCommand:
     occurred_at: datetime
 
 
-class ShipConfirmationHandler:
+class ReceiptConfirmationHandler:
     def __init__(
         self,
         id_provider: IdProvider,
