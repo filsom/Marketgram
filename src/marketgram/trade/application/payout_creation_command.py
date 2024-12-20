@@ -28,7 +28,7 @@ class PayoutCreationHandler:
             .quantity_unprocessed_with_seller_id(
                 self._id_provider.provided_id()
             )
-        if quantity:
+        if quantity > 0:
             raise ApplicationError()
         
         seller = await self._members_repository \
