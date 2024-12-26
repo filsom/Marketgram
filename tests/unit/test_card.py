@@ -47,7 +47,7 @@ class TestCard:
 
     def test_setting_a_discount_price_at_a_minimum_cost(self) -> None:
         # Arrange
-        card_price = Money(105)
+        card_price = Money(100)
         min_price = Money(100)
         discounted_price = Money(100)
 
