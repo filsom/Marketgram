@@ -19,8 +19,8 @@ class User:
     ) -> None:
         self._user_id = user_id
         self._email = email
-        self._password = password
         self._is_active = is_active
+        self.password = password
 
     def activate(self) -> None:
         self._is_active = True

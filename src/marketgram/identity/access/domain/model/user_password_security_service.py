@@ -23,5 +23,3 @@ class UserPasswordSecurityService:
         
     def lifetime_hash(self, hash_password: str) -> bool:
         return self._ph.check_needs_rehash(hash_password)
-    
-    

@@ -34,5 +34,4 @@ class UserCreationService:
         await self._user_repository.add(new_user)
         await self._role_repository.add(role_for_user)
 
-        return new_user.to_string_id(), new_user.email
-        
+        return new_user.to_string_id(), new_user.email 
