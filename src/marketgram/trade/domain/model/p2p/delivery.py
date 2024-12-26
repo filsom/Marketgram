@@ -79,19 +79,10 @@ class Delivery:
         return time_tags
     
     def is_auto_link(self) -> bool:
-        if self.method.is_auto() and self.format.is_link():
-            return True
-        
-        return False
-        
+        return self.method.is_auto() and self.format.is_link()
+    
     def is_providing_link(self) -> bool:
-        if self.method.is_provides_seller() and self.format.is_link():
-            return True
-        
-        return False
+        return self.method.is_provides_seller() and self.format.is_link()
     
     def is_providing_code(self) -> bool:
-        if self.method.is_provides_seller() and self.format.is_code():
-            return True
-        
-        return False
+        return self.method.is_provides_seller() and self.format.is_code()
