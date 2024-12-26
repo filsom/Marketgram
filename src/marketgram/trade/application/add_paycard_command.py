@@ -1,12 +1,10 @@
 from dataclasses import dataclass
 
-from marketgram.trade.application.common.exceptions import ApplicationError
-from marketgram.trade.application.common.id_provider import IdProvider
+from marketgram.common.application.id_provider import IdProvider
 from marketgram.trade.domain.model.p2p.members_repository import (
     MembersRepository
 )
 from marketgram.trade.domain.model.p2p.paycard import Paycard
-from marketgram.trade.domain.model.p2p.seller import Seller
 
 
 @dataclass

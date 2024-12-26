@@ -1,13 +1,13 @@
 from dataclasses import dataclass
 
-from marketgram.identity.access.application.id_provider import IdProvider
-from marketgram.identity.access.domain.model.access.web_session_repository import (
+from marketgram.common.application.id_provider import IdProvider
+from marketgram.identity.access.domain.model.web_session_repository import (
     WebSessionRepository
 )
-from marketgram.identity.access.domain.model.identity.authentication_service import (
-    AuthenticationService
+from marketgram.identity.access.domain.model.user_authentication_service import (
+    UserAuthenticationService
 )
-from marketgram.identity.access.domain.model.identity.user_repository import (
+from marketgram.identity.access.domain.model.user_repository import (
     UserRepository
 )
 
@@ -33,7 +33,7 @@ class ChangePasswordHandler:
         exists_user = await self._user_repository \
             .with_id(self._id_provider.provided_id())
         
-        AuthenticationService().authenticate(
+        UserAuthenticationService().authenticate(
             exists_user,
             command.old_password
         )

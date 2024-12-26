@@ -1,10 +1,9 @@
 from dataclasses import dataclass
 
-from marketgram.identity.access.application.email_sender import EmailSender
-from marketgram.identity.access.application.message_maker import EmailMessageMaker
-from marketgram.identity.access.application.jwt_manager import TokenManager
-from marketgram.identity.access.domain.model.identity.email import Email
-from marketgram.identity.access.domain.model.identity.user_repository import (
+from marketgram.common.application.email_sender import EmailSender
+from marketgram.common.application.message_maker import EmailMessageMaker
+from marketgram.common.application.jwt_manager import TokenManager
+from marketgram.identity.access.domain.model.user_repository import (
     UserRepository
 )
 
@@ -29,7 +28,7 @@ class ForgotPasswordHandler:
     
     async def handle(self, command: ForgotPasswordCommand) -> None:
         exists_user = await self._user_repository \
-            .active_with_email(Email(command.email))
+            .active_with_email(command.email)
         
         if exists_user is not None:
             jwt_token = self._jwt_manager.encode({

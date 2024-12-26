@@ -1,23 +1,22 @@
 from dataclasses import dataclass
 from uuid import UUID
 
-from marketgram.identity.access.application.exceptions import (
-    ApplicationException
+from marketgram.common.application.exceptions import (
+    ApplicationError
 )
-from marketgram.identity.access.domain.model.access.web_session import (
+from marketgram.identity.access.domain.model.web_session import (
     WebSession
 )
-from marketgram.identity.access.domain.model.access.web_session_repository import (
+from marketgram.identity.access.domain.model.web_session_repository import (
     WebSessionRepository
 )
 from marketgram.identity.access.domain.model.exceptions import (
     INVALID_EMAIL_OR_PASSWORD
 )
-from marketgram.identity.access.domain.model.identity.authentication_service import (
-    AuthenticationService
+from marketgram.identity.access.domain.model.user_authentication_service import (
+    UserAuthenticationService
 )
-from marketgram.identity.access.domain.model.identity.email import Email
-from marketgram.identity.access.domain.model.identity.user_repository import (
+from marketgram.identity.access.domain.model.user_repository import (
     UserRepository
 )
 
@@ -40,12 +39,12 @@ class UserLoginHandler:
 
     async def handle(self, command: UserLoginCommand) -> UUID:
         exists_user = await self._user_repository \
-            .active_with_email(Email(command.email))
+            .active_with_email(command.email)
         
         if exists_user is None:
-            raise ApplicationException(INVALID_EMAIL_OR_PASSWORD)
+            raise ApplicationError(INVALID_EMAIL_OR_PASSWORD)
         
-        AuthenticationService().authenticate(
+        UserAuthenticationService().authenticate(
             exists_user,
             command.password,
         )

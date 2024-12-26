@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from marketgram.identity.access.domain.model.access.role import Role
+from marketgram.identity.access.domain.model.role import Role
 
 
 class SQLAlchemyRoleRepository:

@@ -4,8 +4,7 @@ from uuid import UUID, uuid4
 from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from marketgram.identity.access.domain.model.identity.email import Email
-from marketgram.identity.access.domain.model.identity.user import User
+from marketgram.identity.access.domain.model.user import User
 
 
 class SQLAlchemyUserRepository:
@@ -24,13 +23,13 @@ class SQLAlchemyUserRepository:
 
         return result.scalar_one_or_none()
 
-    async def with_email(self, email: Email) -> Optional[User]:
+    async def with_email(self, email: str) -> Optional[User]:
         stmt = select(User).where(User._email == email)
         result = await self._async_session.execute(stmt)
 
         return result.scalar_one_or_none()
     
-    async def active_with_email(self, email: Email) -> Optional[User]:
+    async def active_with_email(self, email: str) -> Optional[User]:
         stmt = select(User).where(and_(
             User._email == email,
             User._is_active == True

@@ -1,11 +1,11 @@
-class DomainException(Exception):
+class DomainError(Exception):
     pass
 
 USER_ACTIVATED = 'Пользователь подтвердил свой Email адрес.' 
 USER_NOT_ACTIVATED = 'Пользователь не подтвердил свой Email адрес.'
 
 
-class PasswordException(DomainException):
+class PasswordError(DomainError):
     pass
 
 INVALID_EMAIL_OR_PASSWORD = 'Неверный Email или пароль!'

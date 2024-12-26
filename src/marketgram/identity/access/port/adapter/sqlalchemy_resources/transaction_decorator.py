@@ -1,9 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
 
-from marketgram.identity.access.application.id_provider import IdProvider
-from marketgram.identity.access.application.exceptions import ApplicationException
-from marketgram.identity.access.domain.model.exceptions import DomainException
+from marketgram.common.application.id_provider import IdProvider
+from marketgram.common.application.exceptions import ApplicationError
+from marketgram.identity.access.domain.model.exceptions import DomainError
 from marketgram.identity.access.port.adapter.exceptions import InfrastructureException, Unauthorized, UnknowException, UNKNOWN_EXCEPTION
 
 
@@ -28,8 +28,8 @@ class TransactionDecorator:
             return result
         
         except (
-            DomainException, 
-            ApplicationException, 
+            DomainError, 
+            ApplicationError, 
             InfrastructureException
         ) as error:
             await self._async_session.rollback()
@@ -57,7 +57,7 @@ class AuthotizeDecorator:
             await self._id_provider.get_user_id()
 
         except Unauthorized as err:
-            raise ApplicationException(err)
+            raise ApplicationError(err)
         
         else:
             return await self._wrapped.handle(command)

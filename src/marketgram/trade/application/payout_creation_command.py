@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from marketgram.trade.application.common.exceptions import ApplicationError
-from marketgram.trade.application.common.id_provider import IdProvider
+from marketgram.common.application.id_provider import IdProvider
+from marketgram.trade.application.exceptions import ApplicationError
 from marketgram.trade.domain.model.p2p.members_repository import MembersRepository
 from marketgram.trade.domain.model.p2p.operations_repository import OperationRepository
 from marketgram.trade.domain.model.rule.agreement.money import Money

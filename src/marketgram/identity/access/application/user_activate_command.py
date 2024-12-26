@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from marketgram.identity.access.application.jwt_manager import TokenManager
-from marketgram.identity.access.domain.model.identity.user_repository import (
+from marketgram.common.application.jwt_manager import TokenManager
+from marketgram.identity.access.domain.model.user_repository import (
     UserRepository
 )
 

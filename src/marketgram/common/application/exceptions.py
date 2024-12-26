@@ -1,8 +1,8 @@
-class ApplicationException(Exception):
+class ApplicationError(Exception):
     pass
 
 
-class IncorrectDataFormat(ApplicationException):
+class IncorrectDataFormat(ApplicationError):
     pass
 
 ENTERED_PASSWORD_DO_NOT_MATCH = 'Введенные пароли не совпадают!'

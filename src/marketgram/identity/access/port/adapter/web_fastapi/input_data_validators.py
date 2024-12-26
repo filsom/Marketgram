@@ -1,6 +1,6 @@
 from email_validator import EmailNotValidError, validate_email
 
-from marketgram.identity.access.application.exceptions import (
+from marketgram.common.application.exceptions import (
     ENTERED_EMAIL_IS_INCORRECT, 
     ENTERED_PASSWORD_DO_NOT_MATCH, 
     ENTERED_PASSWORD_IS_INCORRECT, 

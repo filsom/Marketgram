@@ -1,7 +1,7 @@
 from typing import Protocol
 from uuid import UUID
 
-from marketgram.identity.access.domain.model.access.web_session import WebSession
+from marketgram.identity.access.domain.model.web_session import WebSession
 
 
 class WebSessionRepository(Protocol):

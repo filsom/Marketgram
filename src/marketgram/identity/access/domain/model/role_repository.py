@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from marketgram.identity.access.domain.model.access.role import Role
+from marketgram.identity.access.domain.model.role import Role
 
 
 class RoleRepository(Protocol):

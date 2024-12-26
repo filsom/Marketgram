@@ -5,20 +5,20 @@ from dishka import Provider, Scope, alias, from_context, provide
 from fastapi import Request, Response
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine, AsyncSession
 
-from marketgram.identity.access.application.email_sender import EmailSender
-from marketgram.identity.access.application.id_provider import IdProvider
-from marketgram.identity.access.application.jwt_manager import TokenManager
-from marketgram.identity.access.domain.model.access.role_repository import RoleRepository
-from marketgram.identity.access.domain.model.access.web_session_repository import WebSessionRepository
-from marketgram.identity.access.domain.model.identity.user_repository import UserRepository
-from marketgram.identity.access.application.message_maker import EmailMessageMaker
+from marketgram.common.application.email_sender import EmailSender
+from marketgram.common.application.id_provider import IdProvider
+from marketgram.common.application.jwt_manager import TokenManager
+from marketgram.identity.access.domain.model.role_repository import RoleRepository
+from marketgram.identity.access.domain.model.web_session_repository import WebSessionRepository
+from marketgram.identity.access.domain.model.user_repository import UserRepository
+from marketgram.common.application.message_maker import EmailMessageMaker
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import AuthotizeDecorator, TransactionDecorator
-from marketgram.identity.access.application.command.change_password_command import ChangePasswordHandler
-from marketgram.identity.access.application.command.forgot_password_coomand import ForgotPasswordHandler
-from marketgram.identity.access.application.command.new_password_command import NewPasswordHandler
-from marketgram.identity.access.application.command.user_activate_command import UserActivateHandler
-from marketgram.identity.access.application.command.user_login_command import UserLoginHandler
-from marketgram.identity.access.application.command.user_registration_command import UserRegistrationHandler
+from marketgram.identity.access.application.change_password_command import ChangePasswordHandler
+from marketgram.identity.access.application.forgot_password_coomand import ForgotPasswordHandler
+from marketgram.identity.access.application.new_password_command import NewPasswordHandler
+from marketgram.identity.access.application.user_activate_command import UserActivateHandler
+from marketgram.identity.access.application.user_login_command import UserLoginHandler
+from marketgram.identity.access.application.user_registration_command import UserRegistrationHandler
 from marketgram.identity.access.port.adapter.encrypter_hmac import EncrypterHMAC, SecretEncrypterHMAC
 from marketgram.identity.access.port.adapter.identity_provider import IdentityProvider
 from marketgram.identity.access.port.adapter.pyjwt_token_manager import PyJWTTokenManager

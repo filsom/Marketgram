@@ -11,7 +11,7 @@ from sqlalchemy import (
     text
 )
 
-from marketgram.identity.access.domain.model.access.role_permission import Permission
+from marketgram.identity.access.domain.model.role_permission import Permission
 
 
 metadata = MetaData()

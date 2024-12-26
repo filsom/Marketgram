@@ -4,7 +4,7 @@ from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import and_, delete, select
 
-from marketgram.identity.access.domain.model.access.web_session import (
+from marketgram.identity.access.domain.model.web_session import (
     WebSession
 )
 

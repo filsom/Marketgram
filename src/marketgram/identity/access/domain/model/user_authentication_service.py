@@ -1,16 +1,16 @@
 from marketgram.identity.access.domain.model.exceptions import (
     USER_NOT_ACTIVATED, 
-    DomainException
+    DomainError
 )
-from marketgram.identity.access.domain.model.identity.password_service import (
-    PasswordService
+from marketgram.identity.access.domain.model.user_password_security_service import (
+    UserPasswordSecurityService
 )
-from marketgram.identity.access.domain.model.identity.user import User
+from marketgram.identity.access.domain.model.user import User
 
 
-class AuthenticationService:
+class UserAuthenticationService:
     def __init__(self) -> None:
-        self._password_service = PasswordService()
+        self._password_service = UserPasswordSecurityService()
     
     def authenticate(
             self,
@@ -18,7 +18,7 @@ class AuthenticationService:
             plain_password: str,
     ) -> None:
         if not user.is_active:
-            raise DomainException(USER_NOT_ACTIVATED)
+            raise DomainError(USER_NOT_ACTIVATED)
         
         self._password_service.verify(plain_password, user.password)
 

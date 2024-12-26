@@ -3,11 +3,11 @@ from argon2.exceptions import VerificationError, VerifyMismatchError
 
 from marketgram.identity.access.domain.model.exceptions import (
     INVALID_PASSWORD, 
-    PasswordException
+    PasswordError
 )
 
 
-class PasswordService:
+class UserPasswordSecurityService:
     def __init__(self) -> None:
         self._ph = PasswordHasher()
     
@@ -19,7 +19,7 @@ class PasswordService:
             self._ph.verify(hash_password, plain_password)
             
         except (VerificationError, VerifyMismatchError):
-            raise PasswordException(INVALID_PASSWORD)
+            raise PasswordError(INVALID_PASSWORD)
         
     def lifetime_hash(self, hash_password: str) -> bool:
         return self._ph.check_needs_rehash(hash_password)

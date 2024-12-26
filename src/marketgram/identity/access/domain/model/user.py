@@ -2,11 +2,10 @@ from uuid import UUID
 
 from marketgram.identity.access.domain.model.exceptions import (
     INVALID_EMAIL_OR_PASSWORD,
-    PasswordException,
+    PasswordError,
 )
-from marketgram.identity.access.domain.model.identity.email import Email
-from marketgram.identity.access.domain.model.identity.password_service import (
-    PasswordService
+from marketgram.identity.access.domain.model.user_password_security_service import (
+    UserPasswordSecurityService
 )
 
 
@@ -14,13 +13,14 @@ class User:
     def __init__(
         self,
         user_id: UUID,
-        email: Email,
-        password: str
+        email: str,
+        password: str,
+        is_active: bool = False
     ) -> None:
         self._user_id = user_id
         self._email = email
         self._password = password
-        self._is_active: bool = False
+        self._is_active = is_active
 
     def activate(self) -> None:
         self._is_active = True
@@ -33,7 +33,7 @@ class User:
         return self._user_id
     
     @property
-    def email(self) -> Email:
+    def email(self) -> str:
         return self._email
     
     @property
@@ -47,9 +47,9 @@ class User:
     @password.setter
     def password(self, password: str) -> None:
         if self._email == password:
-            raise PasswordException(INVALID_EMAIL_OR_PASSWORD)
+            raise PasswordError(INVALID_EMAIL_OR_PASSWORD)
 
-        self._password = PasswordService().hash(password)
+        self._password = UserPasswordSecurityService().hash(password)
         
     def __eq__(self, other: 'User') -> bool:
         if not isinstance(other, User):

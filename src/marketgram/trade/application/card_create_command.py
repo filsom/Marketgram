@@ -1,4 +1,4 @@
-from marketgram.trade.application.common.id_provider import IdProvider
+from marketgram.common.application.id_provider import IdProvider
 from marketgram.trade.domain.model.cards_repository import CardsRepository
 from marketgram.trade.domain.model.description import AccountFormat, Description, Region
 from marketgram.trade.domain.model.p2p.delivery import Delivery

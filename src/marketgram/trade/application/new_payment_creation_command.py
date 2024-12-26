@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from marketgram.trade.application.common.acquiring_manager import AcquiringManager
-from marketgram.trade.application.common.id_provider import IdProvider
+from marketgram.common.application.acquiring_manager import AcquiringManager
+from marketgram.common.application.id_provider import IdProvider
 from marketgram.trade.domain.model.p2p.members_repository import MembersRepository
 from marketgram.trade.domain.model.p2p.operations_repository import OperationRepository
 from marketgram.trade.domain.model.rule.agreement.money import Money

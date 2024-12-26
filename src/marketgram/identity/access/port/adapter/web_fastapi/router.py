@@ -1,26 +1,26 @@
 from fastapi import APIRouter, Request, Response
 
-from marketgram.identity.access.application.command.change_password_command import (
+from marketgram.identity.access.application.change_password_command import (
     ChangePasswordCommand, 
     ChangePasswordHandler
 )
-from marketgram.identity.access.application.command.forgot_password_coomand import (
+from marketgram.identity.access.application.forgot_password_coomand import (
     ForgotPasswordCommand, 
     ForgotPasswordHandler
 )
-from marketgram.identity.access.application.command.new_password_command import (
+from marketgram.identity.access.application.new_password_command import (
     NewPasswordCommand, 
     NewPasswordHandler
 )
-from marketgram.identity.access.application.command.user_activate_command import (
+from marketgram.identity.access.application.user_activate_command import (
     UserAcivateCommand, 
     UserActivateHandler
 )
-from marketgram.identity.access.application.command.user_login_command import (
+from marketgram.identity.access.application.user_login_command import (
     UserLoginCommand, 
     UserLoginHandler
 )
-from marketgram.identity.access.application.command.user_registration_command import (
+from marketgram.identity.access.application.user_registration_command import (
     UserRegistrationCommand, 
     UserRegistrationHandler
 )
