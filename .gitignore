@@ -162,3 +162,5 @@ cython_debug/
 ngrok.yml
 src/marketgram/test.py
 src/marketgram/main.py
+tests/main.py
+tests/test.py

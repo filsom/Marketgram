@@ -16,3 +16,10 @@ class CardsRepository(Protocol):
         card_id: UUID
     ) -> SellCard | None:
         raise NotImplementedError
+    
+    async def for_edit_with_owner_and_card_id(
+        self,
+        owner_id: UUID,
+        card_id: UUID
+    ) -> Card | None:
+        raise NotImplementedError

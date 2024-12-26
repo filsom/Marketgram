@@ -5,7 +5,7 @@ from marketgram.trade.domain.model.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
 from marketgram.trade.domain.model.p2p.time_tags import TimeTags
-from marketgram.trade.domain.model.rule.agreement.entry import PostingEntry
+from marketgram.trade.domain.model.rule.agreement.entry import Entry
 from marketgram.trade.domain.model.rule.agreement.entry_status import EntryStatus
 from marketgram.trade.domain.model.rule.agreement.money import Money
 from marketgram.trade.domain.model.p2p.payout import Payout
@@ -22,7 +22,7 @@ class DisputeDeal:
         is_disputed: bool,
         time_tags: TimeTags,
         deadlines: Deadlines,
-        deal_entries: list[PostingEntry],
+        deal_entries: list[Entry],
         status: StatusDeal,
         payout: Payout | None
     ) -> None:
@@ -76,7 +76,7 @@ class DisputeDeal:
                 EntryStatus.CANCELLED
             )
         self._deal_entries.append(
-            PostingEntry(
+            Entry(
                 self._buyer_id,
                 self._price,
                 datetime.now(),

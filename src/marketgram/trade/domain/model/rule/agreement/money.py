@@ -39,15 +39,12 @@ class Money:
     def __abs__(self) -> Money:
         return Money(abs(self.number))
 
-    def __mul__(self, value: int | float | Decimal | QtyPurchased) -> Money:
-        if not isinstance(value, (int, float, Decimal, QtyPurchased)):
+    def __mul__(self, value: int | float | Decimal) -> Money:
+        if not isinstance(value, (int, float, Decimal)):
             raise TypeError
 
         if value == 0:
             raise ArithmeticError
-        
-        if isinstance(value, QtyPurchased):
-            value = value.total
 
         return Money(
             self.number 

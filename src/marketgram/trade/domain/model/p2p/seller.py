@@ -23,12 +23,15 @@ from marketgram.trade.domain.model.p2p.payout import Payout
 class Seller:
     def __init__(
         self, 
-        user_id: UUID
+        user_id: UUID,
+        paycard: Paycard = None,
+        is_blocked: bool = False,
+        balance: Money = Money(0)
     ) -> None:
         self._user_id = user_id
-        self._paycard: Paycard = None
-        self._is_blocked = False
-        self._balance: Money = Money(0)
+        self._paycard = paycard
+        self._is_blocked = is_blocked
+        self._balance = balance
         self._agreement: ServiceAgreement = None
 
     def make_card(
@@ -64,6 +67,9 @@ class Seller:
     def new_payout(self, amount: Money) -> Payout:
         if self._is_blocked:
             raise DomainError(BALANCE_BLOCKED)
+        
+        if self._paycard is None:
+            raise DomainError()
 
         limits = self._agreement.actual_limits()
         

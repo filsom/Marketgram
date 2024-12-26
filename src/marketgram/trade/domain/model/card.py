@@ -30,7 +30,11 @@ class Card:
         deadlines: Deadlines,
         min_price: Money,
         min_discount: Decimal,
-        created_at: datetime
+        created_at: datetime,
+        dirty_price: Money | None = None,
+        is_archived: bool = False,
+        is_purchased: bool = False,
+        is_storage: StorageType = StorageType.NOT_STORED
     ) -> None:
         self._card_id = card_id
         self._owner_id = owner_id
@@ -41,38 +45,37 @@ class Card:
         self._min_price = min_price
         self._min_discount = min_discount
         self._created_at = created_at
-        self._dirty_price: Money | None = None
-        self._is_archived = False
-        self._is_purchased = False
-        self._is_storage = StorageType.NOT_STORED
-        # self._inventory_balances = []
-
-    def set_discount(self, new_price: Money) -> None:
+        self._dirty_price = dirty_price
+        self._is_archived = is_archived
+        self._is_purchased = is_purchased
+        self._is_storage = is_storage
+    
+    def set_discounted_price(self, new_price: Money) -> None:
         initial_price = self._price
 
         if self._dirty_price is not None:
             initial_price = self._dirty_price
 
-        min_limit, max_limit = self._discount_range(initial_price)
-        if new_price < min_limit or new_price > max_limit:
+        if initial_price < self._min_price + self._min_price * self._min_discount:
+            raise DomainError(DISCOUNT_ERROR)
+        
+        max_limit = initial_price - initial_price * self._min_discount
+        
+        if new_price < self._min_price or new_price > max_limit.round_up():
             raise DomainError(
-                UNACCEPTABLE_DISCOUNT_RANGE.format(min_limit, max_limit)
-            )    
-        self._update_price(new_price)
-
-    def add_inventory_balances(self):
-        # Доделать
+                UNACCEPTABLE_DISCOUNT_RANGE.format(self._min_price, max_limit)
+            )   
         
-        # if not self._delivery.is_auto_link():
-        #     raise DomainError()
-        
-        # self._inventory_balances.append(...)
-        # self._is_storage = StorageType.STORED
-        pass
+        if self._dirty_price is None:
+            self._dirty_price = self._price
+            self._price = new_price
+        else:
+            self._price = new_price
 
     def remove_discount(self) -> None:
-        self._price = self._dirty_price
-        self._dirty_price = None
+        if self._dirty_price is not None:
+            self._price = self._dirty_price
+            self._dirty_price = None
 
     def change_description(self, description: Description) -> None:
         self._description = description
@@ -90,30 +93,15 @@ class Card:
     @property
     def owner_id(self) -> UUID:
         return self._owner_id
-    
-    @property
-    def price(self) -> Money:
-        return self._price
 
     @property
     def created_at(self) -> datetime:
         return self._created_at
 
-    def _update_price(self, new_price: Money) -> None:
-        if self._dirty_price is None:
-            self._dirty_price = self._price
-            self._price = new_price
-        else:
-            self._price = new_price
-
-    def _discount_range(self, price: Money) -> Money:
-        if price < self._min_price + self._min_price * self._min_discount:
-            raise DomainError(DISCOUNT_ERROR)
-        
-        max_limit = price - price * self._min_discount
-
-        return self._min_price, max_limit.round_up()
-
+    @property
+    def price(self) -> Money:
+        return self._price
+    
     def __eq__(self, other: 'Card') -> bool:
         if not isinstance(other, Card):
             return False

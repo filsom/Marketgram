@@ -9,13 +9,13 @@ from marketgram.trade.domain.model.rule.agreement.types import (
     EventType, 
     Operation
 )
-from marketgram.trade.domain.model.rule.agreement.entry import PostingEntry, EntryStatus
+from marketgram.trade.domain.model.rule.agreement.entry import Entry, EntryStatus
 from marketgram.trade.domain.model.rule.agreement.money import Money
     
 
 class DealPostingRule(PostingRule):
     def make_entry(self, deal: ReceiptDeal, amount: Money) -> None:
-        entry = PostingEntry(
+        entry = Entry(
             deal._seller_id,
             amount,
             datetime.now(),
@@ -62,7 +62,7 @@ class PaymentTaxFormula(DealPostingRule):
         self._superuser_id = superuser_id
 
     def make_entry(self, deal: ReceiptDeal, amount: Money) -> None:
-        entry = PostingEntry(
+        entry = Entry(
             self._superuser_id,
             amount,
             datetime.now(),

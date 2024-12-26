@@ -5,7 +5,7 @@ from uuid import UUID
 from marketgram.trade.domain.model.p2p_2.seller import Seller
 from marketgram.trade.domain.model.rule.agreement.entry import (
     EntryStatus, 
-    PostingEntry
+    Entry
 )
 from marketgram.trade.domain.model.rule.agreement.limits import Limits
 from marketgram.trade.domain.model.rule.agreement.money import Money
@@ -22,7 +22,7 @@ from marketgram.trade.domain.model.p2p.payout import Payout
 
 class PayoutPostingRule(PostingRule):
     def make_entry(self, payout: Payout, amount: Money) -> None:
-        entry = PostingEntry(
+        entry = Entry(
             payout._user_id,
             amount,
             datetime.now(),
@@ -69,7 +69,7 @@ class PayoutTaxFormula(PayoutPostingRule):
         self._superuser_id = superuser_id
 
     def make_entry(self, payout: Payout, amount: Money) -> None:
-        entry = PostingEntry(
+        entry = Entry(
             self._superuser_id,
             amount,
             datetime.now(),

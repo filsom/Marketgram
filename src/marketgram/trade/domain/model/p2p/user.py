@@ -13,7 +13,7 @@ from marketgram.trade.domain.model.sell_card import SellCard
 from marketgram.trade.domain.model.p2p.ship_deal import ShipDeal
 from marketgram.trade.domain.model.rule.agreement.entry import (
     EntryStatus, 
-    PostingEntry
+    Entry
 )
 from marketgram.trade.domain.model.rule.agreement.money import Money
 from marketgram.trade.domain.model.p2p.payment import Payment
@@ -30,12 +30,18 @@ if TYPE_CHECKING:
 
 
 class User:
-    def __init__(self, user_id: UUID) -> None:
+    def __init__(
+        self, 
+        user_id: UUID,
+        entries: list[Entry],
+        is_blocked: bool = False,
+        balance: Money = Money(0)
+    ) -> None:
         self._user_id = user_id
-        self._is_blocked = False
-        self._balance: Money = Money(0)
+        self._entries = entries
+        self._is_blocked = is_blocked
+        self._balance = balance
         self._agreement: ServiceAgreement = None
-        self._entries: list[PostingEntry] = []
 
     def make_deal(self, qty: QtyPurchased, card: SellCard) -> ShipDeal:
         if self._user_id == card.owner_id:
@@ -49,7 +55,7 @@ class User:
             raise DomainError(INSUFFICIENT_FUNDS)
 
         self._entries.append(
-            PostingEntry(
+            Entry(
                 self._user_id,
                 -card.price * qty,
                 datetime.now(),

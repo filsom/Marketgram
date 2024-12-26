@@ -3,7 +3,7 @@ from uuid import UUID
 
 from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
 from marketgram.trade.domain.model.p2p.time_tags import TimeTags
-from marketgram.trade.domain.model.rule.agreement.entry import PostingEntry
+from marketgram.trade.domain.model.rule.agreement.entry import Entry
 from marketgram.trade.domain.model.rule.agreement.entry_status import EntryStatus
 from marketgram.trade.domain.model.rule.agreement.money import Money
 from marketgram.trade.domain.model.rule.agreement.types import AccountType, Operation
@@ -17,7 +17,7 @@ class CancellationDeal:
         price: Money,
         time_tags: TimeTags,
         status: StatusDeal,
-        entries: list[PostingEntry]
+        entries: list[Entry]
     ) -> None:
         self._deal_id = deal_id
         self._buyer_id = buyer_id
@@ -32,7 +32,7 @@ class CancellationDeal:
                 entry.update_status(EntryStatus.CANCELLED)
 
         self._entries.append(
-            PostingEntry(
+            Entry(
                 self._buyer_id,
                 self._price,
                 current_date,
