@@ -14,7 +14,7 @@ from marketgram.trade.domain.model.rule.agreement.money import Money
 class SellCard:
     def __init__(
         self,
-        card_id: UUID,
+        card_id: int,
         owner_id: UUID,
         price: Money,
         is_archived: bool,

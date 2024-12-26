@@ -1,6 +1,5 @@
 from datetime import datetime
 from decimal import Decimal
-from enum import StrEnum, auto
 from uuid import UUID
 
 from marketgram.trade.domain.model.exceptions import (
@@ -14,11 +13,6 @@ from marketgram.trade.domain.model.rule.agreement.money import Money
 from marketgram.trade.domain.model.description import Description
 
 
-class StorageType(StrEnum):
-    STORED = auto()
-    NOT_STORED = auto()
-
-
 class Card:
     def __init__(
         self,
@@ -30,11 +24,10 @@ class Card:
         min_price: Money,
         min_discount: Decimal,
         created_at: datetime,
-        card_id: UUID = None,
+        card_id: int = None,
         dirty_price: Money | None = None,
         is_archived: bool = False,
         is_purchased: bool = False,
-        is_storage: StorageType = StorageType.NOT_STORED
     ) -> None:
         self._card_id = card_id
         self._owner_id = owner_id
@@ -48,7 +41,6 @@ class Card:
         self._dirty_price = dirty_price
         self._is_archived = is_archived
         self._is_purchased = is_purchased
-        self._is_storage = is_storage
     
     def set_discounted_price(self, new_price: Money) -> None:
         initial_price = self._price

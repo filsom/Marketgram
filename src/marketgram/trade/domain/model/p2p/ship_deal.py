@@ -30,7 +30,7 @@ class ShipDeal:
         time_tags: TimeTags,
         deadlines: Deadlines,
         status: StatusDeal,
-        deal_id: UUID = None
+        deal_id: int = None
     ) -> None:
         self._deal_id = deal_id
         self._seller_id = seller_id

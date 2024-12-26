@@ -1,4 +1,3 @@
-from uuid import uuid4
 from sqlalchemy import (
     DDL,
     DECIMAL, 
@@ -10,7 +9,6 @@ from sqlalchemy import (
     Integer, 
     String, 
     Table, 
-    text,
     event
 )
 
@@ -22,7 +20,7 @@ from marketgram.trade.port.adapter.sqlalchemy_resources.metadata import (
 operations_table = Table(
     'operations',
     sqlalchemy_metadata,
-    Column('operation_id', UUID, primary_key=True, nullable=False, default=uuid4),
+    Column('operation_id', UUID, primary_key=True, nullable=False),
     Column('user_id', UUID, ForeignKey('members.user_id'), nullable=False),
     Column('amount', DECIMAL(20, 2), nullable=False),
     Column('created_at', DateTime, nullable=False),

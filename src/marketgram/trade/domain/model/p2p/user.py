@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import TYPE_CHECKING
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from marketgram.trade.domain.model.exceptions import (
     BALANCE_BLOCKED,
@@ -98,6 +98,7 @@ class User:
             raise DomainError(BALANCE_BLOCKED)
 
         return Payment(
+            uuid4(),
             self._user_id,
             amount,
             current_time,

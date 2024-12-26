@@ -1,3 +1,4 @@
+from uuid import uuid4
 from sqlalchemy import (
     DECIMAL, 
     UUID, 
@@ -7,7 +8,6 @@ from sqlalchemy import (
     String, 
     Table, 
     Column, 
-    text
 )
 
 from marketgram.trade.port.adapter.sqlalchemy_resources.metadata import (
@@ -18,13 +18,7 @@ from marketgram.trade.port.adapter.sqlalchemy_resources.metadata import (
 entries_table = Table(
     'entries',
     sqlalchemy_metadata,
-    Column(
-        'entry_id', 
-        UUID, 
-        primary_key=True, 
-        server_default=text("gen_random_uuid()"), 
-        nullable=False
-    ),
+    Column('entry_id', UUID, primary_key=True, default=uuid4, nullable=False),
     Column('user_id', UUID, ForeignKey('members.user_id'), nullable=False),
     Column('amount', DECIMAL(20, 2), nullable=False),
     Column('posted_in', DateTime, nullable=False),

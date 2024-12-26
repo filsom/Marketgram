@@ -7,6 +7,7 @@ from sqlalchemy.orm import with_expression
 from marketgram.trade.domain.model.p2p.seller import Seller
 from marketgram.trade.domain.model.p2p.user import User
 from marketgram.trade.domain.model.rule.agreement.entry_status import EntryStatus
+from marketgram.trade.domain.model.rule.agreement.types import AccountType
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.entries_table import (
     entries_table
 )
@@ -35,11 +36,10 @@ class SQLAlchemyMembersRepository:
             select(Seller)
             .where(and_(
                 Seller._user_id == user_id,
-                Seller._paycard != None
             ))
             .options(with_expression(
                 Seller._balance, 
-                self._sum_query(user_id)
+                self._sum_query(user_id, AccountType.SELLER)
             ))
             .with_for_update()
         )
@@ -57,19 +57,22 @@ class SQLAlchemyMembersRepository:
         stmt = (
             select(User)
             .where(User._user_id == user_id)
-            .options(with_expression(User._balance, self._sum_query(user_id)))
+            .options(with_expression(User._balance, self._sum_query(
+                user_id, AccountType.USER
+            )))
             .with_for_update()
         )
         result = await self._async_session.execute(stmt)
         
         return result.scalar()
     
-    def _sum_query(self, user_id: UUID):
+    def _sum_query(self, user_id: UUID, account_type: AccountType):
         return (
             select(func.sum(entries_table.c.amount))
             .where(and_(
                 entries_table.c.user_id == user_id,
-                entries_table.c.entry_status == EntryStatus.ACCEPTED
+                entries_table.c.entry_status == EntryStatus.ACCEPTED,
+                entries_table.c.account_type == account_type
             ))
             .scalar_subquery()
         )

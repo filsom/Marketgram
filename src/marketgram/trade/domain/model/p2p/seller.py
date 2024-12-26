@@ -1,5 +1,5 @@
 from datetime import datetime
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from marketgram.trade.domain.model.card import Card
 from marketgram.trade.domain.model.p2p.deadlines import Deadlines
@@ -85,6 +85,7 @@ class Seller:
             raise DomainError(INSUFFICIENT_FUNDS)
         
         return Payout(
+            uuid4(),
             self._user_id,
             self._paycard.synonym,
             amount,

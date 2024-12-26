@@ -11,8 +11,8 @@ from marketgram.trade.domain.model.rule.agreement.types import AccountType, Oper
 
 class CancellationDeal:
     def __init__(
-        self, 
-        deal_id: UUID,
+        self,
+        deal_id: int,
         buyer_id: UUID,
         price: Money,
         time_tags: TimeTags,

@@ -10,13 +10,14 @@ from sqlalchemy import (
     ForeignKey,
 )
 
+from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.types import BIGSERIAL
 from marketgram.trade.port.adapter.sqlalchemy_resources.metadata import sqlalchemy_metadata
 
 
 cards_table = Table(
     'cards',
     sqlalchemy_metadata,
-    Column('card_id', UUID, primary_key=True, nullable=False, default=uuid4),
+    Column('card_id', BIGSERIAL, primary_key=True, nullable=False, autoincrement=True),
     Column('owner_id', UUID, ForeignKey('members.user_id'), index=True, nullable=False),
     Column('price', DECIMAL(20, 2), nullable=False),
     Column('title', String, nullable=False),

@@ -11,6 +11,7 @@ from sqlalchemy import (
     ForeignKey,
 )
 
+from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.types import BIGSERIAL
 from marketgram.trade.port.adapter.sqlalchemy_resources.metadata import (
     sqlalchemy_metadata
 )
@@ -19,7 +20,7 @@ from marketgram.trade.port.adapter.sqlalchemy_resources.metadata import (
 deals_table = Table(
     'deals',
     sqlalchemy_metadata,
-    Column('deal_id', UUID, primary_key=True, nullable=False, default=uuid4),
+    Column('deal_id', BIGSERIAL, primary_key=True, nullable=False, autoincrement=True),
     Column('seller_id', UUID, ForeignKey('members.user_id'), nullable=False),
     Column('buyer_id', UUID, ForeignKey('members.user_id'), nullable=False),
     Column('card_id', UUID, nullable=False),

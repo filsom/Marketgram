@@ -15,7 +15,7 @@ from marketgram.trade.domain.model.rule.agreement.types import AccountType, Oper
 class DisputeDeal:
     def __init__(
         self,
-        deal_id: UUID,
+        deal_id: int,
         buyer_id: UUID,
         seller_id: UUID,
         price: Money,

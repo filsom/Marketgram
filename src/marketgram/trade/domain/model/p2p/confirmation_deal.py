@@ -13,7 +13,7 @@ from marketgram.trade.domain.model.rule.agreement.types import EventType
 class ConfirmationDeal:
     def __init__(
         self, 
-        deal_id: UUID,
+        deal_id: int,
         card_created_at: datetime,
         time_tags: TimeTags,
         deadlines: Deadlines,

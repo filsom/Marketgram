@@ -19,14 +19,14 @@ from marketgram.trade.domain.model.rule.agreement.types import (
 class Payout:
     def __init__(
         self,
+        payout_id: UUID,
         user_id: UUID,
         paycard_synonym: str,
         tax_free: Money,
         created_at: datetime,
-        payout_id: UUID = None,
         count_block: int = 0,
         is_processed: bool = False,
-        is_blocked: bool = False,
+        is_blocked: bool = False
     ) -> None:
         self._payout_id = payout_id
         self._user_id = user_id
