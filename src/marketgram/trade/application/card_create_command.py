@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from marketgram.common.application.id_provider import IdProvider
 from marketgram.trade.domain.model.cards_repository import CardsRepository
 from marketgram.trade.domain.model.description import AccountFormat, Description, Region
@@ -8,6 +9,7 @@ from marketgram.trade.domain.model.p2p.transfer_method import TransferMethod
 from marketgram.trade.domain.model.rule.agreement.money import Money
 
 
+@dataclass
 class CardCreateCommand:
     amount: str
     title: str
