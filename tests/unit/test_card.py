@@ -45,17 +45,16 @@ class TestCard:
         # Assert
         assert sut.price == Money(200)
 
-    def test_setting_a_discount_price_at_a_minimum_cost(self) -> None:
+    def test_setting_a_new_price_at_a_minimum_discounted_price(self) -> None:
         # Arrange
-        card_price = Money(100)
+        new_price = Money(103)
         min_price = Money(100)
-        discounted_price = Money(100)
 
-        sut = self.make_card(card_price, min_price, Decimal('0.1'))
+        sut = self.make_card(Money(105), min_price, Decimal('0.1'))
 
         # Act
         with pytest.raises(DomainError) as excinfo:
-            sut.set_discounted_price(discounted_price)
+            sut.set_discounted_price(new_price)
 
         # Assert
         assert DISCOUNT_ERROR == str(excinfo.value)
