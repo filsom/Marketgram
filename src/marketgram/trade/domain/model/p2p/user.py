@@ -2,14 +2,14 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
 
-from marketgram.trade.domain.model.exceptions import (
+from marketgram.trade.domain.model.trade_item.exceptions import (
     BALANCE_BLOCKED,
     BUY_FROM_YOURSELF, 
     INSUFFICIENT_FUNDS,
     MINIMUM_DEPOSIT, 
     DomainError
 )
-from marketgram.trade.domain.model.sell_card import SellCard
+from marketgram.trade.domain.model.trade_item.sell_card import SellCard
 from marketgram.trade.domain.model.p2p.ship_deal import ShipDeal
 from marketgram.trade.domain.model.rule.agreement.entry import (
     EntryStatus, 

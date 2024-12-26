@@ -6,7 +6,7 @@ from marketgram.trade.application.card_create_command import (
     CardCreateCommand, 
     CardCreateHandler
 )
-from marketgram.trade.domain.model.description import (
+from marketgram.trade.domain.model.trade_item.description import (
     AccountFormat, 
     Region
 )

@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import UUID
 
-from marketgram.trade.domain.model.exceptions import (
+from marketgram.trade.domain.model.trade_item.exceptions import (
     DomainError,
     InvalidOperationError,
 )

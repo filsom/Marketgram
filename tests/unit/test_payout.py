@@ -4,7 +4,7 @@ from uuid import uuid4
 
 import pytest
 
-from marketgram.trade.domain.model.exceptions import DomainError
+from marketgram.trade.domain.model.trade_item.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.payout import Payout
 from marketgram.trade.domain.model.rule.agreement.entry_status import (
     EntryStatus

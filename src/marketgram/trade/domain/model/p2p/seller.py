@@ -1,14 +1,14 @@
 from datetime import datetime
 from uuid import UUID, uuid4
 
-from marketgram.trade.domain.model.card import Card
+from marketgram.trade.domain.model.trade_item.card import Card
 from marketgram.trade.domain.model.p2p.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.delivery import Delivery
 from marketgram.trade.domain.model.p2p.paycard import Paycard
 from marketgram.trade.domain.model.rule.agreement.service_agreement import (
     ServiceAgreement
 )
-from marketgram.trade.domain.model.exceptions import (
+from marketgram.trade.domain.model.trade_item.exceptions import (
     BALANCE_BLOCKED,
     INSUFFICIENT_FUNDS, 
     MINIMUM_PRICE, 
@@ -16,7 +16,7 @@ from marketgram.trade.domain.model.exceptions import (
     DomainError
 )
 from marketgram.trade.domain.model.rule.agreement.money import Money
-from marketgram.trade.domain.model.description import Description
+from marketgram.trade.domain.model.trade_item.description import Description
 from marketgram.trade.domain.model.p2p.payout import Payout
 
 

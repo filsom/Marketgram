@@ -5,7 +5,7 @@ from uuid import UUID
 from marketgram.trade.domain.model.rule.agreement.entry import (
     Entry
 )
-from marketgram.trade.domain.model.exceptions import DomainError
+from marketgram.trade.domain.model.trade_item.exceptions import DomainError
 from marketgram.trade.domain.model.rule.agreement.money import Money
 from marketgram.trade.domain.model.rule.agreement.service_agreement import (
     ServiceAgreement

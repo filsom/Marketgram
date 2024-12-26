@@ -2,7 +2,7 @@ from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
 
-from marketgram.trade.domain.model.exceptions import (
+from marketgram.trade.domain.model.trade_item.exceptions import (
     DISCOUNT_ERROR, 
     UNACCEPTABLE_DISCOUNT_RANGE, 
     DomainError
@@ -10,7 +10,7 @@ from marketgram.trade.domain.model.exceptions import (
 from marketgram.trade.domain.model.p2p.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.delivery import Delivery
 from marketgram.trade.domain.model.rule.agreement.money import Money
-from marketgram.trade.domain.model.description import Description
+from marketgram.trade.domain.model.trade_item.description import Description
 
 
 class Card:
