@@ -1,6 +1,10 @@
 from datetime import datetime
 from decimal import Decimal
-from uuid import UUID, uuid4
+from uuid import uuid4
+
+import pytest
+
+from marketgram.trade.domain.model.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.payout import Payout
 from marketgram.trade.domain.model.rule.agreement.entry_status import (
     EntryStatus
@@ -22,9 +26,6 @@ from marketgram.trade.domain.model.rule.agreement.types import (
 
 
 class TestPayuot:
-    USER_ID = UUID('61860a73-2d68-400d-8297-827bb1e14c70')
-    SUPER_USER_ID = UUID('2140a32e-4df9-4105-8e8f-3d7c707efe5a')
-
     def test_taxable_amount_for_withdraw(self) -> None:
         # Arrange
         tax_payout = Decimal(0.1)
@@ -40,6 +41,61 @@ class TestPayuot:
         assert amount_payout - (amount_payout * tax_payout) == result
         assert len(sut.entries) == 2
 
+    def test_cancellation_of_payout(self) -> None:
+        # Arrange
+        sut = self.make_payout(Money(200), 0, False, False)
+
+        # Act
+        sut.undo()
+
+        # Assert
+        assert len(sut.entries) == 0
+        assert sut.is_processed == True
+
+    def test_blocking_payout_during_the_disputes(self) -> None:
+        # Arrange
+        sut = self.make_payout(Money(200), 0, False, False)
+        
+        # Act
+        sut.temporarily_block()
+        sut.temporarily_block()
+
+        # Assert
+        assert sut.is_processed == False
+        assert sut.is_blocked == True
+        assert sut.count_block == 2
+
+    def test_unblocking_payout_upon_completion_of_the_disputes(self) -> None:
+        # Arrange
+        sut = self.make_payout(Money(200), 0, False, False)
+        sut.temporarily_block()
+        sut.temporarily_block() 
+
+        # Act
+        sut.unlock()
+        sut.unlock()
+
+        # Assert
+        assert sut.is_processed == False
+        assert sut.is_blocked == False
+        assert sut.count_block == 0
+
+    def test_calculation_of_payout_during_a_dispute(self) -> None:
+        # Arrange
+        sut = self.make_payout(Money(200), 0, False, False)
+        sut.temporarily_block()
+        sut.temporarily_block() 
+        sut.unlock()
+
+        # Act
+        with pytest.raises(DomainError) as excinfo:
+            sut.calculate()        
+
+        # Assert
+        assert sut.is_processed == False
+        assert sut.is_blocked == True
+        assert sut.count_block == 1
+
     def make_payout(
         self, 
         tax_free: Money, 
@@ -48,7 +104,7 @@ class TestPayuot:
         is_blocked: bool
     ) -> Payout:
         return Payout(
-            self.USER_ID,
+            uuid4(),
             'test_*',
             tax_free,
             datetime.now(),
@@ -81,7 +137,7 @@ class TestPayuot:
         agreement.add_rule(
             EventType.TAX_PAYOUT, 
             PayoutTaxFormula(
-                self.SUPER_USER_ID, 
+                uuid4(), 
                 AccountType.TAX, 
                 Operation.BUY, 
                 EntryStatus.FREEZ

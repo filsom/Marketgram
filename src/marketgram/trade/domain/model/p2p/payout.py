@@ -89,6 +89,18 @@ class Payout:
     @property
     def agreement(self) -> ServiceAgreement:
         return self._agreement
+    
+    @property
+    def is_processed(self) -> bool:
+        return self._is_processed
+    
+    @property
+    def is_blocked(self) -> bool:
+        return self._is_blocked
+    
+    @property
+    def count_block(self) -> int:
+        return self._count_block
 
     def __eq__(self, other: 'Payout') -> bool:
         if not isinstance(other, Payout):
