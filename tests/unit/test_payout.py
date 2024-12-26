@@ -105,10 +105,10 @@ class TestPayuot:
     ) -> Payout:
         return Payout(
             uuid4(),
+            uuid4(),
             'test_*',
             tax_free,
             datetime.now(),
-            None,
             count_block,
             is_processed,
             is_blocked
