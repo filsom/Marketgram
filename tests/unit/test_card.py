@@ -34,7 +34,7 @@ class TestCard:
         # Assert
         assert sut.price == Money(150)
 
-    def test_remove_discount_price(self):
+    def test_remove_discounted_price(self):
         # Arrange 
         sut = self.make_card(Money(200), Money(100), Decimal('0.1'))
         sut.set_discounted_price(Money(150))
