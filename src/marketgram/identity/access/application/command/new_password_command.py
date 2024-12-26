@@ -34,7 +34,7 @@ class NewPasswordHandler:
         exists_user = await self._user_repository.with_id(
             user_id
         )
-        exists_user.change_password(command.new_password)
+        exists_user.password = command.new_password
         
         return await self._web_session_repository \
             .delete_all_with_user_id(exists_user.user_id)

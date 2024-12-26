@@ -37,7 +37,7 @@ class ChangePasswordHandler:
             exists_user,
             command.old_password
         )
-        exists_user.change_password(command.new_password)
+        exists_user.password = command.new_password
         
         return await (
             self._web_session_repository

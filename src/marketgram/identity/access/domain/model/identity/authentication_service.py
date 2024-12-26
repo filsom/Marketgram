@@ -23,4 +23,4 @@ class AuthenticationService:
         self._password_service.verify(plain_password, user.password)
 
         if self._password_service.lifetime_hash(user.password):
-            user.change_password(plain_password)
+            user.password = plain_password
