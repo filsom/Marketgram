@@ -131,7 +131,7 @@ class TestPayuot:
             EventType.USER_DEDUCED, 
             PayoutFormula(
                 AccountType.SELLER, 
-                Operation.BUY, EntryStatus.FREEZ
+                Operation.BUY, EntryStatus.ACCEPTED
             )
         )
         agreement.add_rule(
@@ -140,7 +140,7 @@ class TestPayuot:
                 uuid4(), 
                 AccountType.TAX, 
                 Operation.BUY, 
-                EntryStatus.FREEZ
+                EntryStatus.ACCEPTED
             )
         )
         return agreement
