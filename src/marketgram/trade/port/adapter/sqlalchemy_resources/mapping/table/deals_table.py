@@ -1,3 +1,4 @@
+from uuid import uuid4
 from sqlalchemy import (
     DECIMAL, 
     UUID,
@@ -18,7 +19,7 @@ from marketgram.trade.port.adapter.sqlalchemy_resources.metadata import (
 deals_table = Table(
     'deals',
     sqlalchemy_metadata,
-    Column('deal_id', UUID, primary_key=True, nullable=False),
+    Column('deal_id', UUID, primary_key=True, nullable=False, default=uuid4),
     Column('seller_id', UUID, ForeignKey('members.user_id'), nullable=False),
     Column('buyer_id', UUID, ForeignKey('members.user_id'), nullable=False),
     Column('card_id', UUID, nullable=False),
