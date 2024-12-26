@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import TYPE_CHECKING
-from uuid import UUID, uuid4
+from uuid import UUID
 
 from marketgram.trade.domain.model.exceptions import (
     BALANCE_BLOCKED,
@@ -26,60 +26,69 @@ from marketgram.trade.domain.model.rule.agreement.types import (
 )
 
 if TYPE_CHECKING:
-    from marketgram.trade.domain.model.p2p.qty_purchased import QtyPurchased
+    from marketgram.trade.domain.model.p2p.quantity_purchased import (
+        QuantityPurchased
+    )
 
 
 class User:
     def __init__(
         self, 
         user_id: UUID,
-        entries: list[Entry],
         is_blocked: bool = False,
         balance: Money = Money(0)
     ) -> None:
         self._user_id = user_id
-        self._entries = entries
         self._is_blocked = is_blocked
         self._balance = balance
+        self._entries: list[Entry] = []
         self._agreement: ServiceAgreement = None
 
-    def make_deal(self, qty: QtyPurchased, card: SellCard) -> ShipDeal:
+    def make_deal(
+        self, 
+        quantity: QuantityPurchased, 
+        card: SellCard,
+        current_time: datetime
+    ) -> ShipDeal:
         if self._user_id == card.owner_id:
             raise DomainError(BUY_FROM_YOURSELF)
 
         if self._is_blocked:
             raise DomainError(BALANCE_BLOCKED)
 
-        remainder = self._balance - card.price
+        remainder = self._balance - card.price * quantity
         if remainder < Money(0):
             raise DomainError(INSUFFICIENT_FUNDS)
 
         self._entries.append(
             Entry(
                 self._user_id,
-                -card.price * qty,
-                datetime.now(),
+                -card.price * quantity,
+                current_time,
                 AccountType.USER,
                 Operation.BUY,
                 EntryStatus.ACCEPTED
             )
         )
-        card.buy()
+        card.buy(quantity)
 
         return ShipDeal(
-            uuid4(),
             card.owner_id,
             self._user_id,
             card.card_id,
             card.type_deal,
             card.created_in,
-            card.price * qty,
-            card.time_tags(datetime.now()),
+            card.price * quantity,
+            card.time_tags(current_time),
             card.deadlines,
             card.status_deal
         )  
 
-    def new_payment(self, amount: Money) -> Payment:  
+    def new_payment(
+        self, 
+        amount: Money,
+        current_time: datetime
+    ) -> Payment:  
         limits = self._agreement.actual_limits()
         
         if amount < limits.min_deposit:
@@ -89,10 +98,9 @@ class User:
             raise DomainError(BALANCE_BLOCKED)
 
         return Payment(
-            uuid4(),
             self._user_id,
             amount,
-            datetime.now(),
+            current_time,
         )
 
     def accept_agreement(self, agreement: ServiceAgreement) -> None:

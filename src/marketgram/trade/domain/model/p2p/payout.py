@@ -19,20 +19,23 @@ from marketgram.trade.domain.model.rule.agreement.types import (
 class Payout:
     def __init__(
         self,
-        payout_id: UUID,
         user_id: UUID,
         paycard_synonym: str,
         tax_free: Money,
         created_at: datetime,
+        payout_id: UUID = None,
+        count_block: int = 0,
+        is_processed: bool = False,
+        is_blocked: bool = False,
     ) -> None:
         self._payout_id = payout_id
         self._user_id = user_id
         self._paycard_synonym = paycard_synonym
         self._tax_free = tax_free
         self._created_at = created_at
-        self._count_block = 0
-        self._is_processed = False
-        self._is_blocked = False
+        self._count_block = count_block
+        self._is_processed = is_processed
+        self._is_blocked = is_blocked
         self._agreement: ServiceAgreement = None
         self._entries: list[Entry] = []
 
@@ -42,11 +45,16 @@ class Payout:
         
         self._is_processed = True
 
-    def calculate_for_payout(self) -> Money:
+    def calculate(self) -> Money:
         if self._is_processed or self._count_block:
             raise DomainError()
         
-        self._collect_tax()
+        limits = self._agreement.limits_from(self._created_at)
+
+        rule = self._agreement.find_payout_rule(
+            EventType.USER_DEDUCED
+        )
+        rule.process(self, limits)
 
         for entry in self._entries:
             if entry._account_type == AccountType.SELLER:
@@ -58,9 +66,6 @@ class Payout:
 
     def accept_agreement(self, agreement: ServiceAgreement) -> None:
         self._agreement = agreement
-
-    def transferred_agreement(self) -> ServiceAgreement:
-        return self._agreement
 
     def temporarily_block(self) -> None:
         if not self._is_blocked and not self._count_block:
@@ -74,19 +79,16 @@ class Payout:
         if self._count_block == 0:
             self._is_blocked = False
 
-    def provide_entries(self) -> list[Entry]:
-        return self._entries
-
     def add_entry(self, entry) -> None:
         self._entries.append(entry) 
 
-    def _collect_tax(self) -> None:
-        limits = self._agreement.limits_from(self._created_at)
-
-        rule = self._agreement.find_payout_rule(
-            EventType.USER_DEDUCED
-        )
-        rule.process(self, limits)
+    @property
+    def entries(self) -> list[Entry]:
+        return self._entries
+    
+    @property
+    def agreement(self) -> ServiceAgreement:
+        return self._agreement
 
     def __eq__(self, other: 'Payout') -> bool:
         if not isinstance(other, Payout):

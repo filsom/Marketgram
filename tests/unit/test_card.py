@@ -85,7 +85,6 @@ class TestCard:
         )
         return Card(
             uuid4(),
-            uuid4(),
             price,
             Description(
                 'TestCard',

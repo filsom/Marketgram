@@ -6,7 +6,7 @@ from enum import StrEnum, auto
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from marketgram.trade.domain.model.p2p.user import QtyPurchased
+    from marketgram.trade.domain.model.p2p.user import QuantityPurchased
 
 
 class Currency(StrEnum):

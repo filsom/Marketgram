@@ -2,7 +2,6 @@ from __future__ import annotations
 from datetime import datetime
 from uuid import UUID
 
-from marketgram.trade.domain.model.p2p_2.seller import Seller
 from marketgram.trade.domain.model.rule.agreement.entry import (
     EntryStatus, 
     Entry
@@ -32,7 +31,7 @@ class PayoutPostingRule(PostingRule):
         )
         payout.add_entry(entry)
     
-    def process(self, seller: Seller, payout: Payout, limits: Limits) -> None:
+    def process(self, payout: Payout, limits: Limits) -> None:
         self.make_entry(payout, self.calculate_amount(
             payout._tax_free, limits
         ))
@@ -42,12 +41,12 @@ class PayoutPostingRule(PostingRule):
 
 
 class PayoutFormula(PayoutPostingRule):
-    def process(self, seller: Seller, payout: Payout, limits: Limits) -> None:
-        super().process(seller, payout, limits)
-        secondary_rule = seller._agreement.find_payout_rule(
+    def process(self, payout: Payout, limits: Limits) -> None:
+        super().process(payout, limits)
+        secondary_rule = payout.agreement.find_payout_rule(
             EventType.TAX_PAYOUT
         )
-        secondary_rule.process(seller, payout, limits)
+        secondary_rule.process(payout, limits)
 
     def calculate_amount(self, amount: Money, limits: Limits) -> Money:
         return -amount + amount * limits.tax_payout

@@ -4,7 +4,7 @@ from marketgram.trade.domain.model.exceptions import DomainError
 
 
 @dataclass(frozen=True)
-class QtyPurchased:
+class QuantityPurchased:
     total: int
 
     def __post_init__(self) -> None:

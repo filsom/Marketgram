@@ -97,22 +97,6 @@ class DisputeDeal:
     def _edit_entries_statuses(self, status: EntryStatus) -> None:
         for entry in self._deal_entries:
             entry.update_status(status)
-
-    def __repr__(self) -> str:
-        return (
-            f'DisputeDeal('
-                f'deal_id={self._deal_id}, '
-                f'buyer_id={self._buyer_id}, ' 
-                f'seller_id={self._seller_id}, '
-                f'price={self._price}, ' 
-                f'time_tags={self._time_tags}, '
-                f'deadlines={self._deadlines}, ' 
-                f'deal_entries={self._deal_entries}, ' 
-                f'status={self._status}, '
-                f'is_disputed={self._is_disputed}, '
-                f'payout={self._payout}'
-            ')'
-        )
     
     def __eq__(self, other: 'DisputeDeal') -> bool:
         if not isinstance(other, DisputeDeal):

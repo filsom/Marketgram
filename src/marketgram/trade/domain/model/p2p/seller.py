@@ -1,5 +1,5 @@
 from datetime import datetime
-from uuid import UUID, uuid4
+from uuid import UUID
 
 from marketgram.trade.domain.model.card import Card
 from marketgram.trade.domain.model.p2p.deadlines import Deadlines
@@ -39,6 +39,7 @@ class Seller:
         amount: Money, 
         description: Description,
         delivery: Delivery,
+        current_time: datetime,
         deadlines: Deadlines | None
     ) -> Card:
         if self._is_blocked:
@@ -53,7 +54,6 @@ class Seller:
             deadlines = self._agreement.default_deadlines()
 
         return Card(
-            uuid4(),
             self._user_id,
             amount,
             description,
@@ -61,10 +61,14 @@ class Seller:
             deadlines,
             limits.min_price,
             limits.min_discount,
-            datetime.now()
+            current_time
         )
 
-    def new_payout(self, amount: Money) -> Payout:
+    def new_payout(
+        self, 
+        amount: Money,
+        current_time: datetime
+    ) -> Payout:
         if self._is_blocked:
             raise DomainError(BALANCE_BLOCKED)
         
@@ -81,11 +85,10 @@ class Seller:
             raise DomainError(INSUFFICIENT_FUNDS)
         
         return Payout(
-            uuid4(),
             self._user_id,
             self._paycard.synonym,
             amount,
-            datetime.now(),
+            current_time
         )
         
     def change_paycard(self, paycard: Paycard) -> None:

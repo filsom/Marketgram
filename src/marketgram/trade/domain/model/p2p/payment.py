@@ -16,17 +16,19 @@ from marketgram.trade.domain.model.rule.agreement.types import (
 class Payment:
     def __init__(
         self,
-        payment_id: UUID,
         user_id: UUID,
         amount: Money,
         created_at: datetime,
+        payment_id: UUID = None,
+        is_processed: bool = False,
+        is_blocked: bool = False,
     ) -> None:
         self._payment_id = payment_id
         self._user_id = user_id
         self._amount = amount
         self._created_at = created_at
-        self._is_processed = False
-        self._is_blocked = False
+        self._is_processed = is_processed
+        self._is_blocked = is_blocked
         self._entries: list[Entry] = []
 
     def accept(self) -> None:

@@ -12,7 +12,7 @@ from marketgram.trade.domain.model.p2p.ship_deal import (
 )
 from marketgram.trade.domain.model.p2p.time_tags import TimeTags
 from marketgram.trade.domain.model.p2p.type_deal import TypeDeal
-from marketgram.trade.domain.model.p2p.user import QtyPurchased
+from marketgram.trade.domain.model.p2p.user import QuantityPurchased
 from marketgram.trade.domain.model.rule.agreement.money import Money
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.deals_table import (
     deals_table, 
@@ -32,7 +32,7 @@ def deals_registry_mapper(mapper: registry) -> None:
             '_buyer_id': deals_table.c.buyer_id,
             '_card_id': deals_table.c.card_id,
             '_qty_purchased': composite(
-                QtyPurchased,
+                QuantityPurchased,
                 deals_table.c.qty_purchased
             ),
             '_type_deal': deals_table.c.type,

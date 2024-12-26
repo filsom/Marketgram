@@ -6,7 +6,7 @@ from marketgram.trade.application.exceptions import ApplicationError
 from marketgram.trade.domain.model.cards_repository import CardsRepository
 from marketgram.trade.domain.model.p2p.deal_repository import DealsRepository
 from marketgram.trade.domain.model.p2p.members_repository import MembersRepository
-from marketgram.trade.domain.model.p2p.qty_purchased import QtyPurchased
+from marketgram.trade.domain.model.p2p.quantity_purchased import QuantityPurchased
 from marketgram.trade.domain.model.rule.agreement.money import Money
 
 
@@ -44,7 +44,7 @@ class CardBuyHandler:
                 self._id_provider.provided_id()
             )
         new_deal = buyer.make_deal(
-            QtyPurchased(command.qty),
+            QuantityPurchased(command.qty),
             card
         )
         return await self._deals_repository.add(new_deal)

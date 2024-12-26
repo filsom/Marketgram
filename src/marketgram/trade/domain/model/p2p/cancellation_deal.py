@@ -43,18 +43,6 @@ class CancellationDeal:
         )
         self._time_tags.closed(current_date)
         self._status = StatusDeal.CANCELLED
-        
-    def __repr__(self) -> str:
-        return (
-            f'CancellationDeal('
-                f'deal_id={self._deal_id}, '
-                f'buyer_id={self._buyer_id}, ' 
-                f'price={self._price}, ' 
-                f'time_tags={self._time_tags}, '
-                f'status={self._status}, '
-                f'entries={self._entries}'
-            ')'
-        )
     
     def __eq__(self, other: 'CancellationDeal') -> bool:
         if not isinstance(other, CancellationDeal):

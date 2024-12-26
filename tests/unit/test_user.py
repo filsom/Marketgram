@@ -10,7 +10,7 @@ from marketgram.identity.access.domain.model.user import User
 
 
 class TestUser:
-    def test_creating_user(self) -> None:
+    def test_new_user(self) -> None:
         # Arrange
         email = 'test@test.ru'
         password = 'unprotected'

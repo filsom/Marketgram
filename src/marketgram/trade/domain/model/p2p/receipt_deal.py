@@ -19,30 +19,17 @@ class ReceiptDeal:
         self._time_tags = time_tags
         self._deadlines = deadlines
         self._status = status
-        # Добавить Item (товарные позиции)
 
     def confirm_receipt(self, occurred_at: datetime) -> None:
         if self.receipt_deadline() < occurred_at:
             raise DomainError()
         
-        # Добавить логику для разблокировки товара
-
         self._time_tags.received(occurred_at)
         self._status = StatusDeal.CHECK
 
     def receipt_deadline(self) -> datetime:
         return (self._time_tags.shipped_at 
                 + self._deadlines.total_receipt_hours)
-
-    def __repr__(self) -> str:
-        return (
-            f'ReceiptDeal('
-                f'deal_id={self._deal_id}, '
-                f'time_tags={self._time_tags}, '
-                f'deadlines={self._deadlines}, '
-                f'status={self._status}'
-            ')'
-        )
 
     def __eq__(self, other: 'ReceiptDeal') -> bool:
         if not isinstance(other, ReceiptDeal):

@@ -22,7 +22,6 @@ class StorageType(StrEnum):
 class Card:
     def __init__(
         self,
-        card_id: UUID,
         owner_id: UUID,
         price: Money,
         description: Description,
@@ -31,6 +30,7 @@ class Card:
         min_price: Money,
         min_discount: Decimal,
         created_at: datetime,
+        card_id: UUID = None,
         dirty_price: Money | None = None,
         is_archived: bool = False,
         is_purchased: bool = False,

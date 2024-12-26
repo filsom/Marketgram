@@ -14,24 +14,23 @@ from marketgram.trade.domain.model.p2p.type_deal import TypeDeal
 from marketgram.trade.domain.model.rule.agreement.money import Money
 
 if TYPE_CHECKING:
-    from marketgram.trade.domain.model.p2p.user import QtyPurchased
-
+    from marketgram.trade.domain.model.p2p.user import QuantityPurchased
 
 
 class ShipDeal:
     def __init__(
         self,
-        deal_id: UUID,
         seller_id: UUID,
         buyer_id: UUID,
         card_id: UUID,
-        qty_purchased: QtyPurchased,
+        qty_purchased: QuantityPurchased,
         type_deal: TypeDeal,
         card_created_at: datetime,
         price: Money,
         time_tags: TimeTags,
         deadlines: Deadlines,
-        status: StatusDeal
+        status: StatusDeal,
+        deal_id: UUID = None
     ) -> None:
         self._deal_id = deal_id
         self._seller_id = seller_id
@@ -52,24 +51,6 @@ class ShipDeal:
     def delivery_deadline(self) -> datetime:
         return (self._time_tags.created_at
                 + self._deadlines.total_shipping_hours)
-
-    def __repr__(self) -> str:
-        return (
-            f'{self.__class__.__name__}('
-                f'deal_id={self._deal_id}, '
-                f'seller_id={self._seller_id}, ' 
-                f'buyer_id={self._buyer_id}, ' 
-                f'card_id={self._card_id}, ' 
-                f'qty_purchased={self._qty_purchased}, ' 
-                f'type_deal={self._type_deal}, ' 
-                f'price={self._price}, ' 
-                f'card_created_at={self._card_created_at}, ' 
-                f'time_tags={self._time_tags}, ' 
-                f'deadlines={self._deadlines}, ' 
-                f'status={self._status}, '
-                f'is_disputed={self._is_disputed}'
-            ')'
-        )
 
     def __eq__(self, other: 'ShipDeal') -> bool:
         if not isinstance(other, ShipDeal):
