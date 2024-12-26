@@ -8,6 +8,7 @@ from marketgram.identity.access.application.change_password_command import (
 )
 from marketgram.identity.access.port.adapter.web_fastapi.routing import router
 
+
 class ChangePasswordRequest(BaseModel):
     old_password: str
     new_password: str
