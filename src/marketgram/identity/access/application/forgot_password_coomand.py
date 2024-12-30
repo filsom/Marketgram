@@ -27,16 +27,15 @@ class ForgotPasswordHandler:
         self._email_sender = email_sender
     
     async def handle(self, command: ForgotPasswordCommand) -> None:
-        exists_user = await self._user_repository \
-            .active_with_email(command.email)
+        user = await self._user_repository.with_email(command.email)
         
-        if exists_user is not None:
+        if user is not None and user.is_active:
             jwt_token = self._jwt_manager.encode({
-                'sub': exists_user.to_string_id(),
+                'sub': user.to_string_id(),
                 'aud': 'user:password'
             })
             message = self._message_maker.make(
                 jwt_token, 
-                exists_user.email
+                user.email
             )
             return await self._email_sender.send_message(message)

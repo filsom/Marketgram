@@ -31,7 +31,8 @@ class UserRegistrationHandler:
     async def handle(self, command: UserRegistrationCommand) -> None:
         user_id = await self._user_creation_service.create(
             command.email,
-            command.password
+            command.password,
+            command.same_password
         )
         jwt_token = self._jwt_manager.encode({
             'sub': user_id,

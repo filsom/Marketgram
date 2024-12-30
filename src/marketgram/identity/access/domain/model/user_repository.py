@@ -16,6 +16,3 @@ class UserRepository(Protocol):
     
     async def add(self, user: User) -> None:
         raise NotImplementedError
-    
-    async def active_with_email(self, email: str) -> Optional[User]:
-        raise NotImplementedError
