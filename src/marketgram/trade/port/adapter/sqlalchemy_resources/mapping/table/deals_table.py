@@ -22,8 +22,7 @@ deals_table = Table(
     'deals',
     sqlalchemy_metadata,
     Column('deal_id', BIGSERIAL, primary_key=True, nullable=False, autoincrement=True),
-    # ForeignKey('cards.card_id')
-    Column('card_id', BIGSERIAL, nullable=False),
+    Column('card_id', BIGSERIAL, ForeignKey('cards.card_id'), nullable=False),
     Column('qty_purchased', Integer, nullable=False),
     Column('type', String, nullable=False),
     Column('card_created_at', DateTime, nullable=False),
