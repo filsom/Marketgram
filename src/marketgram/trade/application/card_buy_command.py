@@ -12,7 +12,7 @@ from marketgram.trade.domain.model.rule.agreement.money import Money
 
 @dataclass
 class CardBuyCommand:
-    card_id: UUID
+    card_id: int
     qty: int
     price: str
 

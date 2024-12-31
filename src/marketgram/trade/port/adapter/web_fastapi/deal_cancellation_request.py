@@ -1,6 +1,4 @@
-from uuid import UUID
 from fastapi import Request, Response
-from pydantic import BaseModel
 
 from marketgram.common.port.adapter.container import RequestContainer
 from marketgram.trade.application.deal_cancellation_command import (
@@ -10,13 +8,9 @@ from marketgram.trade.application.deal_cancellation_command import (
 from marketgram.trade.port.adapter.web_fastapi.routing import router
 
 
-class DealCancellationRequest(BaseModel):
-    deal_id: UUID
-
-
 @router.post('/cancellation_deal')
 async def deal_cancellation_controller(
-    field: DealCancellationRequest, 
+    deal_id: int, 
     req: Request, 
     res: Response
 ) -> str:
@@ -25,6 +19,6 @@ async def deal_cancellation_controller(
             DealCancellationHandler
         )
         await handler.handle(
-            DealCancellationCommand(field.deal_id)
+            DealCancellationCommand(deal_id)
         )
         return 'OK'

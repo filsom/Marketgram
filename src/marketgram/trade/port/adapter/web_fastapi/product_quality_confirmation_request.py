@@ -1,7 +1,4 @@
-from uuid import UUID
-
 from fastapi import Request, Response
-from pydantic import BaseModel
 
 from marketgram.common.port.adapter.container import RequestContainer
 from marketgram.trade.application.product_quality_confirmation_command import (
@@ -11,13 +8,9 @@ from marketgram.trade.application.product_quality_confirmation_command import (
 from marketgram.trade.port.adapter.web_fastapi.routing import router
 
 
-class ProductQualityConfirmationRequest(BaseModel):
-    deal_id: UUID
-
-
 @router.post('/product_quality')
 async def product_quality_confirmation_controller(
-    field: ProductQualityConfirmationRequest, 
+    deal_id: int, 
     req: Request, 
     res: Response
 ) -> str:
@@ -26,6 +19,6 @@ async def product_quality_confirmation_controller(
             ProductQualityConfirmationHandler
         )
         await handler.handle(
-            ProductQualityConfirmationCommand(field.deal_id)
+            ProductQualityConfirmationCommand(deal_id)
         )
         return 'OK'

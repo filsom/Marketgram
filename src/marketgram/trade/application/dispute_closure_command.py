@@ -15,7 +15,7 @@ class Solution(StrEnum):
 
 @dataclass
 class DisputeClosureCommand:
-    deal_id: UUID
+    deal_id: int
     solution: Solution
 
 

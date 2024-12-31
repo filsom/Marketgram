@@ -1,4 +1,3 @@
-from uuid import UUID
 from fastapi import Request, Response
 from pydantic import BaseModel
 
@@ -11,7 +10,7 @@ from marketgram.trade.port.adapter.web_fastapi.routing import router
 
 
 class DiscountSettingRequest(BaseModel):
-    card_id: UUID
+    card_id: int
     amount: str
 
 

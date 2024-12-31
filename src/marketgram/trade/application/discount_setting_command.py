@@ -9,7 +9,7 @@ from marketgram.trade.domain.model.rule.agreement.money import Money
 
 @dataclass
 class DiscountSettingCommand:
-    card_id: UUID
+    card_id: int
     amount: str
 
 

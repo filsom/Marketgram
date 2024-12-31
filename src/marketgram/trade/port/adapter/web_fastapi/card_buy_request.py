@@ -10,8 +10,8 @@ from marketgram.trade.port.adapter.web_fastapi.routing import router
 
 
 class CardBuyRequest(BaseModel):
-    card_id: str
-    qty: str
+    card_id: int
+    qty: int
     price: str
 
 

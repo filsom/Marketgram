@@ -9,7 +9,7 @@ from marketgram.trade.domain.model.p2p.deal_repository import DealsRepository
 
 @dataclass
 class OpenDisputeCommand:
-    deal_id: UUID
+    deal_id: int
 
 
 class OpenDisputeHandler:

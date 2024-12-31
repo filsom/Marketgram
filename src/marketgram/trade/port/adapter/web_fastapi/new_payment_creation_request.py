@@ -1,5 +1,4 @@
 from fastapi import Request, Response
-from pydantic import BaseModel
 
 from marketgram.common.port.adapter.container import RequestContainer
 from marketgram.trade.application.new_payment_creation_command import (
@@ -9,13 +8,9 @@ from marketgram.trade.application.new_payment_creation_command import (
 from marketgram.trade.port.adapter.web_fastapi.routing import router
 
 
-class NewPaymentCreationRequest(BaseModel):
-    amount: str
-
-
 @router.post('/new_payment')
 async def new_payment_creation_controller(
-    field: NewPaymentCreationRequest, 
+    amount: str, 
     req: Request, 
     res: Response
 ) -> str:
@@ -24,6 +19,6 @@ async def new_payment_creation_controller(
             NewPaymentCreationHandler
         )
         await handler.handle(
-            NewPaymentCreationCommand(field.amount)
+            NewPaymentCreationCommand(amount)
         )
         return 'OK'
