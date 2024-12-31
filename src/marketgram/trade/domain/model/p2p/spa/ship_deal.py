@@ -75,6 +75,6 @@ class ShipProvidingLinkDeal(ShipDeal):
             raise DomainError()
                 
         self._time_tags = self._time_tags \
-            .shipped(occurred_at) \
+            .shipped(occurred_at)
             
         self._status = StatusDeal.AWAITING
