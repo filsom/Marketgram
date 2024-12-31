@@ -1,7 +1,6 @@
 from __future__ import annotations
 from datetime import datetime
 from typing import TYPE_CHECKING
-from uuid import UUID
 
 from marketgram.trade.domain.model.trade_item.exceptions import (
     NO_RULE, 
@@ -23,8 +22,8 @@ if TYPE_CHECKING:
 
 
 class ServiceAgreement:
-    def __init__(self, agreement_id: UUID):
-        self._agreement_id = agreement_id
+    def __init__(self, default_deadlines: Deadlines):
+        self._deadlines = default_deadlines
         self._new_limits: list[Limits] = []
         self._past_limits = TemporalCollection()
         self._posting_rules: dict[
@@ -43,7 +42,7 @@ class ServiceAgreement:
         return self._past_limits.get(current_date.date())
 
     def default_deadlines(self) -> Deadlines:
-        pass
+        return self._deadlines
 
     def add_rule(self, event_type: EventType, rule: PostingRule) -> None:
         self._posting_rules[event_type] = rule
