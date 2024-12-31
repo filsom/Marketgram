@@ -15,7 +15,7 @@ class UserLoginField(BaseModel):
 
 
 @router.post('/login')
-async def user_login(
+async def user_login_controller(
     field: UserLoginField, 
     req: Request, 
     res: Response

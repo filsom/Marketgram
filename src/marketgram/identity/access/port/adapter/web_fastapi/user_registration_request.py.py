@@ -16,7 +16,7 @@ class UserRegistrationField(BaseModel):
 
 
 @router.post('/registration')
-async def user_registration(
+async def user_registration_controller(
     field: UserRegistrationField, 
     req: Request
 ) -> str:

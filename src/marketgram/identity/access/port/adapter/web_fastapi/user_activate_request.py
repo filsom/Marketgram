@@ -5,10 +5,11 @@ from marketgram.identity.access.application.user_activate_command import (
     UserAcivateCommand, 
     UserActivateHandler
 )
+from marketgram.identity.access.port.adapter.web_fastapi.routing import router
 
 
 @router.get('/activate/{token}')
-async def activate(token: str, req: Request) -> str:
+async def user_activate_controller(token: str, req: Request) -> str:
     async with Container(req) as container:
         handler = await container.get(UserActivateHandler)
         await handler.handle(UserAcivateCommand(token))

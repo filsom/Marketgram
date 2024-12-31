@@ -15,7 +15,7 @@ class NewPasswordField(BaseModel):
 
 
 @router.put('/new_pwd/{token}')
-async def new_password(
+async def new_password_controller(
     token: str,
     field: NewPasswordField,
     req: Request,

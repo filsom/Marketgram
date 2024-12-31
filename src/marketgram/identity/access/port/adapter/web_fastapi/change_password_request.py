@@ -16,7 +16,7 @@ class ChangePasswordRequest(BaseModel):
 
 
 @router.post('/change_pwd')
-async def change_password(
+async def change_password_controller(
     field: ChangePasswordRequest,
     req: Request,
     res: Response,

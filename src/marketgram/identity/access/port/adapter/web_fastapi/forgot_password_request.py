@@ -9,7 +9,7 @@ from marketgram.identity.access.port.adapter.web_fastapi.routing import router
 
 
 @router.post('/forgot_pwd')
-async def forgot_password(
+async def forgot_password_controller(
     email: str, 
     req: Request, 
     res: Response
