@@ -31,10 +31,7 @@ def deals_registry_mapper(mapper: registry) -> None:
             '_seller_id': deals_table.c.seller_id,
             '_buyer_id': deals_table.c.buyer_id,
             '_card_id': deals_table.c.card_id,
-            '_qty_purchased': composite(
-                QuantityPurchased,
-                deals_table.c.qty_purchased
-            ),
+            '_qty_purchased': deals_table.c.qty_purchased,
             '_type_deal': deals_table.c.type,
             '_price': composite(Money, deals_table.c.price),
             '_card_created_at': deals_table.c.card_created_at,

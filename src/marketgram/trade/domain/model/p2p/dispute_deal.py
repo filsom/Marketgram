@@ -1,6 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 
+from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.trade_item.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
@@ -16,8 +17,7 @@ class DisputeDeal:
     def __init__(
         self,
         deal_id: int,
-        buyer_id: UUID,
-        seller_id: UUID,
+        members: Members,
         price: Money,
         is_disputed: bool,
         time_tags: TimeTags,
@@ -27,8 +27,7 @@ class DisputeDeal:
         payout: Payout | None
     ) -> None:
         self._deal_id = deal_id
-        self._buyer_id = buyer_id
-        self._seller_id = seller_id
+        self._members = members
         self._price = price
         self._time_tags = time_tags
         self._deadlines = deadlines

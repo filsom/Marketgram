@@ -1,9 +1,9 @@
 from datetime import datetime
 from uuid import UUID, uuid4
 
+from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.trade_item.exceptions import (
     BALANCE_BLOCKED,
-    BUY_FROM_YOURSELF, 
     INSUFFICIENT_FUNDS,
     MINIMUM_DEPOSIT, 
     DomainError
@@ -44,9 +44,6 @@ class User:
         card: SellCard,
         current_time: datetime
     ) -> ShipDeal:
-        if self._user_id == card.owner_id:
-            raise DomainError(BUY_FROM_YOURSELF)
-
         if self._is_blocked:
             raise DomainError(BALANCE_BLOCKED)
 
@@ -67,8 +64,10 @@ class User:
             )
         )
         return ShipDeal(
-            card.owner_id,
-            self._user_id,
+            Members(
+                card.owner_id,
+                self._user_id
+            ),
             card.card_id,
             card.type_deal,
             card.created_in,

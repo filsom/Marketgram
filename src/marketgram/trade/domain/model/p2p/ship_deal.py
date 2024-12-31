@@ -1,8 +1,7 @@
-from __future__ import annotations
 from datetime import datetime
-from typing import TYPE_CHECKING
 from uuid import UUID
 
+from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.trade_item.exceptions import (
     DomainError,
     InvalidOperationError,
@@ -13,17 +12,13 @@ from marketgram.trade.domain.model.p2p.time_tags import TimeTags
 from marketgram.trade.domain.model.p2p.type_deal import TypeDeal
 from marketgram.trade.domain.model.rule.agreement.money import Money
 
-if TYPE_CHECKING:
-    from marketgram.trade.domain.model.p2p.user import QuantityPurchased
-
 
 class ShipDeal:
     def __init__(
         self,
-        seller_id: UUID,
-        buyer_id: UUID,
+        members: Members,
         card_id: int,
-        qty_purchased: QuantityPurchased,
+        qty_purchased: int,
         type_deal: TypeDeal,
         card_created_at: datetime,
         price: Money,
@@ -33,8 +28,7 @@ class ShipDeal:
         deal_id: int = None
     ) -> None:
         self._deal_id = deal_id
-        self._seller_id = seller_id
-        self._buyer_id = buyer_id
+        self._members = members
         self._card_id = card_id
         self._qty_purchased = qty_purchased
         self._type_deal = type_deal
