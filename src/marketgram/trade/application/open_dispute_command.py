@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import UTC, datetime
 from uuid import UUID
 
 from marketgram.common.application.id_provider import IdProvider
@@ -10,7 +10,6 @@ from marketgram.trade.domain.model.p2p.deal_repository import DealsRepository
 @dataclass
 class OpenDisputeCommand:
     deal_id: UUID
-    occurred_at: datetime
 
 
 class OpenDisputeHandler:
@@ -31,4 +30,4 @@ class OpenDisputeHandler:
         if deal is None:
             raise ApplicationError()
         
-        return deal.open_dispute(command.occurred_at)
+        return deal.open_dispute(datetime.now(UTC))

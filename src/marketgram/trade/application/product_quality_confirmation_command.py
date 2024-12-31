@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import UTC, datetime
 from uuid import UUID
 
 from marketgram.common.application.id_provider import IdProvider
@@ -10,7 +10,6 @@ from marketgram.trade.domain.model.p2p.deal_repository import DealsRepository
 @dataclass
 class ProductQualityConfirmationCommand: 
     deal_id: UUID
-    occurred_at: datetime
 
 
 class ProductQualityConfirmationHandler:
@@ -31,4 +30,4 @@ class ProductQualityConfirmationHandler:
         if deal is None:
             raise ApplicationError()
         
-        return deal.confirm_quality(command.occurred_at)
+        return deal.confirm_quality(datetime.now(UTC))

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import UTC, datetime
 
 from marketgram.common.application.id_provider import IdProvider
 from marketgram.trade.application.exceptions import ApplicationError
@@ -35,6 +36,8 @@ class PayoutCreationHandler:
             .seller_with_balance_and_id(
                 self._id_provider.provided_id()
             )
-        new_payout = seller.new_payout(Money(command.amount))
-
+        new_payout = seller.new_payout(
+            Money(command.amount),
+            datetime.now(UTC)
+        )
         return await self._operations_repository.add(new_payout)

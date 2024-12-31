@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from uuid import UUID
 
 from marketgram.common.application.id_provider import IdProvider
@@ -45,6 +46,7 @@ class CardBuyHandler:
             )
         new_deal = buyer.make_deal(
             QuantityPurchased(command.qty),
-            card
+            card,
+            datetime.now(UTC)
         )
         return await self._deals_repository.add(new_deal)

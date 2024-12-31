@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from marketgram.common.application.id_provider import IdProvider
 from marketgram.trade.domain.model.trade_item.cards_repository import CardsRepository
 from marketgram.trade.domain.model.trade_item.description import AccountFormat, Description, Region
@@ -53,6 +54,7 @@ class CardCreateHandler:
                 command.spam_block
             ),
             delivery,
+            datetime.now(UTC),
             delivery.calculate_deadlines(
                 command.shipping_hours,
                 command.receipt_hours,

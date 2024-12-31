@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import UTC, datetime
 
 from marketgram.common.application.acquiring_manager import AcquiringManager
 from marketgram.common.application.id_provider import IdProvider
@@ -29,8 +30,10 @@ class NewPaymentCreationHandler:
         user = await self._members_repository.user_with_id(
             self._id_provider.provided_id()
         )
-        new_payment = user.new_payment(Money(command.amount))
-        
+        new_payment = user.new_payment(
+            Money(command.amount),
+            datetime.now(UTC)
+        )
         await self._operations_repository.add(new_payment)
 
         return self._acquiring_manager.take_payment(new_payment)

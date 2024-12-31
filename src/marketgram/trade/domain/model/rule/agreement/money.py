@@ -39,8 +39,8 @@ class Money:
     def __abs__(self) -> Money:
         return Money(abs(self.number))
 
-    def __mul__(self, value: int | float | Decimal) -> Money:
-        if not isinstance(value, (int, float, Decimal)):
+    def __mul__(self, value: int | Decimal) -> Money:
+        if not isinstance(value, (int, Decimal)):
             raise TypeError
 
         if value == 0:
