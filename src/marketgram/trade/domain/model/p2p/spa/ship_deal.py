@@ -1,5 +1,4 @@
 from datetime import datetime
-from uuid import UUID
 
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.trade_item.exceptions import (
