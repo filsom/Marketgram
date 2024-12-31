@@ -46,13 +46,17 @@ class ConfirmationDeal:
     def check_deadline(self) -> datetime:
         return (self._time_tags.received_at 
                 + self._deadlines.total_check_hours)
-    
-    def transferred_agreement(self) -> ServiceAgreement:
-        return self._agreement
 
     def accept_agreement(self, agreement: ServiceAgreement) -> None:
         self._agreement = agreement
+
+    def add_entry(self, entry: Entry) -> None:
+        self._entries.append(entry)
     
+    @property
+    def agreement(self) -> ServiceAgreement:
+        return self._agreement
+
     def __eq__(self, other: 'ConfirmationDeal') -> bool:
         if not isinstance(other, ConfirmationDeal):
             return False

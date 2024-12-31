@@ -1,20 +1,27 @@
 from datetime import datetime
 from uuid import UUID
 
-from marketgram.trade.domain.model.p2p.spa.receipt_deal import ReceiptDeal
+from marketgram.trade.domain.model.p2p.spa.confirmation_deal import (
+    ConfirmationDeal
+)
 from marketgram.trade.domain.model.rule.agreement.limits import Limits
-from marketgram.trade.domain.model.rule.agreement.posting_rule import PostingRule
+from marketgram.trade.domain.model.rule.agreement.posting_rule import (
+    PostingRule
+)
 from marketgram.trade.domain.model.rule.agreement.types import (
     AccountType, 
     EventType, 
     Operation
 )
-from marketgram.trade.domain.model.rule.agreement.entry import Entry, EntryStatus
+from marketgram.trade.domain.model.rule.agreement.entry import (
+    Entry, 
+    EntryStatus
+)
 from marketgram.trade.domain.model.rule.agreement.money import Money
     
 
 class DealPostingRule(PostingRule):
-    def make_entry(self, deal: ReceiptDeal, amount: Money) -> None:
+    def make_entry(self, deal: ConfirmationDeal, amount: Money) -> None:
         entry = Entry(
             deal._seller_id,
             amount,
@@ -25,7 +32,7 @@ class DealPostingRule(PostingRule):
         )
         deal.add_entry(entry)
     
-    def process(self, deal: ReceiptDeal, limits: Limits) -> None:
+    def process(self, deal: ConfirmationDeal, limits: Limits) -> None:
         self.make_entry(deal, self.calculate_amount(
             deal._price, limits
         ))
@@ -35,9 +42,9 @@ class DealPostingRule(PostingRule):
     
 
 class PaymentFormula(DealPostingRule):
-    def process(self, deal: ReceiptDeal, limits: Limits) -> None:
+    def process(self, deal: ConfirmationDeal, limits: Limits) -> None:
         super().process(deal, limits)
-        secondary_rule = deal.transferred_agreement().find_deal_rule(
+        secondary_rule = deal.agreement.find_deal_rule(
             EventType.TAX_PAYMENT
         )
         secondary_rule.process(deal, limits)
@@ -61,7 +68,7 @@ class PaymentTaxFormula(DealPostingRule):
         )
         self._superuser_id = superuser_id
 
-    def make_entry(self, deal: ReceiptDeal, amount: Money) -> None:
+    def make_entry(self, deal: ConfirmationDeal, amount: Money) -> None:
         entry = Entry(
             self._superuser_id,
             amount,
