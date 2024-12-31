@@ -34,7 +34,7 @@ class SQLAlchemyDealsRepository:
     async def unshipped_with_id(
         self, 
         seller_id: UUID,
-        deal_id: UUID
+        deal_id: int
     ) -> ShipDeal | None:
         ship_deal = with_polymorphic(ShipDeal, '*')
         stmt = (
@@ -52,7 +52,7 @@ class SQLAlchemyDealsRepository:
     async def unreceived_with_id(
         self,
         buyer_id: UUID,
-        deal_id: UUID
+        deal_id: int
     ) -> ReceiptDeal | None:
         stmt = (
             select(ReceiptDeal)
@@ -69,7 +69,7 @@ class SQLAlchemyDealsRepository:
     async def unconfirmed_with_id(
         self,
         buyer_id: UUID,
-        deal_id: UUID
+        deal_id: int
     ) -> ConfirmationDeal | None:
         stmt = (
             select(ConfirmationDeal)
@@ -86,7 +86,7 @@ class SQLAlchemyDealsRepository:
     async def unclosed_with_id(
         self,
         seller_id: UUID,
-        deal_id: UUID
+        deal_id: int
     ) -> CancellationDeal | None:
         stmt = (
             select(CancellationDeal)
@@ -106,7 +106,7 @@ class SQLAlchemyDealsRepository:
     async def not_disputed_with_id(
         self,
         buyer_id: UUID,
-        deal_id: UUID,
+        deal_id: int,
     ) -> DisputeDeal | None:
         stmt = (
             select(DisputeDeal)
@@ -135,7 +135,7 @@ class SQLAlchemyDealsRepository:
 
     async def disputed_with_id(
         self,
-        deal_id: UUID,
+        deal_id: int,
     ) -> DisputeDeal | None:
         stmt = (
             select(DisputeDeal)

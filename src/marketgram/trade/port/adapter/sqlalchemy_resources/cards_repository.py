@@ -20,7 +20,7 @@ class SQLAlchemyCardsRepository:
     async def for_sale_with_price_and_id(
         self,
         price: Money,
-        card_id: UUID
+        card_id: int
     ) -> SellCard | None:
         stmt = (
             select(SellCard)
@@ -37,7 +37,7 @@ class SQLAlchemyCardsRepository:
     async def for_edit_with_owner_and_card_id(
         self,
         owner_id: UUID,
-        card_id: UUID
+        card_id: int
     ) -> Card | None:
         stmt = (
             select(Card)
