@@ -32,7 +32,7 @@ class CardCreateRequest(BaseModel):
 
 
 @router.post('/card_create')
-async def card_creation(
+async def card_create_controller(
     field: CardCreateRequest, 
     req: Request, 
     res: Response
@@ -51,7 +51,9 @@ async def card_creation(
             field.receipt_hours,
             field.check_hours
         )
-        handler = await container.get(CardCreateHandler)
+        handler = await container.get(
+            CardCreateHandler
+        )
         await handler.handle(command)
 
         return 'OK'

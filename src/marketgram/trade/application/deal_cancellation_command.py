@@ -12,7 +12,7 @@ class DealCancellationCommand:
     deal_id: UUID
 
 
-class ShipConfirmationHandler:
+class DealCancellationHandler:
     def __init__(
         self,
         id_provider: IdProvider,
