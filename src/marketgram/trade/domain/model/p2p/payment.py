@@ -3,7 +3,7 @@ from uuid import UUID
 
 from marketgram.trade.domain.model.rule.agreement.entry import (
     EntryStatus, 
-    Entry
+    PostingEntry
 )
 from marketgram.trade.domain.model.trade_item.exceptions import DomainError
 from marketgram.trade.domain.model.rule.agreement.money import Money
@@ -29,13 +29,13 @@ class Payment:
         self._created_at = created_at
         self._is_processed = is_processed
         self._is_blocked = is_blocked
-        self._entries: list[Entry] = []
+        self._entries: list[PostingEntry] = []
 
     def accept(self) -> None:
         if self._is_blocked or self._is_processed:
             raise DomainError()
             
-        new_entry = Entry(
+        new_entry = PostingEntry(
             self._user_id,
             self._amount,
             self._created_at,

@@ -3,10 +3,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from decimal import ROUND_HALF_EVEN, ROUND_HALF_UP, Decimal
 from enum import StrEnum, auto
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from marketgram.trade.domain.model.p2p.user import QuantityPurchased
 
 
 class Currency(StrEnum):
@@ -18,7 +14,7 @@ class Currency(StrEnum):
 
 @dataclass(frozen=True, order=True)
 class Money:
-    number: str | int | Decimal
+    number: str
     currency: Currency = field(default=Currency.RUB)
 
     def __post_init__(self) -> None:

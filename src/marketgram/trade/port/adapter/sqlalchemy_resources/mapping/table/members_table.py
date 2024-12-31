@@ -9,8 +9,8 @@ members_table = Table(
     'members',
     sqlalchemy_metadata,
     Column('user_id', UUID, primary_key=True, nullable=False),
-    Column('synonym', String, nullable=False),
-    Column('first6', String, nullable=False),
-    Column('last4', String, nullable=False),
+    Column('synonym', String, nullable=True),
+    Column('first6', String, nullable=True),
+    Column('last4', String, nullable=True),
     Column('is_blocked', Boolean, default=False, nullable=False),
 )

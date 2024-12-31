@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import and_, select
 from sqlalchemy.orm import with_polymorphic
 
+from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.p2p.spa.cancellation_deal import CancellationDeal
 from marketgram.trade.domain.model.p2p.spa.confirmation_deal import ConfirmationDeal
 from marketgram.trade.domain.model.p2p.spa.dispute_deal import DisputeDeal
@@ -38,16 +39,15 @@ class SQLAlchemyDealsRepository:
         ship_deal = with_polymorphic(ShipDeal, '*')
         stmt = (
             select(ship_deal)
+            .join(Members, Members.seller_id == seller_id)
             .where(and_(
-                ship_deal._seller_id == seller_id,
                 ship_deal._deal_id == deal_id,
                 ship_deal._status == StatusDeal.NOT_SHIPPED,
             ))
-            .with_for_update()
         )
         result = await self._async_session.execute(stmt)
         
-        return result.scalar_one_or_none()
+        return result.scalar()
     
     async def unreceived_with_id(
         self,
@@ -56,16 +56,15 @@ class SQLAlchemyDealsRepository:
     ) -> ReceiptDeal | None:
         stmt = (
             select(ReceiptDeal)
+            .join(Members, Members.buyer_id == buyer_id)
             .where(and_(
-                deals_table.c.buyer_id == buyer_id,
                 deals_table.c.deal_id == deal_id,
                 deals_table.c.status == StatusDeal.AWAITING,
             ))
-            .with_for_update()
         )
         result = await self._async_session.execute(stmt)
         
-        return result.scalar_one_or_none()
+        return result.scalar()
     
     async def unconfirmed_with_id(
         self,
@@ -74,16 +73,15 @@ class SQLAlchemyDealsRepository:
     ) -> ConfirmationDeal | None:
         stmt = (
             select(ConfirmationDeal)
+            .join(Members, Members.buyer_id == buyer_id)
             .where(and_(
-                deals_table.c.buyer_id == buyer_id,
                 deals_table.c.deal_id == deal_id,
                 deals_table.c.status == StatusDeal.CHECK,
             ))
-            .with_for_update()
         )
         result = await self._async_session.execute(stmt)
         
-        return result.scalar_one_or_none()
+        return result.scalar()
     
     async def unclosed_with_id(
         self,
@@ -92,15 +90,14 @@ class SQLAlchemyDealsRepository:
     ) -> CancellationDeal | None:
         stmt = (
             select(CancellationDeal)
+            .join(Members, Members.seller_id == seller_id)
             .where(and_(
-                deals_table.c.seller_id == seller_id,
                 deals_table.c.deal_id == deal_id,
                 deals_table.c.status.not_in([
                     StatusDeal.CANCELLED, 
                     StatusDeal.CLOSED
                 ])
             ))
-            .with_for_update()
         )
         result = await self._async_session.execute(stmt)
 
@@ -113,16 +110,15 @@ class SQLAlchemyDealsRepository:
     ) -> DisputeDeal | None:
         stmt = (
             select(DisputeDeal)
+            .join(Members, Members.buyer_id == buyer_id)
             .where(and_(
                 deals_table.c.deal_id == deal_id,
-                deals_table.c.buyer_id == buyer_id,
                 deals_table.c.status.not_in([
                     StatusDeal.DISPUTE,
                     StatusDeal.CLOSED,
                     StatusDeal.CANCELLED
                 ]),
             ))
-            .with_for_update()
         )
         result = await self._async_session.execute(stmt)
 
@@ -131,7 +127,7 @@ class SQLAlchemyDealsRepository:
             return None
         
         payout = await self._operations_mapper \
-            .payout_with_seller_id(deal._seller_id)
+            .payout_with_seller_id(deal.seller_id)
         
         deal._add_payout(payout)
 
@@ -143,11 +139,11 @@ class SQLAlchemyDealsRepository:
     ) -> DisputeDeal | None:
         stmt = (
             select(DisputeDeal)
+            .join(Members)
             .where(and_(
                 deals_table.c.deal_id == deal_id,
                 deals_table.c.status == StatusDeal.DISPUTE,
             ))
-            .with_for_update()
         )
         result = await self._async_session.execute(stmt)
 
@@ -156,7 +152,7 @@ class SQLAlchemyDealsRepository:
             return None
         
         payout = await self._operations_mapper \
-            .payout_with_seller_id(deal._seller_id)
+            .payout_with_seller_id(deal.seller_id)
         
         deal._add_payout(payout)
 

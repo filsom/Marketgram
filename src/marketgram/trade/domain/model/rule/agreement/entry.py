@@ -6,7 +6,7 @@ from marketgram.trade.domain.model.rule.agreement.money import Money
 from marketgram.trade.domain.model.rule.agreement.types import AccountType, Operation
 
 
-class Entry:
+class PostingEntry:
     def __init__(
         self,
         user_id: UUID,

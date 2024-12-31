@@ -1,4 +1,3 @@
-from uuid import uuid4
 from sqlalchemy import (
     DECIMAL, 
     UUID,
@@ -11,7 +10,9 @@ from sqlalchemy import (
     ForeignKey,
 )
 
-from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.types import BIGSERIAL
+from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.types import (
+    BIGSERIAL
+)
 from marketgram.trade.port.adapter.sqlalchemy_resources.metadata import (
     sqlalchemy_metadata
 )
@@ -21,17 +22,16 @@ deals_table = Table(
     'deals',
     sqlalchemy_metadata,
     Column('deal_id', BIGSERIAL, primary_key=True, nullable=False, autoincrement=True),
-    Column('seller_id', UUID, ForeignKey('members.user_id'), nullable=False),
-    Column('buyer_id', UUID, ForeignKey('members.user_id'), nullable=False),
-    Column('card_id', UUID, nullable=False),
+    # ForeignKey('cards.card_id')
+    Column('card_id', BIGSERIAL, nullable=False),
     Column('qty_purchased', Integer, nullable=False),
     Column('type', String, nullable=False),
     Column('card_created_at', DateTime, nullable=False),
     Column('price', DECIMAL(20, 2), nullable=False),
-    Column('created_at', DateTime, nullable=False),
-    Column('shipped_at', DateTime, nullable=True),
-    Column('received_at', DateTime, nullable=True),
-    Column('closed_at', DateTime, nullable=True),
+    Column('created_at', DateTime(timezone=True), nullable=False),
+    Column('shipped_at', DateTime(timezone=True), nullable=True),
+    Column('received_at', DateTime(timezone=True), nullable=True),
+    Column('closed_at', DateTime(timezone=True), nullable=True),
     Column('shipping_hours', Integer, nullable=True),
     Column('receipt_hours', Integer, nullable=True),
     Column('check_hours', Integer, nullable=True),
@@ -40,9 +40,18 @@ deals_table = Table(
 )
 
 
+deals_members_table = Table(
+    'deals_members',
+    sqlalchemy_metadata,
+    Column('deal_id', BIGSERIAL, ForeignKey('deals.deal_id'), primary_key=True, nullable=False),
+    Column('seller_id', UUID, ForeignKey('members.user_id'), primary_key=True, nullable=False),
+    Column('buyer_id', UUID, ForeignKey('members.user_id'), primary_key=True, nullable=False),
+)
+
+
 deals_entries_table = Table(
     'deals_entries',
     sqlalchemy_metadata,
-    Column('deal_id', UUID, ForeignKey('deals.deal_id'), nullable=False),
-    Column('entry_id', UUID, ForeignKey('entries.entry_id'), nullable=False),
+    Column('deal_id', BIGSERIAL, ForeignKey('deals.deal_id'), primary_key=True, nullable=False),
+    Column('entry_id', UUID, ForeignKey('entries.entry_id'), primary_key=True, nullable=False),
 )

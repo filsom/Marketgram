@@ -4,7 +4,7 @@ from marketgram.trade.domain.model.trade_item.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.spa.status_deal import StatusDeal
 from marketgram.trade.domain.model.p2p.time_tags import TimeTags
-from marketgram.trade.domain.model.rule.agreement.entry import Entry
+from marketgram.trade.domain.model.rule.agreement.entry import PostingEntry
 from marketgram.trade.domain.model.rule.agreement.service_agreement import (
     ServiceAgreement
 )
@@ -19,7 +19,7 @@ class ConfirmationDeal:
         time_tags: TimeTags,
         deadlines: Deadlines,
         status: StatusDeal,
-        entries: list[Entry]
+        entries: list[PostingEntry]
     ) -> None:
         self._deal_id = deal_id
         self._card_created_at = card_created_at
@@ -51,7 +51,7 @@ class ConfirmationDeal:
     def accept_agreement(self, agreement: ServiceAgreement) -> None:
         self._agreement = agreement
 
-    def add_entry(self, entry: Entry) -> None:
+    def add_entry(self, entry: PostingEntry) -> None:
         self._entries.append(entry)
     
     @property

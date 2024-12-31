@@ -6,7 +6,7 @@ from marketgram.trade.domain.model.trade_item.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.spa.status_deal import StatusDeal
 from marketgram.trade.domain.model.p2p.time_tags import TimeTags
-from marketgram.trade.domain.model.rule.agreement.entry import Entry
+from marketgram.trade.domain.model.rule.agreement.entry import PostingEntry
 from marketgram.trade.domain.model.rule.agreement.entry_status import EntryStatus
 from marketgram.trade.domain.model.rule.agreement.money import Money
 from marketgram.trade.domain.model.p2p.payout import Payout
@@ -22,7 +22,7 @@ class DisputeDeal:
         is_disputed: bool,
         time_tags: TimeTags,
         deadlines: Deadlines,
-        deal_entries: list[Entry],
+        deal_entries: list[PostingEntry],
         status: StatusDeal,
         payout: Payout | None
     ) -> None:
@@ -75,8 +75,8 @@ class DisputeDeal:
                 EntryStatus.CANCELLED
             )
         self._deal_entries.append(
-            Entry(
-                self._buyer_id,
+            PostingEntry(
+                self.buyer_id,
                 self._price,
                 datetime.now(),
                 AccountType.USER,
@@ -96,6 +96,14 @@ class DisputeDeal:
     def _edit_entries_statuses(self, status: EntryStatus) -> None:
         for entry in self._deal_entries:
             entry.update_status(status)
+
+    @property
+    def seller_id(self) -> UUID:
+        return self._members.seller_id
+    
+    @property
+    def buyer_id(self) -> UUID:
+        return self._members.buyer_id
     
     def __eq__(self, other: 'DisputeDeal') -> bool:
         if not isinstance(other, DisputeDeal):

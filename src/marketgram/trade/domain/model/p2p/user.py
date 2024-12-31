@@ -12,7 +12,7 @@ from marketgram.trade.domain.model.trade_item.sell_card import SellCard
 from marketgram.trade.domain.model.p2p.spa.ship_deal import ShipDeal
 from marketgram.trade.domain.model.rule.agreement.entry import (
     EntryStatus, 
-    Entry
+    PostingEntry
 )
 from marketgram.trade.domain.model.rule.agreement.money import Money
 from marketgram.trade.domain.model.p2p.payment import Payment
@@ -35,7 +35,7 @@ class User:
         self._user_id = user_id
         self._is_blocked = is_blocked
         self._balance = balance
-        self._entries: list[Entry] = []
+        self._entries: list[PostingEntry] = []
         self._agreement: ServiceAgreement = None
 
     def make_deal(
@@ -54,7 +54,7 @@ class User:
         card.buy(quantity)
 
         self._entries.append(
-            Entry(
+            PostingEntry(
                 self._user_id,
                 -card.price * quantity,
                 current_time,

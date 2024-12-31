@@ -3,7 +3,7 @@ from datetime import datetime
 from uuid import UUID
 
 from marketgram.trade.domain.model.rule.agreement.entry import (
-    Entry
+    PostingEntry
 )
 from marketgram.trade.domain.model.trade_item.exceptions import DomainError
 from marketgram.trade.domain.model.rule.agreement.money import Money
@@ -37,7 +37,7 @@ class Payout:
         self._is_processed = is_processed
         self._is_blocked = is_blocked
         self._agreement: ServiceAgreement = None
-        self._entries: list[Entry] = []
+        self._entries: list[PostingEntry] = []
 
     def undo(self) -> None:
         if self._is_processed:
@@ -83,7 +83,7 @@ class Payout:
         self._entries.append(entry) 
 
     @property
-    def entries(self) -> list[Entry]:
+    def entries(self) -> list[PostingEntry]:
         return self._entries
     
     @property

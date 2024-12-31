@@ -1,5 +1,6 @@
-from sqlalchemy.orm import registry, composite, relationship
+from sqlalchemy.orm import registry, composite, relationship, column_property
 
+from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.p2p.spa.cancellation_deal import CancellationDeal
 from marketgram.trade.domain.model.p2p.spa.confirmation_deal import ConfirmationDeal
 from marketgram.trade.domain.model.p2p.deadlines import Deadlines
@@ -12,15 +13,23 @@ from marketgram.trade.domain.model.p2p.spa.ship_deal import (
 )
 from marketgram.trade.domain.model.p2p.time_tags import TimeTags
 from marketgram.trade.domain.model.p2p.type_deal import TypeDeal
-from marketgram.trade.domain.model.p2p.user import QuantityPurchased
 from marketgram.trade.domain.model.rule.agreement.money import Money
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.deals_table import (
     deals_table, 
-    deals_entries_table
+    deals_entries_table,
+    deals_members_table
 )
 
 
 def deals_registry_mapper(mapper: registry) -> None:
+    mapper.map_imperatively(
+        Members,
+        deals_members_table,
+        properties={
+            'seller_id': deals_members_table.c.seller_id,
+            'buyer_id': deals_members_table.c.buyer_id
+        }
+    )
     ship_deal_mapper = mapper.map_imperatively(
         ShipDeal,
         deals_table,
@@ -28,8 +37,11 @@ def deals_registry_mapper(mapper: registry) -> None:
         polymorphic_identity=TypeDeal.AUTO_LINK,
         properties={
             '_deal_id': deals_table.c.deal_id,
-            '_seller_id': deals_table.c.seller_id,
-            '_buyer_id': deals_table.c.buyer_id,
+            '_members': relationship(
+                'Members',
+                lazy='joined',
+                uselist=False,
+            ),
             '_card_id': deals_table.c.card_id,
             '_qty_purchased': deals_table.c.qty_purchased,
             '_type_deal': deals_table.c.type,
@@ -119,7 +131,7 @@ def deals_registry_mapper(mapper: registry) -> None:
         deals_table,
         properties={
             '_deal_id': deals_table.c.deal_id,
-            '_buyer_id': deals_table.c.buyer_id,
+            '_buyer_id': column_property(deals_members_table.c.buyer_id),
             '_price': composite(Money, deals_table.c.price),
             '_time_tags': composite(
                 TimeTags,
@@ -134,7 +146,7 @@ def deals_registry_mapper(mapper: registry) -> None:
                 secondary=deals_entries_table,
                 uselist=True,
                 default_factory=list,
-                lazy='subquery',
+                lazy='joined',
                 overlaps='_entries'
             )
         }
@@ -144,8 +156,12 @@ def deals_registry_mapper(mapper: registry) -> None:
         deals_table,
         properties={
             '_deal_id': deals_table.c.deal_id,
-            '_buyer_id': deals_table.c.buyer_id,
-            '_seller_id': deals_table.c.seller_id,
+            '_members': relationship(
+                'Members',
+                lazy='joined',
+                uselist=False,
+                overlaps='_members'
+            ),
             '_price': composite(Money, deals_table.c.price),
             '_is_disputed': deals_table.c.is_disputed,
             '_time_tags': composite(
@@ -167,18 +183,8 @@ def deals_registry_mapper(mapper: registry) -> None:
                 secondary=deals_entries_table,
                 uselist=True,
                 default_factory=list,
-                lazy='subquery',
+                lazy='joined',
                 overlaps='_entries,_entries'
             ),
-            '_payout': relationship(
-                'Payout',
-                primaryjoin='and_('
-                    'foreign(DisputeDeal._seller_id)==Payout._user_id, '
-                    'Payout._is_processed==False'
-                ')',
-                uselist=False,
-                lazy='noload',
-                default_factory=list,
-            )
         }
     )

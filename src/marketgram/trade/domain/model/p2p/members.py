@@ -5,7 +5,7 @@ from marketgram.identity.access.domain.model.exceptions import DomainError
 from marketgram.trade.domain.model.trade_item.exceptions import BUY_FROM_YOURSELF
 
 
-@dataclass(frozen=True)
+@dataclass
 class Members:
     seller_id: UUID
     buyer_id: UUID
