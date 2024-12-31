@@ -25,7 +25,8 @@ class ShipDeal:
         time_tags: TimeTags,
         deadlines: Deadlines,
         status: StatusDeal,
-        deal_id: int = None
+        deal_id: int = None,
+        is_disputed: bool = False
     ) -> None:
         self._deal_id = deal_id
         self._members = members
@@ -37,7 +38,7 @@ class ShipDeal:
         self._time_tags = time_tags
         self._deadlines = deadlines
         self._status = status
-        self._is_disputed = False
+        self._is_disputed = is_disputed
 
     def confirm_shipment(self, occurred_at: datetime) -> None:
         raise InvalidOperationError()
