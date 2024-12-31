@@ -1,11 +1,11 @@
 from typing import Protocol
 from uuid import UUID
 
-from marketgram.trade.domain.model.p2p.cancellation_deal import CancellationDeal
-from marketgram.trade.domain.model.p2p.confirmation_deal import ConfirmationDeal
-from marketgram.trade.domain.model.p2p.dispute_deal import DisputeDeal
-from marketgram.trade.domain.model.p2p.receipt_deal import ReceiptDeal
-from marketgram.trade.domain.model.p2p.ship_deal import ShipDeal
+from marketgram.trade.domain.model.p2p.spa.cancellation_deal import CancellationDeal
+from marketgram.trade.domain.model.p2p.spa.confirmation_deal import ConfirmationDeal
+from marketgram.trade.domain.model.p2p.spa.dispute_deal import DisputeDeal
+from marketgram.trade.domain.model.p2p.spa.receipt_deal import ReceiptDeal
+from marketgram.trade.domain.model.p2p.spa.ship_deal import ShipDeal
 
 
 class DealsRepository(Protocol):
