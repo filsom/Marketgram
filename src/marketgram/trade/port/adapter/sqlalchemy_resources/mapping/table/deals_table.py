@@ -43,8 +43,8 @@ deals_members_table = Table(
     'deals_members',
     sqlalchemy_metadata,
     Column('deal_id', BIGSERIAL, ForeignKey('deals.deal_id'), primary_key=True, nullable=False),
-    Column('seller_id', UUID, ForeignKey('members.user_id'), primary_key=True, nullable=False),
-    Column('buyer_id', UUID, ForeignKey('members.user_id'), primary_key=True, nullable=False),
+    Column('seller_id', BIGSERIAL, ForeignKey('members.user_id'), primary_key=True, nullable=False),
+    Column('buyer_id', BIGSERIAL, ForeignKey('members.user_id'), primary_key=True, nullable=False),
 )
 
 
