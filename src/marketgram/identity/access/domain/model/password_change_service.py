@@ -28,6 +28,4 @@ class PasswordChangeService:
 
         return user.change_password(
             self._password_hasher.hash(password)
-        )
-        
-        
+        ) 

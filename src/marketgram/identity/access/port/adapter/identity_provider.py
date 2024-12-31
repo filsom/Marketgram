@@ -1,7 +1,10 @@
-from uuid import UUID
+from datetime import UTC, datetime
+from uuid import UUID, uuid4
 
 from fastapi import Request, Response
 
+from marketgram.identity.access.domain.model.exceptions import DomainError
+from marketgram.identity.access.domain.model.web_session_service import WebSessionService
 from marketgram.identity.access.port.adapter.exceptions import (
     ACCESS_DENIED, 
     Unauthorized
@@ -16,11 +19,11 @@ class IdentityProvider:
         self,
         request: Request,
         response: Response,
-        web_session_repository: SQLAlchemyWebSessionRepository
+        web_session_service: WebSessionService
     ) -> None:
         self._request = request
         self._response = response
-        self._web_session_repository = web_session_repository
+        self._web_session_service = web_session_service
 
     def provided_id(self) -> UUID:
         return self._provided_id
@@ -30,20 +33,21 @@ class IdentityProvider:
         if session_id is None:
             raise Unauthorized(ACCESS_DENIED)
         
-        web_session = (
-            await self._web_session_repository
-            .lively_with_id(session_id)
-        )
-        if web_session is None:
+        try:
+            web_session = await self._web_session_service.extend(
+                session_id,
+                uuid4(),
+                datetime.now(UTC)
+            )
+            details = web_session.for_browser()
+        except DomainError:
             raise Unauthorized(ACCESS_DENIED)
-
-        web_session.extend_service_life()
         
         self._provided_id = web_session.user_id
 
         return self._response.set_cookie(
             key='s_id',
-            value=web_session.to_string_id(),
-            expires=web_session.to_formatted_time(),
+            value=details['session_id'],
+            expires=details['expires_in'],
             httponly=True
         )

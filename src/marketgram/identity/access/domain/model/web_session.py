@@ -1,34 +1,39 @@
 from datetime import datetime, timedelta
-from uuid import UUID, uuid4
+from uuid import UUID
 
 
 class WebSession:
-    MAX_AGE_DAYS = 15
     FORMAT = '%a, %d %b %Y %H:%M:%S'
 
     def __init__(
         self,
         user_id: UUID,
-        device: str,
+        session_id: UUID,
+        created_at: datetime,
+        expires_in: timedelta,
+        device: str
     ) -> None:
         self._user_id = user_id
-        self._device = device
-        self._session_id = uuid4()
-        self._created_at = datetime.now()
-        self._expires_in = self._created_at + timedelta(
-            days=self.MAX_AGE_DAYS
-        )
+        self._session_id = session_id
+        self._created_at = created_at
+        self._expires_in = expires_in
         self._device = device
 
-    def extend_service_life(self) -> None:
-        current_date = datetime.now()
-        if self._day_difference(current_date) <= 1:
-            self._refresh(current_date)
+    def extend_service_life(
+        self, 
+        new_id: UUID,
+        max_age: timedelta,
+        current_time: datetime
+    ) -> None:
+        difference = self._expires_in - current_time
+
+        if difference.days <= 1:
+            self._session_id = new_id
+            self._created_at = current_time
+            self._expires_in = current_time + max_age
     
     def to_formatted_time(self) -> str:
-        return self._expires_in.strftime(
-            self.FORMAT
-        )
+        return self._expires_in.strftime(self.FORMAT)
     
     def to_string_id(self) -> str:
         return str(self.session_id)
@@ -46,17 +51,6 @@ class WebSession:
     @property
     def session_id(self) -> UUID:
         return self._session_id
-
-    def _day_difference(self, current_date: datetime) -> int:
-        difference = self._expires_in - current_date
-        return difference.days
-
-    def _refresh(self, current_date: datetime) -> None:
-        self._session_id = uuid4()
-        self._created_at = current_date
-        self._expires_in = current_date + timedelta(
-            days=self.MAX_AGE_DAYS
-        )
 
     def __eq__(self, other: 'WebSession') -> bool:
         if not isinstance(other, WebSession):
