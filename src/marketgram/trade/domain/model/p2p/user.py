@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
 
 from marketgram.trade.domain.model.trade_item.exceptions import (
@@ -25,11 +24,6 @@ from marketgram.trade.domain.model.rule.agreement.types import (
     Operation
 )
 
-if TYPE_CHECKING:
-    from marketgram.trade.domain.model.p2p.quantity_purchased import (
-        QuantityPurchased
-    )
-
 
 class User:
     def __init__(
@@ -46,7 +40,7 @@ class User:
 
     def make_deal(
         self, 
-        quantity: QuantityPurchased, 
+        quantity: int, 
         card: SellCard,
         current_time: datetime
     ) -> ShipDeal:
@@ -60,6 +54,8 @@ class User:
         if remainder < Money(0):
             raise DomainError(INSUFFICIENT_FUNDS)
 
+        card.buy(quantity)
+
         self._entries.append(
             Entry(
                 self._user_id,
@@ -70,8 +66,6 @@ class User:
                 EntryStatus.ACCEPTED
             )
         )
-        card.buy(quantity)
-
         return ShipDeal(
             card.owner_id,
             self._user_id,

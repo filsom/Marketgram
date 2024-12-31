@@ -22,7 +22,7 @@ class ShipDeal:
         self,
         seller_id: UUID,
         buyer_id: UUID,
-        card_id: UUID,
+        card_id: int,
         qty_purchased: QuantityPurchased,
         type_deal: TypeDeal,
         card_created_at: datetime,
