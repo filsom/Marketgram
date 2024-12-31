@@ -40,7 +40,7 @@ class WebSessionService:
         )
         await self._web_session_repository.add(web_session)
 
-        return web_session.for_browser()  
+        return web_session.for_browser()
     
     async def extend(
         self, 

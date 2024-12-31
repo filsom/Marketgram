@@ -9,9 +9,6 @@ from marketgram.identity.access.port.adapter.exceptions import (
     ACCESS_DENIED, 
     Unauthorized
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_web_session_repository import (
-    SQLAlchemyWebSessionRepository
-)
     
 
 class IdentityProvider:
