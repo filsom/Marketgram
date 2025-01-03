@@ -43,33 +43,26 @@ from marketgram.identity.access.port.adapter.user_activate_message_maker import 
 class TestHandlers:
     async def test_change_password_command(self) -> None:
         # Arrange
-        new_password = same_password ='new_unprotected'
         user = User(
             uuid4(),
             'test@mail.ru',
             'protected',
             True
         )
-        id_provider = Mock()
         auth_service = AsyncMock()
         auth_service.using_id = AsyncMock(
             return_value=user
         )
-        password_service = self.mock_password_service(
-            'new_protected'
-        )
-        web_session_repository = AsyncMock()
-
         command = ChangePasswordCommand(
             user.password,
-            new_password,
-            same_password
+            'new_unprotected',
+            'new_unprotected'
         )
         sut = ChangePasswordHandler(
-            id_provider,
+            Mock(),
             auth_service,
-            password_service,
-            web_session_repository
+            self.mock_password_service('new_protected'),
+            AsyncMock()
         )
 
         # Act
@@ -77,61 +70,50 @@ class TestHandlers:
 
         # Assert
         assert user.password == 'new_protected'
-        web_session_repository \
+        sut._web_session_repository \
             .delete_all_with_user_id \
             .assert_called_once_with(user.user_id)
 
     async def test_forgot_password_command(self) -> None:
         # Arrange
-        email = 'test@mail.ru'
-        user = User(
-            uuid4(),
-            email,
-            'protected',
-            True
-        )
-        user_repository = self.mock_user_repository(user)
-        email_sender = AsyncMock()
-
-        command = ForgotPasswordCommand(email)
-        sut = ForgotPasswordHandler(
-            user_repository,
-            PyJWTTokenManager('secret'),
-            Mock(),
-            email_sender,
-        )
-
-        # Act
-        await sut.handle(command)
-
-        # Assert
-        email_sender.send_message.assert_called_once()
-
-    async def test_new_password_command(self) -> None:
-        # Arrange
-        new_password = same_password ='new_unprotected'
         user = User(
             uuid4(),
             'test@mail.ru',
             'protected',
             True
         )
-        user_repository = self.mock_user_repository(user)
-        password_service = self.mock_password_service(
-            'new_protected'
+        command = ForgotPasswordCommand('test@mail.ru')
+        sut = ForgotPasswordHandler(
+            self.mock_user_repository(user),
+            PyJWTTokenManager('secret'),
+            Mock(),
+            AsyncMock(),
         )
-        web_session_repository = AsyncMock()
 
+        # Act
+        await sut.handle(command)
+
+        # Assert
+        sut._email_sender.send_message.assert_called_once()
+
+    async def test_new_password_command(self) -> None:
+        # Arrange
+        user = User(
+            uuid4(),
+            'test@mail.ru',
+            'protected',
+            True
+        )
         command = NewPasswordCommand(
             'jwt_token',
-            new_password,
-            same_password
+            'new_unprotected',
+            'new_unprotected'
         )
         sut = NewPasswordHandler(
-            user_repository,
+            self.mock_user_repository(user),
             Mock(),
-            web_session_repository,
-            password_service
+            AsyncMock(),
+            self.mock_password_service('new_protected')
         )
 
         # Act
@@ -139,7 +121,7 @@ class TestHandlers:
 
         # Assert
         assert user.password == 'new_protected'
-        web_session_repository \
+        sut._web_session_repository \
             .delete_all_with_user_id \
             .assert_called_once_with(user.user_id)
 
@@ -152,14 +134,12 @@ class TestHandlers:
             'protected',
             True
         )
-        user_repository = self.mock_user_repository(user)
-
         command = UserAcivateCommand(
             'jwt_token'
         )
         sut = UserActivateHandler(
             Mock(),
-            user_repository
+            self.mock_user_repository(user)
         )
 
         # Act
@@ -170,21 +150,18 @@ class TestHandlers:
 
     async def test_user_login_command(self) -> None:
         # Arrange
+        user_id = uuid4()
         session_id = str(uuid4())
         days = 15
         created_at = datetime.now(UTC)
         expires_in = created_at + timedelta(days=days)
 
-        user_id = uuid4()
-        email = 'test@mail.ru'
-        password = 'protected'
-
         auth_service = AsyncMock()
         auth_service.using_email = AsyncMock(
             return_value=User(
                 user_id,
-                email,
-                password,
+                'test@mail.ru',
+                'protected',
                 True
             )
         )
@@ -199,8 +176,8 @@ class TestHandlers:
             ).for_browser()
         )
         command = UserLoginCommand(
-            email,
-            password,
+            'test@mail.ru',
+            'protected',
             'Nokia 3210'
         )
         sut = UserLoginHandler(
@@ -220,32 +197,27 @@ class TestHandlers:
     async def test_user_registration_command(self) -> None:
         # Arrange
         user_id = uuid4()
-        email = 'test@mail.ru'
-        password = same_password = 'unprotected'
-
         user_creation_service = AsyncMock()
         user_creation_service.create = AsyncMock(
             return_value=str(user_id)
         )
-        email_sender = AsyncMock()
-
         command = UserRegistrationCommand(
-            email,
-            password,
-            same_password
+            'test@mail.ru',
+            'unprotected',
+            'unprotected'
         )
         sut = UserRegistrationHandler(
             user_creation_service,
             PyJWTTokenManager('secret'),
             UserActivateMessageMaker(),
-            email_sender
+            AsyncMock()
         )
 
         # Act
         await sut.handle(command)
 
         # Assert
-        email_sender.send_message.assert_called_once()
+        sut._email_sender.send_message.assert_called_once()
 
     def mock_user_repository(
         self, 
