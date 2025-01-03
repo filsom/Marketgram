@@ -80,7 +80,6 @@ class TestUser:
         # Assert
         assert str(user_id) == result
 
-
     def test_change_password(self) -> None:
         # Arrange
         sut = self.make_user('test@mail.ru', True)
