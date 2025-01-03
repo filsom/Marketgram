@@ -49,7 +49,7 @@ class TestHandlers:
             return_value=user
         )
         command = ChangePasswordCommand(
-            'protected',
+            'old_unprotected',
             'new_unprotected',
             'new_unprotected'
         )
