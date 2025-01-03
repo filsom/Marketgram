@@ -44,7 +44,6 @@ class TestHandlers:
     async def test_change_password_command(self) -> None:
         # Arrange
         new_password = same_password ='new_unprotected'
-        new_protected_password = 'new_protected'
         user = User(
             uuid4(),
             'test@mail.ru',
@@ -57,7 +56,7 @@ class TestHandlers:
             return_value=user
         )
         password_service = self.mock_password_service(
-            new_protected_password
+            'new_protected'
         )
         web_session_repository = AsyncMock()
 
@@ -77,7 +76,7 @@ class TestHandlers:
         await sut.handle(command)
 
         # Assert
-        assert user.password == new_protected_password
+        assert user.password == 'new_protected'
         web_session_repository \
             .delete_all_with_user_id \
             .assert_called_once_with(user.user_id)
@@ -111,7 +110,6 @@ class TestHandlers:
     async def test_new_password_command(self) -> None:
         # Arrange
         new_password = same_password ='new_unprotected'
-        new_protected_password = 'new_protected'
         user = User(
             uuid4(),
             'test@mail.ru',
@@ -120,7 +118,7 @@ class TestHandlers:
         )
         user_repository = self.mock_user_repository(user)
         password_service = self.mock_password_service(
-            new_protected_password
+            'new_protected'
         )
         web_session_repository = AsyncMock()
 
@@ -140,7 +138,7 @@ class TestHandlers:
         await sut.handle(command)
 
         # Assert
-        assert user.password == new_protected_password
+        assert user.password == 'new_protected'
         web_session_repository \
             .delete_all_with_user_id \
             .assert_called_once_with(user.user_id)
