@@ -47,7 +47,6 @@ class TestHandlers:
                 'Nokia 3210'
             ).for_browser()
         )
-
         command = UserLoginCommand(
             email,
             password,
