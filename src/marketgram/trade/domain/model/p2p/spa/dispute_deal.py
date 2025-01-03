@@ -22,9 +22,9 @@ class DisputeDeal:
         is_disputed: bool,
         time_tags: TimeTags,
         deadlines: Deadlines,
-        deal_entries: list[PostingEntry],
         status: StatusDeal,
-        payout: Payout | None
+        deal_entries: list[PostingEntry] | None = None,
+        payout: Payout | None = None
     ) -> None:
         self._deal_id = deal_id
         self._members = members
@@ -39,16 +39,17 @@ class DisputeDeal:
     def open_dispute(self, occurred_at: datetime) -> None:   
         if self._is_disputed:
             raise DomainError()
-            
+        
         if self.dispute_deadline() < occurred_at:
             raise DomainError()
-         
-        if self._deal_entries:
+        
+        if self._deal_entries is not None:
             self._edit_entries_statuses(
                 EntryStatus.TIME_BLOCK
             )
-        if self._payout is not None:
-            self._payout.temporarily_block()
+        if self._payout is not None: 
+            if self._payout.created_at < occurred_at:
+                self._payout.temporarily_block()
 
         self._time_tags.closing_reset()
         self._is_disputed = True
@@ -59,18 +60,19 @@ class DisputeDeal:
                 + self._deadlines.total_check_hours)
 
     def satisfy_seller(self, occurred_at: datetime) -> None:
-        if self._deal_entries:
+        if self._deal_entries is not None:
             self._edit_entries_statuses(
                 EntryStatus.FREEZ
             )
         if self._payout is not None:
-            self._payout.unlock()
+            if self._payout.created_at < occurred_at:
+                self._payout.unlock()
 
         self._time_tags.closed(occurred_at)
         self._status = StatusDeal.CLOSED
 
     def satisfy_buyer(self, occurred_at: datetime) -> None:
-        if self._deal_entries:
+        if self._deal_entries is not None:
             self._edit_entries_statuses(
                 EntryStatus.CANCELLED
             )
@@ -84,13 +86,14 @@ class DisputeDeal:
                 EntryStatus.ACCEPTED
             )
         )
-        if self._payout is not None:
-            self._payout.unlock()
+        if self._payout is not None: 
+            if self._payout.created_at < occurred_at:
+                self._payout.unlock()
 
         self._time_tags.closed(occurred_at)
         self._status = StatusDeal.CANCELLED  
 
-    def _add_payout(self, payout: Payout) -> None:
+    def add_payout(self, payout: Payout) -> None:
         self._payout = payout
 
     def _edit_entries_statuses(self, status: EntryStatus) -> None:
@@ -104,6 +107,14 @@ class DisputeDeal:
     @property
     def buyer_id(self) -> UUID:
         return self._members.buyer_id
+    
+    @property
+    def is_disputed(self) -> bool:
+        return self._is_disputed
+    
+    @property
+    def status(self) -> StatusDeal:
+        return self._status
     
     def __eq__(self, other: 'DisputeDeal') -> bool:
         if not isinstance(other, DisputeDeal):

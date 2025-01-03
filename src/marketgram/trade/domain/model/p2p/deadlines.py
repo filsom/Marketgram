@@ -8,7 +8,7 @@ from marketgram.trade.domain.model.trade_item.exceptions import DomainError
 class Deadlines:
     shipping_hours: int | None
     receipt_hours: int | None
-    check_hours: int
+    inspection_hours: int
 
     def __post_init__(self) -> None:
         for key in self.__dict__:
@@ -25,11 +25,11 @@ class Deadlines:
     
     @property 
     def total_check_hours(self) -> timedelta:
-        return timedelta(hours=self.check_hours)
+        return timedelta(hours=self.inspection_hours)
     
     def __repr__(self):
         return (
             f'{self.shipping_hours}ч. на отгрузку товара, '
             f'{self.receipt_hours}ч. на подтверждение получения товара, '
-            f'{self.check_hours}ч. на проверку товара.'
+            f'{self.inspection_hours}ч. на проверку товара.'
         )

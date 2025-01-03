@@ -129,7 +129,7 @@ class SQLAlchemyDealsRepository:
         payout = await self._operations_mapper \
             .payout_with_seller_id(deal.seller_id)
         
-        deal._add_payout(payout)
+        deal.add_payout(payout)
 
         return deal
 
@@ -154,6 +154,6 @@ class SQLAlchemyDealsRepository:
         payout = await self._operations_mapper \
             .payout_with_seller_id(deal.seller_id)
         
-        deal._add_payout(payout)
+        deal.add_payout(payout)
 
         return deal

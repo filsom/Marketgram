@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 
 from sqlalchemy import and_, select
@@ -10,7 +11,7 @@ class SQLAlchemyOperationsMapper:
     def __init__(
         self,
         async_session: AsyncSession
-    ):
+    ) -> None:
         self._async_session = async_session
 
     def add(self, payout: Payout) -> None:

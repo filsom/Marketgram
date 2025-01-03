@@ -101,6 +101,10 @@ class Payout:
     @property
     def count_block(self) -> int:
         return self._count_block
+    
+    @property
+    def created_at(self) -> datetime:
+        return self._created_at
 
     def __eq__(self, other: 'Payout') -> bool:
         if not isinstance(other, Payout):
