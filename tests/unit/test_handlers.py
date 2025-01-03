@@ -1,9 +1,16 @@
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock
 from uuid import uuid4
 
-from marketgram.identity.access.application.user_registration_command import UserRegistrationCommand, UserRegistrationHandler
-from marketgram.identity.access.port.adapter.pyjwt_token_manager import PyJWTTokenManager
-from marketgram.identity.access.port.adapter.user_activate_message_maker import UserActivateMessageMaker
+from marketgram.identity.access.application.user_registration_command import (
+    UserRegistrationCommand, 
+    UserRegistrationHandler
+)
+from marketgram.identity.access.port.adapter.pyjwt_token_manager import (
+    PyJWTTokenManager
+)
+from marketgram.identity.access.port.adapter.user_activate_message_maker import (
+    UserActivateMessageMaker
+)
 
 
 class TestHandlers:
