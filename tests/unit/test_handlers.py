@@ -2,6 +2,10 @@ from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock, Mock
 from uuid import uuid4
 
+from marketgram.identity.access.application.new_password_command import (
+    NewPasswordCommand, 
+    NewPasswordHandler
+)
 from marketgram.identity.access.application.user_activate_command import (
     UserAcivateCommand, 
     UserActivateHandler
@@ -14,7 +18,11 @@ from marketgram.identity.access.application.user_registration_command import (
     UserRegistrationCommand, 
     UserRegistrationHandler
 )
+from marketgram.identity.access.domain.model.password_change_service import (
+    PasswordChangeService
+)
 from marketgram.identity.access.domain.model.user import User
+from marketgram.identity.access.domain.model.user_repository import UserRepository
 from marketgram.identity.access.domain.model.web_session import WebSession
 from marketgram.identity.access.port.adapter.pyjwt_token_manager import (
     PyJWTTokenManager
@@ -25,6 +33,41 @@ from marketgram.identity.access.port.adapter.user_activate_message_maker import 
 
 
 class TestHandlers:
+    async def test_new_password_command(self) -> None:
+        new_password = same_password ='new_unprotected'
+        new_protected_password = 'new_protected'
+        user = User(
+            uuid4(),
+            'test@mail.ru',
+            'protected',
+            True
+        )
+        user_repository = self.mock_user_repository(user)
+        password_service = self.mock_password_service(
+            new_protected_password
+        )
+        web_session_repository = AsyncMock()
+
+        command = NewPasswordCommand(
+            'jwt_token',
+            new_password,
+            same_password
+        )
+        sut = NewPasswordHandler(
+            user_repository,
+            Mock(),
+            web_session_repository,
+            password_service
+        )
+
+        await sut.handle(command)
+
+        assert user.password == new_protected_password
+        web_session_repository \
+            .delete_all_with_user_id \
+            .assert_called_once_with(user.user_id)
+
+
     async def test_user_activate_command(self) -> None:
         # Arrange
         user = User(
@@ -33,10 +76,8 @@ class TestHandlers:
             'protected',
             True
         )
-        user_repository = AsyncMock()
-        user_repository.with_id = AsyncMock(
-            return_value=user
-        )
+        user_repository = self.mock_user_repository(user)
+
         command = UserAcivateCommand(
             'jwt_token'
         )
@@ -129,3 +170,29 @@ class TestHandlers:
 
         # Assert
         email_sender.send_message.assert_called_once()
+
+    def mock_user_repository(
+        self, 
+        return_value: User
+    ) -> UserRepository:
+        user_repository = AsyncMock()
+        user_repository.with_id = AsyncMock(
+            return_value=return_value
+        )
+        user_repository.with_email = AsyncMock(
+            return_value=return_value
+        )
+        return user_repository
+    
+    def mock_password_service(
+        self,
+        return_value: str
+    ) -> PasswordChangeService:
+        password_hasher = Mock()
+        password_hasher.hash = Mock(
+            return_value=return_value
+        )
+        password_service = PasswordChangeService(
+            password_hasher
+        )
+        return password_service
