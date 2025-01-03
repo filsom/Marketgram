@@ -51,6 +51,14 @@ class WebSession:
     @property
     def session_id(self) -> UUID:
         return self._session_id
+    
+    @property
+    def expires_in(self) -> datetime:
+        return self._expires_in
+    
+    @property
+    def created_at(self) -> datetime:
+        return self._created_at
 
     def __eq__(self, other: 'WebSession') -> bool:
         if not isinstance(other, WebSession):
