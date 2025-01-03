@@ -62,5 +62,3 @@ class TestDisputeDeal:
             Deadlines(1, 1, inspection_hours),
             StatusDeal.CHECK,
         )
-
-
