@@ -43,12 +43,7 @@ from marketgram.identity.access.port.adapter.user_activate_message_maker import 
 class TestHandlers:
     async def test_change_password_command(self) -> None:
         # Arrange
-        user = User(
-            uuid4(),
-            'test@mail.ru',
-            'protected',
-            True
-        )
+        user = self.make_user()
         auth_service = AsyncMock()
         auth_service.using_id = AsyncMock(
             return_value=user
@@ -76,12 +71,7 @@ class TestHandlers:
 
     async def test_forgot_password_command(self) -> None:
         # Arrange
-        user = User(
-            uuid4(),
-            'test@mail.ru',
-            'protected',
-            True
-        )
+        user = self.make_user()
         command = ForgotPasswordCommand('test@mail.ru')
         sut = ForgotPasswordHandler(
             self.mock_user_repository(user),
@@ -98,12 +88,7 @@ class TestHandlers:
 
     async def test_new_password_command(self) -> None:
         # Arrange
-        user = User(
-            uuid4(),
-            'test@mail.ru',
-            'protected',
-            True
-        )
+        user = self.make_user()
         command = NewPasswordCommand(
             'jwt_token',
             'new_unprotected',
@@ -128,12 +113,7 @@ class TestHandlers:
 
     async def test_user_activate_command(self) -> None:
         # Arrange
-        user = User(
-            uuid4(),
-            'test@mail.ru',
-            'protected',
-            True
-        )
+        user = self.make_user()
         command = UserAcivateCommand(
             'jwt_token'
         )
@@ -244,3 +224,11 @@ class TestHandlers:
             password_hasher
         )
         return password_service
+    
+    def make_user(self) -> User:
+        return User(
+            uuid4(),
+            'test@mail.ru',
+            'protected',
+            True
+        )
