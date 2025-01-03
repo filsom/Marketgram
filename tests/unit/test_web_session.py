@@ -43,6 +43,6 @@ class TestWebSession:
             session_id,
             created_at,
             expires_in,
-            'Iphone 4'
+            'Nokia 3210'
         )
     
