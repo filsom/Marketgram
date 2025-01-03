@@ -2,7 +2,10 @@ from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock
 from uuid import uuid4
 
-from marketgram.identity.access.application.user_login_command import UserLoginCommand, UserLoginHandler
+from marketgram.identity.access.application.user_login_command import (
+    UserLoginCommand, 
+    UserLoginHandler
+)
 from marketgram.identity.access.application.user_registration_command import (
     UserRegistrationCommand, 
     UserRegistrationHandler
