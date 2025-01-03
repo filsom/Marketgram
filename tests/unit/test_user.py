@@ -10,14 +10,48 @@ from marketgram.identity.access.domain.model.exceptions import (
 from marketgram.identity.access.domain.model.password_change_service import (
     PasswordChangeService
 )
-from marketgram.identity.access.domain.model.password_security_hasher import PasswordSecurityHasher
-from marketgram.identity.access.domain.model.role_repository import RoleRepository
+from marketgram.identity.access.domain.model.password_security_hasher import (
+    PasswordSecurityHasher
+)
 from marketgram.identity.access.domain.model.user import User
-from marketgram.identity.access.domain.model.user_creation_service import UserCreationService
-from marketgram.identity.access.domain.model.user_repository import UserRepository
+from marketgram.identity.access.domain.model.user_authentication_service import (
+    UserAuthenticationService
+)
+from marketgram.identity.access.domain.model.user_creation_service import (
+    UserCreationService
+)
 
 
 class TestUser:
+    async def test_user_authentication_using_email(self) -> None:
+        # Arrange
+        user_id = uuid4()
+        email = 'test@mail.ru'
+        password = 'protected'
+
+        user_repository = AsyncMock()
+        user_repository.with_email = AsyncMock(
+            return_value=User(
+                user_id,
+                email,
+                password,
+                True
+            )
+        )
+        sut = UserAuthenticationService(
+            user_repository,
+            self.mock_password_hasher()
+        )
+
+        # Act
+        result = await sut.using_email(
+            email,
+            password
+        )
+
+        # Assert
+        assert user_id == result.user_id
+
     async def test_create_user(self) -> None:
         # Arrange
         user_id = uuid4()
@@ -30,12 +64,10 @@ class TestUser:
         role_repository = AsyncMock()
         role_repository.add = AsyncMock()
 
-        password_hasher = self.mock_password_hasher()
-
         sut = UserCreationService(
             user_repository,
             role_repository,
-            password_hasher
+            self.mock_password_hasher()
         )
 
         # Act
@@ -91,7 +123,7 @@ class TestUser:
         return User(
             uuid4(),
             email,
-            'test_*',
+            'protected',
             is_active
         )
     
@@ -101,5 +133,10 @@ class TestUser:
     ) -> PasswordSecurityHasher:
         password_hasher = Mock()
         password_hasher.hash = Mock(return_value=return_value)
-        
+        password_hasher.verify = self.verify
+        password_hasher.check_needs_rehash = Mock(return_value=False)
+
         return password_hasher
+    
+    def verify(self, plain_password, password):
+        return plain_password == password

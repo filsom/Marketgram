@@ -40,7 +40,8 @@ class UserAuthenticationService:
         if not user.is_active:
             raise DomainError(INVALID_EMAIL_OR_PASSWORD)
         
-        self._password_hasher.verify(plain_password, user.password)
+        if not self._password_hasher.verify(plain_password, user.password):
+            raise DomainError(INVALID_EMAIL_OR_PASSWORD)
 
         if self._password_hasher.check_needs_rehash(user.password):
             user.change_password(plain_password)
