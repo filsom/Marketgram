@@ -26,11 +26,10 @@ class UserLoginHandler:
         self._auth_service = auth_service
         self._web_session_service = web_session_service
 
-    async def handle(self, command: UserLoginCommand) -> UUID:
-        authenticated_user = await self._auth_service.using_email(
-            command.email,
-            command.password
-        )
+    async def handle(self, command: UserLoginCommand) -> dict[str, str]:
+        authenticated_user = await self._auth_service \
+            .using_email(command.email, command.password)
+        
         return await self._web_session_service.init(
             authenticated_user.user_id,
             uuid4(),
