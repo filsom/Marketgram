@@ -27,6 +27,7 @@ class TestHandlers:
         days = 15
         created_at = datetime.now(UTC)
         expires_in = created_at + timedelta(days=days)
+        
         user_id = uuid4()
         email = 'test@mail.ru'
         password = 'protected'
@@ -79,16 +80,7 @@ class TestHandlers:
         user_creation_service.create = AsyncMock(
             return_value=str(user_id)
         )
-        jwt_manager = PyJWTTokenManager('secret')
-        jwt_token = jwt_manager.encode({
-            'sub': str(user_id),
-            'aud': 'user:activate'
-        })
-        message_maker = UserActivateMessageMaker()
-        message = message_maker.make(jwt_token, email)
-
         email_sender = AsyncMock()
-        await email_sender('send_message', message=message)
 
         command = UserRegistrationCommand(
             email,
@@ -97,8 +89,8 @@ class TestHandlers:
         )
         sut = UserRegistrationHandler(
             user_creation_service,
-            jwt_manager,
-            message_maker,
+            PyJWTTokenManager('secret'),
+            UserActivateMessageMaker(),
             email_sender
         )
 
@@ -106,9 +98,4 @@ class TestHandlers:
         await sut.handle(command)
 
         # Assert
-        email_sender.assert_called_once_with(
-            'send_message',
-            message=message
-        )
-
-        
+        email_sender.send_message.assert_called_once()
