@@ -1,7 +1,11 @@
 from datetime import UTC, datetime, timedelta
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, Mock
 from uuid import uuid4
 
+from marketgram.identity.access.application.user_activate_command import (
+    UserAcivateCommand, 
+    UserActivateHandler
+)
 from marketgram.identity.access.application.user_login_command import (
     UserLoginCommand, 
     UserLoginHandler
@@ -21,13 +25,39 @@ from marketgram.identity.access.port.adapter.user_activate_message_maker import 
 
 
 class TestHandlers:
+    async def test_user_activate_command(self) -> None:
+        # Arrange
+        user = User(
+            uuid4(),
+            'test@mail.ru',
+            'protected',
+            True
+        )
+        user_repository = AsyncMock()
+        user_repository.with_id = AsyncMock(
+            return_value=user
+        )
+        command = UserAcivateCommand(
+            'jwt_token'
+        )
+        sut = UserActivateHandler(
+            Mock(),
+            user_repository
+        )
+
+        # Act
+        await sut.handle(command)
+
+        # Assert
+        assert user.is_active == True
+
     async def test_user_login_command(self) -> None:
         # Arrange
         session_id = str(uuid4())
         days = 15
         created_at = datetime.now(UTC)
         expires_in = created_at + timedelta(days=days)
-        
+
         user_id = uuid4()
         email = 'test@mail.ru'
         password = 'protected'
