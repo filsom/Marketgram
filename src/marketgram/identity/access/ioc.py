@@ -114,14 +114,8 @@ class IdentityAccessIoC(Provider):
         PasswordChangeService,
         UserAuthenticationService,
         UserCreationService,
-        provide(
-            UserActivateMessageMaker, 
-            provides=EmailMessageMaker
-        ),
-        provide(
-            lambda hasher: PasswordHasher(),
-            provides=PasswordSecurityHasher
-        )
+        provide(UserActivateMessageMaker, provides=EmailMessageMaker),
+        provide(lambda hasher: PasswordHasher(), provides=PasswordSecurityHasher)
     )
 
     @provide
@@ -140,30 +134,12 @@ class IdentityAccessIoC(Provider):
         )
 
     handlers = provide_all(
-        provide(
-            PasswordChange, 
-            provides=Handler[PasswordChangeCommand, None]
-        ),
-        provide(
-            ForgottenPassword, 
-            provides=Handler[ForgottenPasswordCommand, None]
-        ),
-        provide(
-            NewPassword, 
-            provides=Handler[NewPasswordCommand, None]
-        ),
-        provide(
-            UserActivate, 
-            provides=Handler[UserAcivateCommand, None]
-        ),
-        provide(
-            UserLoginHandler, 
-            provides=Handler[UserLoginCommand, dict[str, str]]
-        ),
-        provide(
-            UserRegistration, 
-            provides=Handler[UserRegistrationCommand, None]
-        )
+        provide(PasswordChange, provides=Handler[PasswordChangeCommand, None]),
+        provide(ForgottenPassword, provides=Handler[ForgottenPasswordCommand, None]),
+        provide(NewPassword, provides=Handler[NewPasswordCommand, None]),
+        provide(UserActivate, provides=Handler[UserAcivateCommand, None]),
+        provide(UserLoginHandler, provides=Handler[UserLoginCommand, dict[str, str]]),
+        provide(UserRegistration, provides=Handler[UserRegistrationCommand, None])
     )
 
     @decorate
