@@ -48,16 +48,19 @@ class TestHandlers:
         auth_service.using_id = AsyncMock(
             return_value=user
         )
+        id_provider = Mock()
+        web_session_repository = AsyncMock()
+
         command = ChangePasswordCommand(
             'old_unprotected',
             'new_unprotected',
             'new_unprotected'
         )
         sut = ChangePasswordHandler(
-            Mock(),
+            id_provider,
             auth_service,
             self.mock_password_service('new_protected'),
-            AsyncMock()
+            web_session_repository
         )
 
         # Act
@@ -72,12 +75,15 @@ class TestHandlers:
     async def test_forgot_password_command(self) -> None:
         # Arrange
         user = self.make_user()
+        message_maker = Mock()
+        email_sender = AsyncMock()
+
         command = ForgotPasswordCommand('test@mail.ru')
         sut = ForgotPasswordHandler(
             self.mock_user_repository(user),
             PyJWTTokenManager('secret'),
-            Mock(),
-            AsyncMock(),
+            message_maker,
+            email_sender
         )
 
         # Act
@@ -89,15 +95,22 @@ class TestHandlers:
     async def test_new_password_command(self) -> None:
         # Arrange
         user = self.make_user()
+        jwt_manager = PyJWTTokenManager('secret')
+        token = jwt_manager.encode({
+            'sub': user.to_string_id(),
+            'aud': 'user:password'
+        })
+        web_session_repository = AsyncMock()
+
         command = NewPasswordCommand(
-            'jwt_token',
+            token,
             'new_unprotected',
             'new_unprotected'
         )
         sut = NewPasswordHandler(
             self.mock_user_repository(user),
-            Mock(),
-            AsyncMock(),
+            jwt_manager,
+            web_session_repository,
             self.mock_password_service('new_protected')
         )
 
@@ -114,11 +127,14 @@ class TestHandlers:
     async def test_user_activate_command(self) -> None:
         # Arrange
         user = self.make_user()
-        command = UserAcivateCommand(
-            'jwt_token'
-        )
+        jwt_manager = PyJWTTokenManager('secret')
+        token = jwt_manager.encode({
+            'sub': user.to_string_id(),
+            'aud':'user:activate'
+        }) 
+        command = UserAcivateCommand(token)
         sut = UserActivateHandler(
-            Mock(),
+            jwt_manager,
             self.mock_user_repository(user)
         )
 
@@ -181,6 +197,8 @@ class TestHandlers:
         user_creation_service.create = AsyncMock(
             return_value=str(user_id)
         )
+        email_sender = AsyncMock()
+
         command = UserRegistrationCommand(
             'test@mail.ru',
             'unprotected',
@@ -190,7 +208,7 @@ class TestHandlers:
             user_creation_service,
             PyJWTTokenManager('secret'),
             UserActivateMessageMaker(),
-            AsyncMock()
+            email_sender
         )
 
         # Act
