@@ -1,5 +1,5 @@
-from marketgram.identity.access.main.ioc import identity_access_providers
-from marketgram.identity.access.main.settings import identity_access_load_settings
+from marketgram.identity.access.ioc import identity_access_providers
+from marketgram.identity.access.settings import identity_access_load_settings
 
 
 __all__ = (
