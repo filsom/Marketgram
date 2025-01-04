@@ -80,9 +80,9 @@ from marketgram.identity.access.settings import Settings
 class IdentityAccessIoC(Provider):
     scope = Scope.REQUEST
 
-    @provide(scope=Scope.APP)
-    def identity_access_settings(self) -> Settings:
-        return identity_access_load_settings()
+    # @provide(scope=Scope.APP)
+    # def identity_access_settings(self) -> Settings:
+    #     return identity_access_load_settings()
 
     @provide(scope=Scope.APP)
     async def provider_email_client(
@@ -113,10 +113,6 @@ class IdentityAccessIoC(Provider):
     def role_repository(self, async_session: AS) -> RoleRepository:
         return SQLAlchemyRoleRepository(async_session)
 
-    @provide
-    def jwt_manager(self, settings: Settings) -> TokenManager:
-        return PyJWTTokenManager(settings.for_jwt_manager())
-
     dependencies = provide_all(
         PasswordChangeService,
         UserAuthenticationService,
@@ -130,6 +126,10 @@ class IdentityAccessIoC(Provider):
             provides=PasswordSecurityHasher
         )
     )
+
+    @provide
+    def jwt_manager(self, settings: Settings) -> TokenManager:
+        return PyJWTTokenManager(settings.for_jwt_manager())
 
     @provide
     def web_session_service(
