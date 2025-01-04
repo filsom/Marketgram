@@ -35,9 +35,6 @@ from marketgram.identity.access.domain.model.web_session import WebSession
 from marketgram.identity.access.port.adapter.pyjwt_token_manager import (
     PyJWTTokenManager
 )
-from marketgram.identity.access.port.adapter.user_activate_message_maker import (
-    UserActivateMessageMaker
-)
 
 
 class TestHandlers:
@@ -197,6 +194,7 @@ class TestHandlers:
         user_creation_service.create = AsyncMock(
             return_value=str(user_id)
         )
+        message_maker = Mock()
         email_sender = AsyncMock()
 
         command = UserRegistrationCommand(
@@ -207,7 +205,7 @@ class TestHandlers:
         sut = UserRegistrationHandler(
             user_creation_service,
             PyJWTTokenManager('secret'),
-            UserActivateMessageMaker(),
+            message_maker,
             email_sender
         )
 
