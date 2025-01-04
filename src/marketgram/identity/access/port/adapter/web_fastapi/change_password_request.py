@@ -2,7 +2,7 @@ from fastapi import HTTPException, Request, Response, status
 from pydantic import BaseModel
 
 from marketgram.common.port.adapter.container import RequestContainer
-from marketgram.identity.access.application.change_password_command import (
+from marketgram.identity.access.application.commands.change_password import (
     ChangePasswordCommand, 
     ChangePasswordHandler
 )

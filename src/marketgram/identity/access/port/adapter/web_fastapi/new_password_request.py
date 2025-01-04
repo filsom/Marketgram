@@ -2,7 +2,7 @@ from fastapi import Request, Response
 from pydantic import BaseModel
 
 from marketgram.common.port.adapter.container import RequestContainer
-from marketgram.identity.access.application.new_password_command import (
+from marketgram.identity.access.application.commands.new_password import (
     NewPasswordCommand, 
     NewPasswordHandler
 )

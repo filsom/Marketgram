@@ -1,7 +1,7 @@
 from fastapi import Request, Response
 
 from marketgram.common.port.adapter.container import RequestContainer
-from marketgram.identity.access.application.forgot_password_coomand import (
+from marketgram.identity.access.application.commands.forgot_password import (
     ForgotPasswordCommand, 
     ForgotPasswordHandler
 )

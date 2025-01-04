@@ -1,7 +1,7 @@
 from fastapi import Request
 
 from marketgram.common.port.adapter.container import Container
-from marketgram.identity.access.application.user_activate_command import (
+from marketgram.identity.access.application.commands.user_activate import (
     UserAcivateCommand, 
     UserActivateHandler
 )

@@ -13,13 +13,12 @@ from marketgram.identity.access.domain.model.web_session_repository import WebSe
 from marketgram.identity.access.domain.model.user_repository import UserRepository
 from marketgram.common.application.message_maker import EmailMessageMaker
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import AuthotizeDecorator, TransactionDecorator
-from marketgram.identity.access.application.change_password_command import ChangePasswordHandler
-from marketgram.identity.access.application.forgot_password_coomand import ForgotPasswordHandler
-from marketgram.identity.access.application.new_password_command import NewPasswordHandler
-from marketgram.identity.access.application.user_activate_command import UserActivateHandler
-from marketgram.identity.access.application.user_login_command import UserLoginHandler
-from marketgram.identity.access.application.user_registration_command import UserRegistrationHandler
-from marketgram.identity.access.port.adapter.identity_provider import IdentityProvider
+from marketgram.identity.access.application.commands.change_password import ChangePasswordHandler
+from marketgram.identity.access.application.commands.forgot_password import ForgotPasswordHandler
+from marketgram.identity.access.application.commands.new_password import NewPasswordHandler
+from marketgram.identity.access.application.commands.user_activate import UserActivateHandler
+from marketgram.identity.access.application.commands.user_login import UserLoginHandler
+from marketgram.identity.access.application.commands.user_registration import UserRegistrationHandler
 from marketgram.identity.access.port.adapter.pyjwt_token_manager import PyJWTTokenManager
 from marketgram.identity.access.port.adapter.user_activate_message_maker import UserActivateMessageMaker
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_user_repository import SQLAlchemyUserRepository
@@ -110,12 +109,6 @@ class EmailMessageProvider(Provider):
 class HTTPProvider(Provider):
     request = from_context(provides=Request, scope=Scope.REQUEST)
     response = from_context(provides=Response, scope=Scope.REQUEST)
-
-    @provide(scope=Scope.REQUEST)
-    def id_provider(self, req: Request, res: Response, web_session_repository: WebSessionRepository) -> IdentityProvider:
-        return IdentityProvider(req, res, web_session_repository)
-    
-    al_id_provider = alias(IdentityProvider, provides=IdProvider)
     
 
 class HandlerProvider(Provider):

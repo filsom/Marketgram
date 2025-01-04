@@ -2,27 +2,27 @@ from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock, Mock
 from uuid import uuid4
 
-from marketgram.identity.access.application.change_password_command import (
+from marketgram.identity.access.application.commands.change_password import (
     ChangePasswordCommand, 
     ChangePasswordHandler
 )
-from marketgram.identity.access.application.forgot_password_coomand import (
+from marketgram.identity.access.application.commands.forgot_password import (
     ForgotPasswordCommand, 
     ForgotPasswordHandler
 )
-from marketgram.identity.access.application.new_password_command import (
+from marketgram.identity.access.application.commands.new_password import (
     NewPasswordCommand, 
     NewPasswordHandler
 )
-from marketgram.identity.access.application.user_activate_command import (
+from marketgram.identity.access.application.commands.user_activate import (
     UserAcivateCommand, 
     UserActivateHandler
 )
-from marketgram.identity.access.application.user_login_command import (
+from marketgram.identity.access.application.commands.user_login import (
     UserLoginCommand, 
     UserLoginHandler
 )
-from marketgram.identity.access.application.user_registration_command import (
+from marketgram.identity.access.application.commands.user_registration import (
     UserRegistrationCommand, 
     UserRegistrationHandler
 )

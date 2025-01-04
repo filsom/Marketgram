@@ -2,7 +2,7 @@ from fastapi import Request, Response
 from pydantic import BaseModel
 
 from marketgram.common.port.adapter.container import RequestContainer
-from marketgram.identity.access.application.user_login_command import (
+from marketgram.identity.access.application.commands.user_login import (
     UserLoginCommand, 
     UserLoginHandler
 )
