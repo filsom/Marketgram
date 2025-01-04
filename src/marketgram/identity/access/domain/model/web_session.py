@@ -40,6 +40,7 @@ class WebSession:
 
     def for_browser(self) -> dict[str, str]:
         return {
+            'user_id': str(self._user_id),
             'session_id': self.to_string_id(),
             'expires_in': self.to_formatted_time()
         }

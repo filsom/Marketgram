@@ -47,7 +47,7 @@ class WebSessionService:
         current_id: UUID, 
         new_id: UUID,
         current_time: datetime
-    ) -> WebSession:
+    ) -> dict[str, str]:
         web_session = await self._web_session_repository \
             .lively_with_id(
                 current_id,
@@ -61,4 +61,4 @@ class WebSessionService:
             self._max_age,
             current_time
         )
-        return web_session
+        return web_session.for_browser()
