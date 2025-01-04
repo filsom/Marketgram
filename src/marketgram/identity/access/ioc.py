@@ -5,6 +5,7 @@ from aiosmtplib import SMTP
 from argon2 import PasswordHasher
 
 from marketgram.common.application.email_sender import EmailSender
+from marketgram.common.application.handler import Handler, Cmd, Res
 from marketgram.common.application.jwt_manager import TokenManager
 from marketgram.common.application.message_maker import EmailMessageMaker
 from marketgram.common.ioc import AS
@@ -35,9 +36,7 @@ from marketgram.identity.access.application.commands.password_change import (
 )
 from marketgram.identity.access.application.commands.forgot_password import (
     ForgottenPasswordCommand,
-    ForgottenPassword,
-    Handler,
-    Cmd
+    ForgottenPassword
 )
 from marketgram.identity.access.application.commands.new_password import (
     NewPasswordCommand,
@@ -170,9 +169,9 @@ class IdentityAccessIoC(Provider):
     @decorate
     def wrapped_handler(
         self, 
-        handler: Handler[Cmd], 
+        handler: Handler[Cmd, Res], 
         async_session: AS
-    ) -> Handler[Cmd]:
+    ) -> Handler[Cmd, Res]:
         return TransactionDecorator(
             handler,
             async_session

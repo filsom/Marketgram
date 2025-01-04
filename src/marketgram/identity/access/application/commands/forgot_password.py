@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Generic, TypeVar
 
 from marketgram.common.application.email_sender import EmailSender
 from marketgram.common.application.handler import Handler
