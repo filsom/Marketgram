@@ -114,8 +114,8 @@ class IdentityAccessIoC(Provider):
         return SQLAlchemyRoleRepository(async_session)
 
     @provide
-    def jwt_manager(self, settengs: Settings) -> TokenManager:
-        return PyJWTTokenManager(settengs.for_jwt_manager())
+    def jwt_manager(self, settings: Settings) -> TokenManager:
+        return PyJWTTokenManager(settings.for_jwt_manager())
 
     dependencies = provide_all(
         PasswordChangeService,
