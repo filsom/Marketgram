@@ -1,10 +1,11 @@
 from fastapi import Request, Response
 from pydantic import BaseModel
 
+from marketgram.common.application.handler import Handler
 from marketgram.common.port.adapter.container import Container
 from marketgram.identity.access.application.commands.new_password import (
     NewPasswordCommand, 
-    NewPasswordHandler
+    NewPassword
 )
 from marketgram.identity.access.port.adapter.fastapi_resources.routing import router
 
@@ -26,7 +27,9 @@ async def new_password_controller(
             token,
             field.new_password,
         )
-        handler = await container.get(NewPasswordHandler)
+        handler = await container.get(
+            Handler[NewPasswordCommand, None]
+        )
         await handler.handle(command)
 
         res.delete_cookie('s_id')

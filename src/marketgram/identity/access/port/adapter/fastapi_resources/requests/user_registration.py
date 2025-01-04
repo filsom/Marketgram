@@ -1,10 +1,10 @@
 from fastapi import Request
 from pydantic import BaseModel
 
+from marketgram.common.application.handler import Handler
 from marketgram.common.port.adapter.container import Container
 from marketgram.identity.access.application.commands.user_registration import (
     UserRegistrationCommand, 
-    UserRegistrationHandler
 )
 from marketgram.identity.access.port.adapter.fastapi_resources.routing import router
 
@@ -26,7 +26,9 @@ async def user_registration_controller(
             field.password,
             field.same_password
         )
-        handler = await container.get(UserRegistrationHandler)
+        handler = await container.get(
+            Handler[UserRegistrationCommand, None]
+        )
         await handler.handle(command)
 
         return 'OK'

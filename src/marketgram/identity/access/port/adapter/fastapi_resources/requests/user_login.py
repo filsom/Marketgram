@@ -1,10 +1,10 @@
 from fastapi import Request, Response
 from pydantic import BaseModel
 
+from marketgram.common.application.handler import Handler
 from marketgram.common.port.adapter.container import Container
 from marketgram.identity.access.application.commands.user_login import (
     UserLoginCommand, 
-    UserLoginHandler
 )
 from marketgram.identity.access.port.adapter.fastapi_resources.routing import router
 
@@ -26,7 +26,9 @@ async def user_login_controller(
             field.password,
             req.headers.get('user-agent'),
         )
-        handler = await container.get(UserLoginHandler)
+        handler = await container.get(
+            Handler[UserLoginCommand, dict[str, str]]
+        )
         result = await handler.handle(command)
 
         res.set_cookie(

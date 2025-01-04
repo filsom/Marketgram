@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from marketgram.common.application.handler import Handler
 from marketgram.common.application.jwt_manager import TokenManager
 from marketgram.identity.access.domain.model.user_creation_service import (
     UserCreationService
@@ -15,7 +16,9 @@ class UserRegistrationCommand:
     same_password: str
 
 
-class UserRegistrationHandler:
+class UserRegistration(
+    Handler[UserRegistrationCommand, None]
+):
     def __init__(
         self,
         user_creation_service: UserCreationService,

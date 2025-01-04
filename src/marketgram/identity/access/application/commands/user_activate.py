@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from marketgram.common.application.handler import Handler
 from marketgram.common.application.jwt_manager import TokenManager
 from marketgram.identity.access.domain.model.user_repository import (
     UserRepository
@@ -11,7 +12,9 @@ class UserAcivateCommand:
     token: str
 
 
-class UserActivateHandler:
+class UserActivate(
+    Handler[UserAcivateCommand, None]
+):
     def __init__(
         self,
         jwt_manager: TokenManager,

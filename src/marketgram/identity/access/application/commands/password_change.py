@@ -3,6 +3,7 @@ from datetime import UTC, datetime
 from uuid import UUID
 
 from marketgram.common.application.exceptions import ApplicationError
+from marketgram.common.application.handler import Handler
 from marketgram.identity.access.domain.model.password_change_service import (
     PasswordChangeService
 )
@@ -22,7 +23,9 @@ class PasswordChangeCommand:
     same_password: str
 
 
-class PasswordChangeHandler:
+class PasswordChange(
+    Handler[PasswordChangeCommand, None]
+):
     def __init__(
         self,
         auth_service: UserAuthenticationService,

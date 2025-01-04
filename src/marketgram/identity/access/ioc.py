@@ -1,7 +1,6 @@
-import asyncio
 from typing import AsyncIterable
 
-from dishka import Provider, Scope, decorate, make_async_container, provide, provide_all
+from dishka import Provider, Scope, decorate, provide, provide_all
 from aiosmtplib import SMTP
 from argon2 import PasswordHasher
 
@@ -29,32 +28,32 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_web
 from marketgram.identity.access.port.adapter.user_activate_message_maker import (
     UserActivateMessageMaker
 )
-from marketgram.common.ioc import AS, DatabaseProvider
+from marketgram.common.ioc import AS
 from marketgram.identity.access.application.commands.password_change import (
     PasswordChangeCommand,
-    PasswordChangeHandler,
+    PasswordChange,
 )
 from marketgram.identity.access.application.commands.forgot_password import (
-    ForgotPasswordCommand,
-    ForgottenPasswordHandler,
+    ForgottenPasswordCommand,
+    ForgottenPassword,
     Handler,
     Cmd
 )
 from marketgram.identity.access.application.commands.new_password import (
     NewPasswordCommand,
-    NewPasswordHandler
+    NewPassword
 )
 from marketgram.identity.access.application.commands.user_activate import (
     UserAcivateCommand,
-    UserActivateHandler
+    UserActivate
 )
 from marketgram.identity.access.application.commands.user_login import (
     UserLoginCommand,
     UserLoginHandler
 )
 from marketgram.identity.access.application.commands.user_registration import (
+    UserRegistration,
     UserRegistrationCommand,
-    UserRegistrationHandler
 )
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import (
     TransactionDecorator
@@ -74,7 +73,6 @@ from marketgram.identity.access.domain.model.web_session_repository import (
 from marketgram.identity.access.domain.model.web_session_service import (
     WebSessionService
 )
-from marketgram.identity.access.settings import Settings
 
 
 class IdentityAccessIoC(Provider):
@@ -144,28 +142,28 @@ class IdentityAccessIoC(Provider):
 
     handlers = provide_all(
         provide(
-            PasswordChangeHandler, 
-            provides=Handler[PasswordChangeCommand]
+            PasswordChange, 
+            provides=Handler[PasswordChangeCommand, None]
         ),
         provide(
-            ForgottenPasswordHandler, 
-            provides=Handler[ForgotPasswordCommand]
+            ForgottenPassword, 
+            provides=Handler[ForgottenPasswordCommand, None]
         ),
         provide(
-            NewPasswordHandler, 
-            provides=Handler[NewPasswordCommand]
+            NewPassword, 
+            provides=Handler[NewPasswordCommand, None]
         ),
         provide(
-            UserActivateHandler, 
-            provides=Handler[UserAcivateCommand]
+            UserActivate, 
+            provides=Handler[UserAcivateCommand, None]
         ),
         provide(
             UserLoginHandler, 
-            provides=Handler[UserLoginCommand]
+            provides=Handler[UserLoginCommand, dict[str, str]]
         ),
         provide(
-            UserRegistrationHandler, 
-            provides=Handler[UserRegistrationCommand]
+            UserRegistration, 
+            provides=Handler[UserRegistrationCommand, None]
         )
     )
 

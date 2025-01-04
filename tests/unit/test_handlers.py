@@ -4,19 +4,19 @@ from uuid import uuid4
 
 from marketgram.identity.access.application.commands.password_change import (
     PasswordChangeCommand, 
-    PasswordChangeHandler
+    PasswordChange
 )
 from marketgram.identity.access.application.commands.forgot_password import (
-    ForgotPasswordCommand, 
-    ForgottenPasswordHandler
+    ForgottenPasswordCommand, 
+    ForgottenPassword
 )
 from marketgram.identity.access.application.commands.new_password import (
     NewPasswordCommand, 
-    NewPasswordHandler
+    NewPassword
 )
 from marketgram.identity.access.application.commands.user_activate import (
     UserAcivateCommand, 
-    UserActivateHandler
+    UserActivate
 )
 from marketgram.identity.access.application.commands.user_login import (
     UserLoginCommand, 
@@ -62,7 +62,7 @@ class TestHandlers:
             'new_unprotected',
             'new_unprotected'
         )
-        sut = PasswordChangeHandler(
+        sut = PasswordChange(
             auth_service,
             self.mock_password_service(
                 return_value='new_protected'
@@ -85,8 +85,8 @@ class TestHandlers:
         message_maker = Mock()
         email_sender = AsyncMock()
 
-        command = ForgotPasswordCommand('test@mail.ru')
-        sut = ForgottenPasswordHandler(
+        command = ForgottenPasswordCommand('test@mail.ru')
+        sut = ForgottenPassword(
             self.mock_user_repository(return_value=user),
             PyJWTTokenManager('secret'),
             message_maker,
@@ -114,7 +114,7 @@ class TestHandlers:
             'new_unprotected',
             'new_unprotected'
         )
-        sut = NewPasswordHandler(
+        sut = NewPassword(
             self.mock_user_repository(return_value=user),
             jwt_manager,
             web_session_repository,
@@ -142,7 +142,7 @@ class TestHandlers:
             'aud':'user:activate'
         }) 
         command = UserAcivateCommand(token)
-        sut = UserActivateHandler(
+        sut = UserActivate(
             jwt_manager,
             self.mock_user_repository(return_value=user)
         )

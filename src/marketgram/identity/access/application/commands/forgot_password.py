@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Generic, TypeVar
 
 from marketgram.common.application.email_sender import EmailSender
+from marketgram.common.application.handler import Handler
 from marketgram.common.application.message_maker import EmailMessageMaker
 from marketgram.common.application.jwt_manager import TokenManager
 from marketgram.identity.access.domain.model.user_repository import (
@@ -9,19 +10,14 @@ from marketgram.identity.access.domain.model.user_repository import (
 )
 
 
-Cmd = TypeVar('Cmd')
-
-
-class Handler(Generic[Cmd]):
-    pass
-
-
 @dataclass
-class ForgotPasswordCommand:
+class ForgottenPasswordCommand:
     email: str
 
 
-class ForgottenPasswordHandler(Handler[ForgotPasswordCommand]):
+class ForgottenPassword(
+    Handler[ForgottenPasswordCommand, None]
+):
     def __init__(
         self,
         user_repository: UserRepository,
@@ -34,7 +30,7 @@ class ForgottenPasswordHandler(Handler[ForgotPasswordCommand]):
         self._message_maker = message_maker
         self._email_sender = email_sender
     
-    async def handle(self, command: ForgotPasswordCommand) -> None:
+    async def handle(self, command: ForgottenPasswordCommand) -> None:
         user = await self._user_repository.with_email(command.email)
         
         if user is not None and user.is_active:

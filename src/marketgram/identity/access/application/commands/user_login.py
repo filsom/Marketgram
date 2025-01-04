@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from uuid import uuid4
 
+from marketgram.common.application.handler import Handler
 from marketgram.identity.access.domain.model.user_authentication_service import (
     UserAuthenticationService
 )
@@ -17,7 +18,9 @@ class UserLoginCommand:
     device: str
 
 
-class UserLoginHandler:
+class UserLoginHandler(
+    Handler[UserLoginCommand, dict[str, str]]
+):
     def __init__(
         self,
         auth_service: UserAuthenticationService,
