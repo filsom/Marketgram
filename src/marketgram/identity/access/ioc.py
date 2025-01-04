@@ -56,17 +56,10 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_de
 from marketgram.identity.access.port.adapter.user_activate_message_maker import (
     UserActivateMessageMaker
 )
+from marketgram.identity.access.settings import Settings
 
 
 Handler = TypeVar('Handler')
-
-
-class Settings:
-    def for_email_client(self):
-        pass
-
-    def for_jwt_manager(self):
-        pass
 
 
 class RepositoriesProvider(Provider):
