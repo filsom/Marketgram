@@ -5,7 +5,7 @@ from marketgram.identity.access.application.commands.user_activate import (
     UserAcivateCommand, 
     UserActivateHandler
 )
-from marketgram.identity.access.port.adapter.web_fastapi.routing import router
+from marketgram.identity.access.port.adapter.fastapi_resources.routing import router
 
 
 @router.get('/activate/{token}')

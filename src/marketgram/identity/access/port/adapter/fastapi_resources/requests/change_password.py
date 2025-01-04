@@ -6,7 +6,7 @@ from marketgram.identity.access.application.commands.change_password import (
     ChangePasswordCommand, 
     ChangePasswordHandler
 )
-from marketgram.identity.access.port.adapter.web_fastapi.routing import router
+from marketgram.identity.access.port.adapter.fastapi_resources.routing import router
 
 
 class ChangePasswordRequest(BaseModel):

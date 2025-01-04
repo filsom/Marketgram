@@ -6,7 +6,7 @@ from marketgram.identity.access.application.commands.new_password import (
     NewPasswordCommand, 
     NewPasswordHandler
 )
-from marketgram.identity.access.port.adapter.web_fastapi.routing import router
+from marketgram.identity.access.port.adapter.fastapi_resources.routing import router
 
 
 class NewPasswordField(BaseModel):

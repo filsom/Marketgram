@@ -5,7 +5,7 @@ from marketgram.identity.access.application.commands.forgot_password import (
     ForgotPasswordCommand, 
     ForgotPasswordHandler
 )
-from marketgram.identity.access.port.adapter.web_fastapi.routing import router
+from marketgram.identity.access.port.adapter.fastapi_resources.routing import router
 
 
 @router.post('/forgot_pwd')

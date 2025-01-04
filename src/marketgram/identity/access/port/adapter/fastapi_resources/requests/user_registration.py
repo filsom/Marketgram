@@ -6,7 +6,7 @@ from marketgram.identity.access.application.commands.user_registration import (
     UserRegistrationCommand, 
     UserRegistrationHandler
 )
-from marketgram.identity.access.port.adapter.web_fastapi.routing import router
+from marketgram.identity.access.port.adapter.fastapi_resources.routing import router
 
 
 class UserRegistrationField(BaseModel):
