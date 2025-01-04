@@ -56,7 +56,9 @@ class TestHandlers:
         sut = ChangePasswordHandler(
             id_provider,
             auth_service,
-            self.mock_password_service('new_protected'),
+            self.mock_password_service(
+                return_value='new_protected'
+            ),
             web_session_repository
         )
 
@@ -77,7 +79,7 @@ class TestHandlers:
 
         command = ForgotPasswordCommand('test@mail.ru')
         sut = ForgotPasswordHandler(
-            self.mock_user_repository(user),
+            self.mock_user_repository(return_value=user),
             PyJWTTokenManager('secret'),
             message_maker,
             email_sender
@@ -105,10 +107,12 @@ class TestHandlers:
             'new_unprotected'
         )
         sut = NewPasswordHandler(
-            self.mock_user_repository(user),
+            self.mock_user_repository(return_value=user),
             jwt_manager,
             web_session_repository,
-            self.mock_password_service('new_protected')
+            self.mock_password_service(
+                return_value='new_protected'
+            )
         )
 
         # Act
@@ -132,7 +136,7 @@ class TestHandlers:
         command = UserAcivateCommand(token)
         sut = UserActivateHandler(
             jwt_manager,
-            self.mock_user_repository(user)
+            self.mock_user_repository(return_value=user)
         )
 
         # Act
