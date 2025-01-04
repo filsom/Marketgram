@@ -80,9 +80,9 @@ from marketgram.identity.access.settings import Settings
 class IdentityAccessIoC(Provider):
     scope = Scope.REQUEST
 
-    # @provide(scope=Scope.APP)
-    # def identity_access_settings(self) -> Settings:
-    #     return identity_access_load_settings()
+    @provide(scope=Scope.APP)
+    def identity_access_settings(self) -> Settings:
+        return identity_access_load_settings()
 
     @provide(scope=Scope.APP)
     async def provider_email_client(
