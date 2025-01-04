@@ -41,20 +41,28 @@ class TestHandlers:
     async def test_change_password_command(self) -> None:
         # Arrange
         user = self.make_user()
+        session_id = uuid4()
         auth_service = AsyncMock()
         auth_service.using_id = AsyncMock(
             return_value=user
         )
-        id_provider = Mock()
         web_session_repository = AsyncMock()
-
+        web_session_repository.lively_with_id = AsyncMock(
+            return_value=WebSession(
+                user.user_id,
+                session_id,
+                datetime.now(UTC),
+                datetime.now(UTC) + timedelta(days=15),
+                'Nokia 3210'
+            )
+        )
         command = ChangePasswordCommand(
+            session_id,
             'old_unprotected',
             'new_unprotected',
             'new_unprotected'
         )
         sut = ChangePasswordHandler(
-            id_provider,
             auth_service,
             self.mock_password_service(
                 return_value='new_protected'

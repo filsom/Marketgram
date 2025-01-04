@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 
 from marketgram.common.application.jwt_manager import TokenManager
-from marketgram.identity.access.domain.model.password_change_service import PasswordChangeService
+from marketgram.identity.access.domain.model.password_change_service import (
+    PasswordChangeService
+)
 from marketgram.identity.access.domain.model.web_session_repository import (
     WebSessionRepository
 )

@@ -19,7 +19,6 @@ from marketgram.identity.access.application.new_password_command import NewPassw
 from marketgram.identity.access.application.user_activate_command import UserActivateHandler
 from marketgram.identity.access.application.user_login_command import UserLoginHandler
 from marketgram.identity.access.application.user_registration_command import UserRegistrationHandler
-from marketgram.identity.access.port.adapter.encrypter_hmac import EncrypterHMAC, SecretEncrypterHMAC
 from marketgram.identity.access.port.adapter.identity_provider import IdentityProvider
 from marketgram.identity.access.port.adapter.pyjwt_token_manager import PyJWTTokenManager
 from marketgram.identity.access.port.adapter.user_activate_message_maker import UserActivateMessageMaker
@@ -76,10 +75,6 @@ class DatabaseProvider(Provider):
         provides=WebSessionRepository
     )
     
-    @provide(scope=Scope.REQUEST)
-    def provider_hmac(self) -> EncrypterHMAC:
-        return EncrypterHMAC(SecretEncrypterHMAC('qwertytest'))
-
 
 class EmailMessageProvider(Provider):
     user_activate_message_maker = provide(

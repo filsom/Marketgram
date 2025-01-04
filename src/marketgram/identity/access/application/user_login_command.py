@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from uuid import UUID, uuid4
+from uuid import uuid4
 
 from marketgram.identity.access.domain.model.user_authentication_service import (
     UserAuthenticationService
