@@ -13,7 +13,7 @@ class ForgotPasswordCommand:
     email: str
 
 
-class ForgotPasswordHandler:
+class ForgottenPasswordHandler:
     def __init__(
         self,
         user_repository: UserRepository,

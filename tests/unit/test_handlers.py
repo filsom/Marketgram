@@ -2,13 +2,13 @@ from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock, Mock
 from uuid import uuid4
 
-from marketgram.identity.access.application.commands.change_password import (
-    ChangePasswordCommand, 
-    ChangePasswordHandler
+from marketgram.identity.access.application.commands.password_change import (
+    PasswordChangeCommand, 
+    PasswordChangeHandler
 )
 from marketgram.identity.access.application.commands.forgot_password import (
     ForgotPasswordCommand, 
-    ForgotPasswordHandler
+    ForgottenPasswordHandler
 )
 from marketgram.identity.access.application.commands.new_password import (
     NewPasswordCommand, 
@@ -56,13 +56,13 @@ class TestHandlers:
                 'Nokia 3210'
             )
         )
-        command = ChangePasswordCommand(
+        command = PasswordChangeCommand(
             session_id,
             'old_unprotected',
             'new_unprotected',
             'new_unprotected'
         )
-        sut = ChangePasswordHandler(
+        sut = PasswordChangeHandler(
             auth_service,
             self.mock_password_service(
                 return_value='new_protected'
@@ -86,7 +86,7 @@ class TestHandlers:
         email_sender = AsyncMock()
 
         command = ForgotPasswordCommand('test@mail.ru')
-        sut = ForgotPasswordHandler(
+        sut = ForgottenPasswordHandler(
             self.mock_user_repository(return_value=user),
             PyJWTTokenManager('secret'),
             message_maker,

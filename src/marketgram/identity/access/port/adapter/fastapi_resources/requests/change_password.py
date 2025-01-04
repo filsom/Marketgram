@@ -2,9 +2,9 @@ from fastapi import HTTPException, Request, Response, status
 from pydantic import BaseModel
 
 from marketgram.common.port.adapter.container import Container
-from marketgram.identity.access.application.commands.change_password import (
-    ChangePasswordCommand, 
-    ChangePasswordHandler
+from marketgram.identity.access.application.commands.password_change import (
+    PasswordChangeCommand, 
+    PasswordChangeHandler
 )
 from marketgram.identity.access.port.adapter.fastapi_resources.routing import router
 
@@ -26,13 +26,13 @@ async def change_password_controller(
         if session_id is None:
             raise HTTPException(status.HTTP_401_UNAUTHORIZED)
 
-        command = ChangePasswordCommand(
+        command = PasswordChangeCommand(
             session_id,
             field.old_password,
             field.new_password,
             field.same_new_password
         )
-        handler = await container.get(ChangePasswordHandler)
+        handler = await container.get(PasswordChangeHandler)
         await handler.handle(command)
         
         res.delete_cookie('s_id')

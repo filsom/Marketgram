@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from dataclasses import dataclass
 
 
@@ -20,6 +21,7 @@ class JWTManagerSettings:
 class Settings:
     email_client: EmailClientSettings
     jwt_manager: JWTManagerSettings
+    max_age_session: timedelta
 
     def for_email_client(self) -> EmailClientSettings:
         return self.email_client
@@ -30,16 +32,17 @@ class Settings:
 
 def identity_access_load_settings() -> Settings:
     email_client = EmailClientSettings(
-        os.environ('HOSTNAME'),
-        os.environ('PORT'),
-        os.environ('USERNAME'),
-        os.environ('PASSWORD'),
-        os.environ('VALIDATE_CERTS')
+        os.environ.get('HOSTNAME'),
+        os.environ.get('PORT'),
+        os.environ.get('USERNAME'),
+        os.environ.get('PASSWORD'),
+        os.environ.get('VALIDATE_CERTS')
     )
     jwt_manager = JWTManagerSettings(
-        os.environ('JWT_SECRET')
+        os.environ.get('JWT_SECRET')
     )
     return Settings(
         email_client,
-        jwt_manager
+        jwt_manager,
+        timedelta(days=15)
     )

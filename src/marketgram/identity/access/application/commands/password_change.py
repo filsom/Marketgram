@@ -15,14 +15,14 @@ from marketgram.identity.access.domain.model.user_authentication_service import 
 
 
 @dataclass
-class ChangePasswordCommand:
+class PasswordChangeCommand:
     session_id: UUID
     old_password: str
     new_password: str
     same_password: str
 
 
-class ChangePasswordHandler:
+class PasswordChangeHandler:
     def __init__(
         self,
         auth_service: UserAuthenticationService,
@@ -33,7 +33,7 @@ class ChangePasswordHandler:
         self._password_service = password_service
         self._web_session_repository = web_session_repository
 
-    async def handle(self, command: ChangePasswordCommand) -> None:
+    async def handle(self, command: PasswordChangeCommand) -> None:
         web_session = await self._web_session_repository \
             .lively_with_id(
                 command.session_id,
