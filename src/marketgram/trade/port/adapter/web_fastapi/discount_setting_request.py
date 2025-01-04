@@ -2,7 +2,7 @@ from fastapi import Request, Response
 from pydantic import BaseModel
 
 from marketgram.common.port.adapter.container import RequestContainer
-from marketgram.trade.application.discount_setting_command import (
+from marketgram.trade.application.commands.discount_setting import (
     DiscountSettingCommand,
     DiscountSettingHandler
 )

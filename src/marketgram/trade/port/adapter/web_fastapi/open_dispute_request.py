@@ -1,7 +1,7 @@
 from fastapi import Request, Response
 
 from marketgram.common.port.adapter.container import RequestContainer
-from marketgram.trade.application.open_dispute_command import (
+from marketgram.trade.application.commands.open_dispute import (
     OpenDisputeCommand,
     OpenDisputeHandler
 )

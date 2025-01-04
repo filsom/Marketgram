@@ -1,7 +1,7 @@
 from fastapi import Request, Response
 
 from marketgram.common.port.adapter.container import RequestContainer
-from marketgram.trade.application.deal_cancellation_command import (
+from marketgram.trade.application.commands.deal_cancellation import (
     DealCancellationCommand,
     DealCancellationHandler
 )

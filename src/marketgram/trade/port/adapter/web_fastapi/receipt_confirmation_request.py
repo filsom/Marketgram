@@ -1,7 +1,7 @@
 from fastapi import Request, Response
 
 from marketgram.common.port.adapter.container import RequestContainer
-from marketgram.trade.application.receipt_confirmation_command import (
+from marketgram.trade.application.commands.receipt_confirmation import (
     ReceiptConfirmationHandler,
     ReceiptConfirmationCommand
 )

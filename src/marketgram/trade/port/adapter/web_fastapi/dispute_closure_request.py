@@ -1,7 +1,7 @@
 from fastapi import Request, Response
 
 from marketgram.common.port.adapter.container import RequestContainer
-from marketgram.trade.application.dispute_closure_command import (
+from marketgram.trade.application.commands.dispute_closure import (
     DisputeClosureCommand,
     DisputeClosureHandler
 )

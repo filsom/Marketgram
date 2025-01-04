@@ -1,7 +1,7 @@
 from fastapi import Request, Response
 
 from marketgram.common.port.adapter.container import RequestContainer
-from marketgram.trade.application.new_payment_creation_command import (
+from marketgram.trade.application.commands.new_payment_creation import (
     NewPaymentCreationCommand,
     NewPaymentCreationHandler
 )

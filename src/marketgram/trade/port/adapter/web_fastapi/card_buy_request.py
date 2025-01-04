@@ -2,7 +2,7 @@ from fastapi import Request, Response
 from pydantic import BaseModel
 
 from marketgram.common.port.adapter.container import RequestContainer
-from marketgram.trade.application.card_buy_command import (
+from marketgram.trade.application.commands.card_buy import (
     CardBuyCommand,
     CardBuyHandler
 )

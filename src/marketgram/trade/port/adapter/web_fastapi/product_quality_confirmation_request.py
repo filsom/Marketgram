@@ -1,7 +1,7 @@
 from fastapi import Request, Response
 
 from marketgram.common.port.adapter.container import RequestContainer
-from marketgram.trade.application.product_quality_confirmation_command import (
+from marketgram.trade.application.commands.product_quality_confirmation import (
     ProductQualityConfirmationCommand,
     ProductQualityConfirmationHandler
 )
