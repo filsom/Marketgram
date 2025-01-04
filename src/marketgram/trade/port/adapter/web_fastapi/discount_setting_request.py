@@ -1,7 +1,7 @@
 from fastapi import Request, Response
 from pydantic import BaseModel
 
-from marketgram.common.port.adapter.container import RequestContainer
+from marketgram.common.port.adapter.container import Container
 from marketgram.trade.application.commands.discount_setting import (
     DiscountSettingCommand,
     DiscountSettingHandler
@@ -20,7 +20,7 @@ async def discount_setting_controller(
     req: Request, 
     res: Response
 ) -> str:
-    async with RequestContainer(req, res) as container:
+    async with Container(req, res) as container:
         command = DiscountSettingCommand(
             field.card_id,
             field.amount

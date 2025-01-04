@@ -1,7 +1,7 @@
 from fastapi import Request, Response
 from pydantic import BaseModel
 
-from marketgram.common.port.adapter.container import RequestContainer
+from marketgram.common.port.adapter.container import Container
 from marketgram.trade.application.commands.card_buy import (
     CardBuyCommand,
     CardBuyHandler
@@ -21,7 +21,7 @@ async def card_buy_controller(
     req: Request, 
     res: Response
 ) -> str:
-    async with RequestContainer(req, res) as container:
+    async with Container(req, res) as container:
         command = CardBuyCommand(
             field.card_id,
             field.qty,

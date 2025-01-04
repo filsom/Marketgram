@@ -1,7 +1,7 @@
 from fastapi import Request, Response
 from pydantic import BaseModel
 
-from marketgram.common.port.adapter.container import RequestContainer
+from marketgram.common.port.adapter.container import Container
 from marketgram.identity.access.application.commands.user_login import (
     UserLoginCommand, 
     UserLoginHandler
@@ -20,7 +20,7 @@ async def user_login_controller(
     req: Request, 
     res: Response
 ) -> str:
-    async with RequestContainer(req, res) as container:
+    async with Container(req) as container:
         command = UserLoginCommand(
             field.email,
             field.password,

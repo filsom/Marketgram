@@ -1,6 +1,6 @@
 from fastapi import Request, Response
 
-from marketgram.common.port.adapter.container import RequestContainer
+from marketgram.common.port.adapter.container import Container
 from marketgram.trade.application.commands.open_dispute import (
     OpenDisputeCommand,
     OpenDisputeHandler
@@ -14,7 +14,7 @@ async def dispute_closure_controller(
     req: Request, 
     res: Response
 ) -> str:
-    async with RequestContainer(req, res) as container:
+    async with Container(req, res) as container:
         handler = await container.get(
             OpenDisputeHandler
         )

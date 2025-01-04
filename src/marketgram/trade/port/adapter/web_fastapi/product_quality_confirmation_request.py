@@ -1,6 +1,6 @@
 from fastapi import Request, Response
 
-from marketgram.common.port.adapter.container import RequestContainer
+from marketgram.common.port.adapter.container import Container
 from marketgram.trade.application.commands.product_quality_confirmation import (
     ProductQualityConfirmationCommand,
     ProductQualityConfirmationHandler
@@ -14,7 +14,7 @@ async def product_quality_confirmation_controller(
     req: Request, 
     res: Response
 ) -> str:
-    async with RequestContainer(req, res) as container:
+    async with Container(req, res) as container:
         handler = await container.get(
             ProductQualityConfirmationHandler
         )

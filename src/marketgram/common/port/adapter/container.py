@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator, AsyncIterable
+from typing import AsyncGenerator
 
 from dishka import AsyncContainer
 from fastapi import Request, Response

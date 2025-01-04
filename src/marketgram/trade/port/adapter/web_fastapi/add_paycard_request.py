@@ -1,7 +1,7 @@
 from fastapi import Request, Response
 from pydantic import BaseModel
 
-from marketgram.common.port.adapter.container import RequestContainer
+from marketgram.common.port.adapter.container import Container
 from marketgram.trade.application.commands.add_paycard import (
     AddPaycardCommand, 
     AddPaycardHandler
@@ -21,7 +21,7 @@ async def add_paycard_controller(
     req: Request, 
     res: Response
 ) -> str:
-    async with RequestContainer(req, res) as container:
+    async with Container(req, res) as container:
         command = AddPaycardCommand(
             field.first6,
             field.last4,
