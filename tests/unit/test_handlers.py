@@ -195,6 +195,7 @@ class TestHandlers:
 
         # Assert
         assert {
+            'user_id': str(user_id),
             'session_id': str(session_id), 
             'expires_in': expires_in.strftime('%a, %d %b %Y %H:%M:%S')
         } == result
