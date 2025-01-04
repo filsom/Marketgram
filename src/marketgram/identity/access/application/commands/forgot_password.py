@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Generic, TypeVar
 
 from marketgram.common.application.email_sender import EmailSender
 from marketgram.common.application.message_maker import EmailMessageMaker
@@ -8,12 +9,19 @@ from marketgram.identity.access.domain.model.user_repository import (
 )
 
 
+Cmd = TypeVar('Cmd')
+
+
+class Handler(Generic[Cmd]):
+    pass
+
+
 @dataclass
 class ForgotPasswordCommand:
     email: str
 
 
-class ForgottenPasswordHandler:
+class ForgottenPasswordHandler(Handler[ForgotPasswordCommand]):
     def __init__(
         self,
         user_repository: UserRepository,

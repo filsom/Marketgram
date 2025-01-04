@@ -14,7 +14,8 @@ class DatabaseProvider(Provider):
     @provide(scope=Scope.APP)
     async def provider_async_engine(self) -> AsyncGenerator[AsyncEngine, None]:
         engine = create_async_engine(
-            os.environ['DB_URL'],
+            # os.environ['DB_URL'],
+            'postgresql+psycopg://postgres:som@localhost:5433',
             echo=True,
         )
         yield engine

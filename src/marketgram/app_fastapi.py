@@ -6,9 +6,7 @@ from fastapi import FastAPI
 from dishka.integrations.fastapi import setup_dishka
 
 from marketgram.common.ioc import DatabaseProvider
-from marketgram.identity.access.main.main import (
-    identity_access_provider,
-)
+from marketgram.identity.access.ioc import IdentityAccessIoC
 from marketgram.identity.access.port.adapter.fastapi_resources import router
 
 @asynccontextmanager
@@ -26,7 +24,7 @@ app.include_router(router)
 def create_app(app):
     container = make_async_container(
         DatabaseProvider(),
-        *identity_access_provider(),
+        IdentityAccessIoC(),
     )
     setup_dishka(container, app)
     

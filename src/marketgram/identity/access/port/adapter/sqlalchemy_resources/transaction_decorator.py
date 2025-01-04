@@ -11,7 +11,6 @@ from marketgram.identity.access.port.adapter.exceptions import (
 )
 
 
-
 class TransactionDecorator:
     def __init__(
         self,
