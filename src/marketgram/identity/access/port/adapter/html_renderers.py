@@ -34,5 +34,4 @@ class PasswordChangeHtmlRenderer(
             self._html_settings.password_change_link, 
             fields.value
         )
-
         return template.render(link=link)
