@@ -78,14 +78,11 @@ class IdentityAccessIoC(Provider):
     scope = Scope.REQUEST
 
     @provide(scope=Scope.APP)
-    def identity_access_settings(self) -> Settings:
+    def settings(self) -> Settings:
         return identity_access_load_settings()
 
     @provide(scope=Scope.APP)
-    async def provider_email_client(
-        self,
-        settings: Settings
-    ) -> AsyncIterable[EmailSender]:
+    async def email_client(self, settings: Settings) -> AsyncIterable[EmailSender]:
         email_settings = settings.for_email_client()
 
         client = SMTP(
