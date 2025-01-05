@@ -35,7 +35,7 @@ from marketgram.identity.access.application.commands.password_change import (
     PasswordChangeCommand,
     PasswordChange,
 )
-from marketgram.identity.access.application.commands.forgot_password import (
+from marketgram.identity.access.application.commands.forgotten_password import (
     ForgottenPasswordCommand,
     ForgottenPassword
 )

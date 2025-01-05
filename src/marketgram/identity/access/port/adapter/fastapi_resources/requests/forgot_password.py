@@ -2,7 +2,7 @@ from fastapi import Request, Response
 
 from marketgram.common.application.handler import Handler
 from marketgram.common.port.adapter.container import Container
-from marketgram.identity.access.application.commands.forgot_password import (
+from marketgram.identity.access.application.commands.forgotten_password import (
     ForgottenPasswordCommand, 
 )
 from marketgram.identity.access.port.adapter.fastapi_resources.routing import router

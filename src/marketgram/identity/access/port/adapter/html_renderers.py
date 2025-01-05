@@ -1,7 +1,7 @@
 from jinja2 import Template
 
 from marketgram.common.application.message_renderer import HtmlRenderer
-from marketgram.identity.access.application.commands.forgot_password import PasswordChangeToken
+from marketgram.identity.access.application.commands.forgotten_password import PasswordChangeToken
 from marketgram.identity.access.application.commands.user_registration import (
     ActivationToken
 )
