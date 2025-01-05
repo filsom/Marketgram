@@ -3,11 +3,12 @@ from typing import AsyncIterable
 from dishka import Provider, Scope, decorate, provide, provide_all
 from aiosmtplib import SMTP
 from argon2 import PasswordHasher
+from jinja2 import Environment
 
 from marketgram.common.application.email_sender import EmailSender
 from marketgram.common.application.handler import Handler, Cmd, Res
 from marketgram.common.application.jwt_manager import TokenManager
-from marketgram.common.application.message_maker import EmailMessageMaker
+from marketgram.common.application.message_renderer import HtmlSettings, MessageRenderer
 from marketgram.common.ioc import AS
 from marketgram.identity.access.domain.model.password_security_hasher import (
     PasswordSecurityHasher
@@ -26,8 +27,10 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_use
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_web_session_repository import (
     SQLAlchemyWebSessionRepository
 )
-from marketgram.identity.access.port.adapter.user_activate_message_maker import (
-    UserActivateMessageMaker
+from marketgram.identity.access.port.adapter.html_renderers import (
+    PasswordChangeHtmlRenderer,
+    UserActivateMessageMaker,
+    UserActivationHtmlRenderer
 )
 from marketgram.common.ioc import AS
 from marketgram.identity.access.application.commands.password_change import (
@@ -111,7 +114,6 @@ class IdentityAccessIoC(Provider):
         PasswordChangeService,
         UserAuthenticationService,
         UserCreationService,
-        provide(UserActivateMessageMaker, provides=EmailMessageMaker),
         provide(lambda hasher: PasswordHasher(), provides=PasswordSecurityHasher)
     )
 
@@ -132,12 +134,54 @@ class IdentityAccessIoC(Provider):
 
     handlers = provide_all(
         provide(PasswordChange, provides=Handler[PasswordChangeCommand, None]),
-        provide(ForgottenPassword, provides=Handler[ForgottenPasswordCommand, None]),
         provide(NewPassword, provides=Handler[NewPasswordCommand, None]),
         provide(UserActivate, provides=Handler[UserAcivateCommand, None]),
         provide(UserLoginHandler, provides=Handler[UserLoginCommand, dict[str, str]]),
-        provide(UserRegistration, provides=Handler[UserRegistrationCommand, None])
     )
+
+    @provide
+    def forgotten_password(
+        self,
+        settings: HtmlSettings,
+        jinja: Environment,
+        user_repository: UserRepository, 
+        jwt_manager: TokenManager, 
+        email_sender: EmailSender
+    ) -> Handler[ForgottenPasswordCommand, None]:
+        message_renderer = PasswordChangeHtmlRenderer(
+            'forgotten_password.html',
+            jinja,
+            settings
+        )
+        handler = ForgottenPassword(
+            user_repository,
+            jwt_manager,
+            message_renderer,
+            email_sender
+        )
+        return handler
+
+    @provide
+    def user_registration(
+        self, 
+        settings: HtmlSettings,
+        jinja: Environment,
+        user_creation_service: UserCreationService,
+        jwt_manager: TokenManager,
+        email_sender: EmailSender
+    ) -> Handler[UserRegistrationCommand, None]:
+        message_renderer = UserActivationHtmlRenderer(
+            'activate_user.html',
+            jinja,
+            settings
+        )
+        handler = UserRegistration(
+            user_creation_service,
+            jwt_manager,
+            message_renderer,
+            email_sender
+        )
+        return handler
 
     @decorate
     def wrapped_handler(

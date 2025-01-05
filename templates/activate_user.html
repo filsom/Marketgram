@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добро пожаловать в MARKETGRAM</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            text-align: center;
+            background: #fff;
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .container h1 {
+            color: #444;
+        }
+        .container p {
+            font-size: 1.1rem;
+        }
+        .button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #0078d4;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #005bb5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Добро пожаловать в MARKETGRAM!</h1>
+        <p>Спасибо за регистрацию на нашей платформе по продаже Telegram-аккаунтов.</p>
+        <p>Для завершения регистрации подтвердите вашу почту, нажав на ссылку ниже:</p>
+        <a href="{{ link }}" class="button">Подтвердить почту</a>
+        <p>Если вы не регистрировались на MARKETGRAM, просто игнорируйте это сообщение.</p>
+    </div>
+</body>
+</html>
