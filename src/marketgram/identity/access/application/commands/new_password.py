@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from marketgram.common.application.exceptions import ApplicationError
 from marketgram.common.application.handler import Handler
 from marketgram.common.application.jwt_manager import TokenManager
 from marketgram.identity.access.domain.model.password_change_service import (
@@ -43,6 +44,9 @@ class NewPassword(
         user = await self._user_repository.with_id(
             user_id
         )
+        if user is None:
+            raise ApplicationError()
+        
         self._password_service.change(
             user, 
             command.password,

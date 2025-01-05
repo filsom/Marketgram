@@ -10,7 +10,7 @@ class WebSession:
         user_id: UUID,
         session_id: UUID,
         created_at: datetime,
-        expires_in: timedelta,
+        expires_in: datetime,
         device: str
     ) -> None:
         self._user_id = user_id
@@ -61,7 +61,7 @@ class WebSession:
     def created_at(self) -> datetime:
         return self._created_at
 
-    def __eq__(self, other: 'WebSession') -> bool:
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, WebSession):
             return False
 

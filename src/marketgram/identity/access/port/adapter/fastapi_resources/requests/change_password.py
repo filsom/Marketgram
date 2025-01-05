@@ -1,3 +1,4 @@
+from uuid import UUID
 from fastapi import HTTPException, Request, Response, status
 from pydantic import BaseModel
 
@@ -27,7 +28,7 @@ async def change_password_controller(
             raise HTTPException(status.HTTP_401_UNAUTHORIZED)
 
         command = PasswordChangeCommand(
-            session_id,
+            UUID(session_id),
             field.old_password,
             field.new_password,
             field.same_new_password

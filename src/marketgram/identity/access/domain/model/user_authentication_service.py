@@ -33,7 +33,7 @@ class UserAuthenticationService:
         
         return self._authenticate(user, plain_password)
 
-    def _authenticate(self, user: User, plain_password: str) -> User:
+    def _authenticate(self, user: User | None, plain_password: str) -> User:
         if user is None:
             raise DomainError(INVALID_EMAIL_OR_PASSWORD)
         

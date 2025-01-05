@@ -2,7 +2,7 @@ from datetime import datetime
 from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import and_, delete, func, select
+from sqlalchemy import and_, delete, select
 
 from marketgram.identity.access.domain.model.web_session import (
     WebSession
@@ -42,4 +42,3 @@ class SQLAlchemyWebSessionRepository:
         result = await self._async_session.execute(stmt)
 
         return result.scalar_one_or_none()
-    

@@ -26,6 +26,7 @@ async def new_password_controller(
         command = NewPasswordCommand(
             token,
             field.new_password,
+            field.same_new_password
         )
         handler = await container.get(
             Handler[NewPasswordCommand, None]

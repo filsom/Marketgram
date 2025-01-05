@@ -1,6 +1,6 @@
-from typing import AsyncIterable
+from typing import AsyncGenerator, AsyncIterable
 
-from dishka import Provider, Scope, decorate, provide, provide_all
+from dishka import Provider, Scope, alias, decorate, provide, provide_all
 from aiosmtplib import SMTP
 from argon2 import PasswordHasher
 from jinja2 import Environment
@@ -29,7 +29,6 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_web
 )
 from marketgram.identity.access.port.adapter.html_renderers import (
     PasswordChangeHtmlRenderer,
-    UserActivateMessageMaker,
     UserActivationHtmlRenderer
 )
 from marketgram.common.ioc import AS
@@ -85,7 +84,7 @@ class IdentityAccessIoC(Provider):
         return identity_access_load_settings()
 
     @provide(scope=Scope.APP)
-    async def email_client(self, settings: Settings) -> AsyncIterable[EmailSender]:
+    async def email_client(self, settings: Settings) -> AsyncGenerator[SMTP]:
         email_settings = settings.for_email_client()
 
         client = SMTP(
@@ -96,7 +95,9 @@ class IdentityAccessIoC(Provider):
             validate_certs=email_settings.validate_certs
         )
         async with client:
-            yield client   
+            yield client  
+
+    alias_smtp = alias(source=SMTP, provides=EmailSender) 
 
     @provide
     def user_repository(self, async_session: AS) -> UserRepository:

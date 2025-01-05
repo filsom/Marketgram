@@ -16,7 +16,7 @@ class WebSessionRepository(Protocol):
     ) -> None:
         raise NotImplementedError
 
-    async def delete_with_session_id(
+    async def delete_with_id(
         self, 
         session_id: UUID
     ) -> None:
@@ -26,12 +26,6 @@ class WebSessionRepository(Protocol):
         self, 
         user_id: UUID
     ) -> None:
-        raise NotImplementedError
-
-    async def with_session_id(
-        self, 
-        session_id: UUID
-    ) -> WebSession | None:
         raise NotImplementedError
     
     async def lively_with_id(

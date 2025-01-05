@@ -1,3 +1,4 @@
+from uuid import UUID
 from fastapi import Request
 
 from marketgram.identity.access.application.get_user import GetUser, GetUserFields
@@ -11,5 +12,5 @@ async def get_user_controller(session_id: str, req: Request):
         query = await container.get(GetUser)
 
         return await query.execute(
-            GetUserFields(session_id)
+            GetUserFields(UUID(session_id))
         )

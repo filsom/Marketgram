@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from marketgram.common.application.exceptions import ApplicationError
 from marketgram.common.application.handler import Handler
 from marketgram.common.application.jwt_manager import TokenManager
 from marketgram.identity.access.domain.model.user_repository import (
@@ -30,5 +31,8 @@ class UserActivate(
         )
         exists_user = await self._user_repository \
             .with_id(user_id)
+        
+        if exists_user is None:
+            raise ApplicationError()
         
         return exists_user.activate()

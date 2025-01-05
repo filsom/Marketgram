@@ -18,7 +18,7 @@ class PyJWTTokenManager:
 
     def encode(self, payload: dict[str, str]) -> str:
         exp = datetime.now(tz=timezone.utc) + timedelta(minutes=15)
-        payload['exp'] = exp
+        payload['exp'] = str(exp)
 
         return jwt.encode(
             payload, 
@@ -32,7 +32,7 @@ class PyJWTTokenManager:
                 token, 
                 key=self._secret, 
                 audience=audience, 
-                algorithms='HS256'
+                algorithms=['HS256']
             )
 
         except (jwt.ExpiredSignatureError, jwt.InvalidAudienceError):

@@ -8,5 +8,5 @@ class PasswordSecurityHasher(Protocol):
     def verify(self, hash_password: str, password: str) -> bool:
         raise NotImplementedError
     
-    def check_needs_rehash(hash: str) -> bool:
+    def check_needs_rehash(self, hash: str) -> bool:
         raise NotImplementedError

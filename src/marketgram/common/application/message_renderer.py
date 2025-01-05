@@ -11,7 +11,7 @@ class ContentFields:
     pass
 
 
-CF = TypeVar('CF', bound=ContentFields)
+CF = TypeVar('CF', bound=ContentFields | str)
 
 
 @dataclass

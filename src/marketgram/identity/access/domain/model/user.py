@@ -46,7 +46,7 @@ class User:
     def password(self) -> str:
         return self._password
         
-    def __eq__(self, other: 'User') -> bool:
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, User):
             return False
 
