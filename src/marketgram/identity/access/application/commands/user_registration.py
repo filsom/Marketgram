@@ -6,7 +6,7 @@ from marketgram.identity.access.domain.model.user_creation_service import (
     UserCreationService
 )
 from marketgram.common.application.email_sender import EmailSender
-from marketgram.common.application.message_renderer import MessageRenderer
+from marketgram.common.application.message_renderer import ContentFields, MessageRenderer
 
 
 @dataclass
@@ -16,6 +16,11 @@ class UserRegistrationCommand:
     same_password: str
 
 
+@dataclass
+class ActivationToken(ContentFields):
+    value: str
+
+
 class UserRegistration(
     Handler[UserRegistrationCommand, None]
 ):
@@ -23,7 +28,7 @@ class UserRegistration(
         self,
         user_creation_service: UserCreationService,
         jwt_manager: TokenManager,
-        message_renderer: MessageRenderer[str],
+        message_renderer: MessageRenderer[ActivationToken],
         email_sender: EmailSender
     ) -> None:
         self._user_creation_service = user_creation_service
@@ -43,6 +48,6 @@ class UserRegistration(
         })
         message = self._message_renderer.render(
             command.email,
-            jwt_token
+            ActivationToken(jwt_token)
         )
         return await self._email_sender.send_message(message)

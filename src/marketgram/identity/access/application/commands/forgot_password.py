@@ -14,6 +14,11 @@ class ForgottenPasswordCommand:
     email: str
 
 
+@dataclass
+class PasswordChangeToken:
+    value: str
+
+
 class ForgottenPassword(
     Handler[ForgottenPasswordCommand, None]
 ):
@@ -21,7 +26,7 @@ class ForgottenPassword(
         self,
         user_repository: UserRepository,
         jwt_manager: TokenManager,
-        message_renderer: MessageRenderer[str],
+        message_renderer: MessageRenderer[PasswordChangeToken],
         email_sender: EmailSender
     ) -> None:
         self._user_repository = user_repository
@@ -39,6 +44,6 @@ class ForgottenPassword(
             })
             message = self._message_renderer.render(
                 user.email,
-                jwt_token 
+                PasswordChangeToken(jwt_token) 
             )
             return await self._email_sender.send_message(message)
