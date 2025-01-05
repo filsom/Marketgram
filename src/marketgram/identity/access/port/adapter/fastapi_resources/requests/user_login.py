@@ -24,7 +24,7 @@ async def user_login_controller(
         command = UserLoginCommand(
             field.email,
             field.password,
-            req.headers.get('user-agent'),
+            req.headers['user-agent'],
         )
         handler = await container.get(
             Handler[UserLoginCommand, dict[str, str]]
