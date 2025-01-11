@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from marketgram.trade.domain.model.p2p.spa.confirmation_deal import (
+from marketgram.trade.domain.model.p2p.deal.confirmation_deal import (
     ConfirmationDeal
 )
 from marketgram.trade.domain.model.rule.agreement.limits import Limits
