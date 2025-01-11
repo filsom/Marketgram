@@ -1,7 +1,6 @@
-import asyncio
 from typing import AsyncGenerator
 
-from dishka import Provider, Scope, alias, decorate, make_async_container, provide, provide_all
+from dishka import Provider, Scope, alias, decorate, provide, provide_all
 from aiosmtplib import SMTP
 from jinja2 import Environment
 
