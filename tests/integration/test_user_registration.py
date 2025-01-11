@@ -1,7 +1,7 @@
 from unittest.mock import AsyncMock
 from uuid import uuid4
-import pytest
 
+import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from marketgram.common.application.exceptions import ApplicationError
