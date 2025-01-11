@@ -4,6 +4,7 @@ import pytest
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from marketgram.common.application.exceptions import ApplicationError
 from marketgram.identity.access.application.commands.user_login import (
     UserLoginCommand, 
     UserLoginHandler
@@ -66,3 +67,27 @@ async def test_user_login(
     assert result['expires_in'] == web_session.to_formatted_time()
     assert result['user_id'] == str(user_id)
     assert web_session.device == device
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    'email,password,device', [('test@mail.ru', 'protected', 'Nokia 3210')]
+)
+async def logging_into_a_non_existent_account(
+    email: str, 
+    password: str,
+    device: str, 
+    async_session: AsyncSession
+) -> None:
+    # Arrange
+    sut = UserLoginHandler(
+        SQLAlchemyUserRepository(async_session),
+        Argon2PasswordHasher(),
+        SQLAlchemyWebSessionRepository(async_session)
+    )
+
+    # Act
+    with pytest.raises(ApplicationError):
+        await sut.handle(UserLoginCommand(
+            email, password, device
+        ))
