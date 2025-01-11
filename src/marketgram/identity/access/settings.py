@@ -1,7 +1,11 @@
 import os
 from dataclasses import dataclass
 
-from marketgram.common.application.message_renderer import JwtHtmlSettings
+from jinja2 import Environment, FileSystemLoader
+
+from marketgram.common.application.message_renderer import (
+    JwtHtmlSettings
+)
 
 
 @dataclass
@@ -32,6 +36,7 @@ class Settings:
     jwt_manager: JWTManagerSecret
     activate_html_settings: JwtHtmlSettings
     forgot_pwd_html_settings: JwtHtmlSettings
+    jinja_env: Environment
 
     def for_email_client(self) -> EmailClientSettings:
         return self.email_client
@@ -41,6 +46,9 @@ class Settings:
     
 
 def identity_access_load_settings() -> Settings:
+    loader = FileSystemLoader('templates')
+    env = Environment(loader=loader)
+
     activate_html_settings = ActivateHtmlSettings(
         os.environ.get('SENDER'),
         os.environ.get('SUBJECT'),
@@ -67,5 +75,6 @@ def identity_access_load_settings() -> Settings:
         email_client,
         jwt_manager,
         activate_html_settings,
-        forgot_pwd_html_settings
+        forgot_pwd_html_settings,
+        env
     )
