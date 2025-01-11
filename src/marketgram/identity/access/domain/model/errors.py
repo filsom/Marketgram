@@ -1,5 +1,4 @@
-class DomainError(Exception):
-    pass
+from marketgram.common.application.exceptions import DomainError
 
 
 class PersonalDataError(DomainError):

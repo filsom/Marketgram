@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
 
 from marketgram.common.application.exceptions import ApplicationError
-from marketgram.identity.access.domain.model.exceptions import DomainError
+from marketgram.identity.access.domain.model.errors import DomainError
 from marketgram.identity.access.port.adapter.exceptions import (
     InfrastructureException, 
     Unauthorized, 

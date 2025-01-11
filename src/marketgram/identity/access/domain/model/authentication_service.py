@@ -1,4 +1,4 @@
-from marketgram.identity.access.domain.model.exceptions import (
+from marketgram.identity.access.domain.model.errors import (
     INVALID_EMAIL_OR_PASSWORD,
     PersonalDataError
 )
