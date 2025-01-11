@@ -11,12 +11,25 @@ from marketgram.common.application.message_renderer import MessageRenderer
 from marketgram.identity.access.domain.model.password_hasher import (
     PasswordHasher
 )
-from marketgram.identity.access.domain.model.role_repository import RoleRepository
-from marketgram.identity.access.domain.model.user_repository import UserRepository
-from marketgram.identity.access.domain.model.web_session_repository import WebSessionRepository
-from marketgram.identity.access.port.adapter.argon2_password_hasher import Argon2PasswordHasher
+from marketgram.identity.access.domain.model.role_repository import (
+    RoleRepository
+)
+from marketgram.identity.access.domain.model.user_repository import (
+    UserRepository
+)
+from marketgram.identity.access.domain.model.web_session_repository import (
+    WebSessionRepository
+)
+from marketgram.identity.access.port.adapter.argon2_password_hasher import (
+    Argon2PasswordHasher
+)
 from marketgram.identity.access.port.adapter.html_renderers import JwtTokenHtmlRenderer
-from marketgram.identity.access.settings import ActivateHtmlSettings, ForgotPasswordHtmlSettings, Settings, identity_access_load_settings
+from marketgram.identity.access.settings import (
+    ActivateHtmlSettings, 
+    ForgotPasswordHtmlSettings, 
+    Settings, 
+    identity_access_load_settings
+)
 from marketgram.identity.access.port.adapter.pyjwt_token_manager import PyJWTTokenManager
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_role_repository import (
     SQLAlchemyRoleRepository
@@ -27,7 +40,7 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_use
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_web_session_repository import (
     SQLAlchemyWebSessionRepository
 )
-from marketgram.common.ioc import AS, DatabaseProvider
+from marketgram.common.ioc import AS
 from marketgram.identity.access.application.commands.password_change import (
     PasswordChangeCommand,
     PasswordChangeHandler,
