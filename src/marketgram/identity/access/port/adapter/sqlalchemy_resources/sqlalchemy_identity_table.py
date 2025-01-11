@@ -52,8 +52,8 @@ web_session_table = Table(
     ),
     Column('session_id', UUID, nullable=False),
     Column('user_id', UUID, nullable=False, unique=False),
-    Column('created_at', DateTime, nullable=False),
-    Column('expires_in', DateTime, nullable=False),
+    Column('created_at', DateTime(timezone=True), nullable=False),
+    Column('expires_in', DateTime(timezone=True), nullable=False),
     Column('device', String, nullable=False),
     Column('version_id', Integer, nullable=False)
 )

@@ -10,9 +10,9 @@ class WebSessionFactory:
     MAX_DAYS = 15
 
     def create(
-        self, 
-        user_id: UUID, 
-        current_time: datetime, 
+        self,
+        user_id: UUID,
+        current_time: datetime,
         device: str
     ) -> WebSession:
         return WebSession(

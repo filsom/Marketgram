@@ -16,7 +16,12 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_ide
     user_table, 
     web_session_table
 )
-from marketgram.identity.access.settings import ActivateHtmlSettings, ForgotPasswordHtmlSettings, Settings, identity_access_load_settings
+from marketgram.identity.access.settings import (
+    ActivateHtmlSettings, 
+    ForgotPasswordHtmlSettings, 
+    Settings, 
+    identity_access_load_settings
+)
 
 
 mapper = registry()

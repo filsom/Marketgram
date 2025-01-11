@@ -46,7 +46,7 @@ class UserLoginHandler:
             .delete_this_device(user.user_id, command.device)       
 
         web_session = WebSessionFactory().create(
-            user.user_id, datetime.now(UTC), command.device
+            user.user_id, datetime.now(), command.device
         )
         await self._web_session_repository.add(web_session)
 

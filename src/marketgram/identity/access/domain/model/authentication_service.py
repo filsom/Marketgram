@@ -19,7 +19,7 @@ class AuthenticationService:
         if not user.is_active:
             raise PersonalDataError(INVALID_EMAIL_OR_PASSWORD)
         
-        if not self._password_hasher.verify(plain_password, user.password):
+        if not self._password_hasher.verify(user.password, plain_password):
             raise PersonalDataError(INVALID_EMAIL_OR_PASSWORD)
 
         if self._password_hasher.check_needs_rehash(user.password):

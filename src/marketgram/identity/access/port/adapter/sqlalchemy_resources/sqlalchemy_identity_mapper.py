@@ -35,12 +35,11 @@ def identity_registry_mapper(mapper_registry: registry):
         WebSession, 
         web_session_table,
         properties={
-            '_session_id': web_session_table.c.session_id,
-            '_user_id': web_session_table.c.user_id,
-            '_created_at': web_session_table.c.created_at,
-            '_expires_in': web_session_table.c.expires_in,
-            '_device': web_session_table.c.device
+            'session_id': web_session_table.c.session_id,
+            'user_id': web_session_table.c.user_id,
+            'created_at': web_session_table.c.created_at,
+            'expires_in': web_session_table.c.expires_in,
+            'device': web_session_table.c.device
         },
-        column_prefix="_",
         version_id_col=web_session_table.c.version_id,
     )
