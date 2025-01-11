@@ -12,7 +12,7 @@ class WebSession:
     device: str
 
     def is_living(self, current_time: datetime) -> None:
-        return self.expires_in - current_time <= 1
+        return (self.expires_in - current_time).days <= 1
 
     def to_formatted_time(self) -> str:
         return self.expires_in.strftime('%a, %d %b %Y %H:%M:%S')

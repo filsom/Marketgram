@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 
 from marketgram.common.application.exceptions import ApplicationError
+from marketgram.common.application.handler import Command
 from marketgram.identity.access.domain.model.authentication_service import (
     AuthenticationService
 )
@@ -16,7 +17,7 @@ from marketgram.identity.access.domain.model.web_session_factory import (
 
 
 @dataclass
-class UserLoginCommand:
+class UserLoginCommand(Command):
     email: str
     password: str
     device: str

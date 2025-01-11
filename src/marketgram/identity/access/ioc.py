@@ -3,7 +3,6 @@ from typing import AsyncGenerator
 
 from dishka import Provider, Scope, alias, decorate, make_async_container, provide, provide_all
 from aiosmtplib import SMTP
-from argon2 import PasswordHasher
 from jinja2 import Environment
 
 from marketgram.common.application.email_sender import EmailSender
@@ -144,7 +143,7 @@ class IdentityAccessIoC(Provider):
     
     a_user_reg = alias(UserRegistrationHandler, provides=Handler[UserRegistrationCommand, None])
     a_pwd_change = alias(PasswordChangeHandler, provides=Handler[PasswordChangeCommand, None])
-    a_new_pwd = alias(NewPasswordHandler, Handler[NewPasswordCommand, None])
+    a_new_pwd = alias(NewPasswordHandler, provides=Handler[NewPasswordCommand, None])
     a_user_activate = alias(UserActivateHandler, provides=Handler[UserAcivateCommand, None])
     a_user_login = alias(UserLoginHandler, provides=Handler[UserLoginCommand, dict[str, str]])
     a_forgot_pwd = alias(ForgotPasswordHandler, provides=Handler[ForgotPasswordCommand, None])

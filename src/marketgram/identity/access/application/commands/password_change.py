@@ -3,6 +3,7 @@ from datetime import UTC, datetime
 from uuid import UUID
 
 from marketgram.common.application.exceptions import ApplicationError
+from marketgram.common.application.handler import Command
 from marketgram.identity.access.domain.model.password_hasher import (
     PasswordHasher
 )
@@ -16,7 +17,7 @@ from marketgram.identity.access.domain.model.authentication_service import (
 
 
 @dataclass
-class PasswordChangeCommand:
+class PasswordChangeCommand(Command):
     session_id: UUID
     old_password: str
     new_password: str

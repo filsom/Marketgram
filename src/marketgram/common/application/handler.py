@@ -7,8 +7,8 @@ class Command:
     pass
 
 
-Cmd = TypeVar('Cmd', bound=Command)
-Res = TypeVar('Res')
+Cmd = TypeVar('Cmd', bound=Command, contravariant=True)
+Res = TypeVar('Res', covariant=True)
 
 
 class Handler(Protocol[Cmd, Res]):

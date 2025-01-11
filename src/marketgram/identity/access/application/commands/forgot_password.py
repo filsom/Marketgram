@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from marketgram.common.application.email_sender import EmailSender
+from marketgram.common.application.handler import Command
 from marketgram.common.application.message_renderer import MessageRenderer
 from marketgram.common.application.jwt_manager import TokenManager
 from marketgram.identity.access.domain.model.user_repository import (
@@ -10,7 +11,7 @@ from marketgram.identity.access.settings import ForgotPasswordHtmlSettings
 
 
 @dataclass
-class ForgotPasswordCommand:
+class ForgotPasswordCommand(Command):
     email: str
 
 

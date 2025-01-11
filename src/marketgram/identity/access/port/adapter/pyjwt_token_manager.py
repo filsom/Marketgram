@@ -8,11 +8,12 @@ from marketgram.identity.access.port.adapter.exceptions import (
     JWTVerifyException
 
 )
+from marketgram.identity.access.settings import JWTManagerSecret
 
 class PyJWTTokenManager:
     def __init__(
         self,
-        secret: str,
+        secret: JWTManagerSecret,
     ) -> None:
         self._secret = secret
 

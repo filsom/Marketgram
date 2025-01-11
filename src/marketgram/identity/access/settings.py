@@ -14,7 +14,7 @@ class EmailClientSettings:
 
 
 @dataclass
-class JWTManagerSettings:
+class JWTManagerSecret:
     secret: str
 
 
@@ -29,9 +29,9 @@ class ForgotPasswordHtmlSettings(JwtHtmlSettings):
 @dataclass
 class Settings:
     email_client: EmailClientSettings
-    jwt_manager: JWTManagerSettings
-    activate_html_settings: ActivateHtmlSettings
-    forgot_pwd_html_settings: ForgotPasswordHtmlSettings
+    jwt_manager: JWTManagerSecret
+    activate_html_settings: JwtHtmlSettings
+    forgot_pwd_html_settings: JwtHtmlSettings
 
     def for_email_client(self) -> EmailClientSettings:
         return self.email_client
@@ -60,7 +60,7 @@ def identity_access_load_settings() -> Settings:
         os.environ.get('PASSWORD'),
         os.environ.get('VALIDATE_CERTS')
     )
-    jwt_manager = JWTManagerSettings(
+    jwt_manager = JWTManagerSecret(
         os.environ.get('JWT_SECRET')
     )
     return Settings(

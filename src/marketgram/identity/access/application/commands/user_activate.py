@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from marketgram.common.application.exceptions import ApplicationError
+from marketgram.common.application.handler import Command
 from marketgram.common.application.jwt_manager import TokenManager
 from marketgram.identity.access.domain.model.user_repository import (
     UserRepository
@@ -8,7 +9,7 @@ from marketgram.identity.access.domain.model.user_repository import (
 
 
 @dataclass
-class UserAcivateCommand:
+class UserAcivateCommand(Command):
     token: str
 
 
