@@ -23,7 +23,7 @@ class PyJWTTokenManager:
 
         return jwt.encode(
             payload, 
-            self._secret, 
+            self._secret.secret, 
             algorithm='HS256'
         )
     

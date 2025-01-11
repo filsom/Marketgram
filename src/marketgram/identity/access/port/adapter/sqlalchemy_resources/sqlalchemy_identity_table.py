@@ -4,17 +4,14 @@ from sqlalchemy import (
     DateTime, 
     Enum, 
     Integer,
-    MetaData, 
     String, 
     Table, 
     UUID,
     text
 )
 
+from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
 from marketgram.identity.access.domain.model.role_permission import Permission
-
-
-metadata = MetaData()
 
 
 user_table = Table(

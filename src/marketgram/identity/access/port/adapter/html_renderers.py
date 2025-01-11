@@ -9,6 +9,6 @@ class JwtTokenHtmlRenderer(HtmlRenderer[str]):
         template: Template, 
         fields: str
     ) -> str:
-        link = '{}{}'.format(self._html_settings.password_change_link, fields)
+        link = '{}{}'.format(self._html_settings, fields)
 
         return template.render(link=link)

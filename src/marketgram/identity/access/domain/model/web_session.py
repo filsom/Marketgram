@@ -3,7 +3,7 @@ from datetime import datetime
 from uuid import UUID
     
 
-@dataclass(frozen=True)
+@dataclass
 class WebSession:
     user_id: UUID
     session_id: UUID

@@ -25,7 +25,6 @@ class UserRegistrationHandler:
         self,
         user_repository: UserRepository,
         role_repository: RoleRepository,
-        user_factory: UserFactory,
         jwt_manager: TokenManager,
         message_renderer: MessageRenderer[
             ActivateHtmlSettings, str
@@ -35,7 +34,6 @@ class UserRegistrationHandler:
     ) -> None:
         self._user_repository = user_repository
         self._role_repository = role_repository
-        self._user_factory= user_factory
         self._jwt_manager = jwt_manager
         self._message_renderer = message_renderer
         self._email_sender = email_sender
