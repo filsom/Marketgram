@@ -11,7 +11,6 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_use
 from marketgram.identity.access.settings import JWTManagerSecret
 
 
-
 @pytest.mark.asyncio
 @pytest.mark.parametrize('email,password', [('test@mail.ru', 'unprotected')])
 async def test_user_registration(
