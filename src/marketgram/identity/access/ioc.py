@@ -9,7 +9,7 @@ from jinja2 import Environment
 from marketgram.common.application.email_sender import EmailSender
 from marketgram.common.application.handler import Handler, Cmd, Res
 from marketgram.common.application.jwt_manager import TokenManager
-from marketgram.common.application.message_renderer import HtmlSettings, MessageRenderer
+from marketgram.common.application.message_renderer import MessageRenderer
 from marketgram.identity.access.domain.model.password_hasher import (
     PasswordHasher
 )
@@ -147,7 +147,7 @@ class IdentityAccessIoC(Provider):
     a_new_pwd = alias(NewPasswordHandler, Handler[NewPasswordCommand, None])
     a_user_activate = alias(UserActivateHandler, provides=Handler[UserAcivateCommand, None])
     a_user_login = alias(UserLoginHandler, provides=Handler[UserLoginCommand, dict[str, str]])
-    a_forgot_pwd = alias(ForgotPasswordHandler, provides=Handler[ForgotPasswordHandler, None])
+    a_forgot_pwd = alias(ForgotPasswordHandler, provides=Handler[ForgotPasswordCommand, None])
 
     @decorate
     def wrapped_handler(
