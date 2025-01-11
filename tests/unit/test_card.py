@@ -1,6 +1,5 @@
 from datetime import UTC, datetime
 from decimal import Decimal
-from typing import Callable, TypeAlias
 from uuid import uuid4
 
 import pytest
