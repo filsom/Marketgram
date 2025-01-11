@@ -5,6 +5,7 @@ from marketgram.common.application.exceptions import ApplicationError
 from marketgram.identity.access.domain.model.authentication_service import (
     AuthenticationService
 )
+from marketgram.identity.access.domain.model.password_hasher import PasswordHasher
 from marketgram.identity.access.domain.model.user_repository import UserRepository
 from marketgram.identity.access.domain.model.web_session_repository import (
     WebSessionRepository
@@ -25,11 +26,11 @@ class UserLoginHandler:
     def __init__(
         self,
         user_repository: UserRepository,
-        auth_service: AuthenticationService,
+        password_hasher: PasswordHasher,
         web_session_repository: WebSessionRepository,
     ) -> None:
         self._user_repository = user_repository
-        self._auth_service = auth_service
+        self._password_hasher = password_hasher
         self._web_session_repository = web_session_repository
 
     async def handle(self, command: UserLoginCommand) -> dict[str, str]:
@@ -37,7 +38,8 @@ class UserLoginHandler:
         if user is None:
             raise ApplicationError()
         
-        self._auth_service.authenticate(user, command.password)
+        AuthenticationService(self._password_hasher) \
+            .authenticate(user, command.password)
         
         await self._web_session_repository \
             .delete_this_device(user.user_id, command.device)       

@@ -10,6 +10,7 @@ from marketgram.identity.access.domain.model.user_factory import UserFactory
 from marketgram.common.application.email_sender import EmailSender
 from marketgram.common.application.message_renderer import MessageRenderer
 from marketgram.identity.access.domain.model.user_repository import UserRepository
+from marketgram.identity.access.settings import ActivateHtmlSettings
 
 
 @dataclass
@@ -25,7 +26,9 @@ class UserRegistrationHandler:
         role_repository: RoleRepository,
         user_factory: UserFactory,
         jwt_manager: TokenManager,
-        message_renderer: MessageRenderer,
+        message_renderer: MessageRenderer[
+            ActivateHtmlSettings, str
+        ],
         email_sender: EmailSender,
         password_hasher: PasswordHasher
     ) -> None:

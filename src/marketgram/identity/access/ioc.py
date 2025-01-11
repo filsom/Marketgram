@@ -16,7 +16,9 @@ from marketgram.identity.access.domain.model.password_hasher import (
 from marketgram.identity.access.domain.model.role_repository import RoleRepository
 from marketgram.identity.access.domain.model.user_repository import UserRepository
 from marketgram.identity.access.domain.model.web_session_repository import WebSessionRepository
-from marketgram.identity.access.settings import Settings, identity_access_load_settings
+from marketgram.identity.access.port.adapter.argon2_password_hasher import Argon2PasswordHasher
+from marketgram.identity.access.port.adapter.html_renderers import JwtTokenHtmlRenderer
+from marketgram.identity.access.settings import ActivateHtmlSettings, ForgotPasswordHtmlSettings, Settings, identity_access_load_settings
 from marketgram.identity.access.port.adapter.pyjwt_token_manager import PyJWTTokenManager
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_role_repository import (
     SQLAlchemyRoleRepository
@@ -27,53 +29,36 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_use
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_web_session_repository import (
     SQLAlchemyWebSessionRepository
 )
-from marketgram.identity.access.port.adapter.html_renderers import (
-    PasswordChangeHtmlRenderer,
-    UserActivationHtmlRenderer
-)
 from marketgram.common.ioc import AS, DatabaseProvider
 from marketgram.identity.access.application.commands.password_change import (
     PasswordChangeCommand,
-    PasswordChange,
+    PasswordChangeHandler,
 )
 from marketgram.identity.access.application.commands.forgot_password import (
     ForgotPasswordCommand,
-    ForgotPassword
+    ForgotPasswordHandler
 )
 from marketgram.identity.access.application.commands.new_password import (
     NewPasswordCommand,
-    NewPassword
+    NewPasswordHandler
 )
 from marketgram.identity.access.application.commands.user_activate import (
     UserAcivateCommand,
-    UserActivate
+    UserActivateHandler
 )
 from marketgram.identity.access.application.commands.user_login import (
     UserLoginCommand,
     UserLoginHandler
 )
 from marketgram.identity.access.application.commands.user_registration import (
-    ActivationToken,
-    UserRegistration,
+    UserRegistrationHandler,
     UserRegistrationCommand,
 )
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import (
     TransactionDecorator
 )
-from marketgram.identity.access.domain.model.password_change_service import (
-    PasswordChangeService
-)
-from marketgram.identity.access.domain.model.authentication_service import (
-    AuthenticationService
-)
-from marketgram.identity.access.domain.model.user_factory import (
-    UserCreationService
-)
 from marketgram.identity.access.domain.model.web_session_repository import (
     WebSessionRepository
-)
-from marketgram.identity.access.domain.model.web_session_factory import (
-    WebSessionFactory
 )
 
 
@@ -98,7 +83,7 @@ class IdentityAccessIoC(Provider):
         async with client:
             yield client  
 
-    alias_smtp = alias(source=SMTP, provides=EmailSender) 
+    a_smtp = alias(source=SMTP, provides=EmailSender) 
 
     @provide
     def user_repository(self, async_session: AS) -> UserRepository:
@@ -112,65 +97,57 @@ class IdentityAccessIoC(Provider):
     def role_repository(self, async_session: AS) -> RoleRepository:
         return SQLAlchemyRoleRepository(async_session)
 
-    dependencies = provide_all(
-        PasswordChangeService,
-        AuthenticationService,
-        UserCreationService,
-        provide(lambda hasher: PasswordHasher(), provides=PasswordHasher)
-    )
-
     @provide
-    def user_activation_html_renderer(
-        self, 
-        settings: HtmlSettings,
-        jinja: Environment,
-    ) -> MessageRenderer[ActivationToken]:
-        return UserActivationHtmlRenderer(
-            'activate_user.html', 
-            jinja, 
-            settings
+    def password_hasher(self) -> Argon2PasswordHasher:
+        return Argon2PasswordHasher(
+            time_cost=2,
+            memory_cost=19 * 1024,
+            parallelism=1
         )
     
-    @provide
-    def password_change_html_renderer(
-        self,
-        settings: HtmlSettings,
-        jinja: Environment,
-    ) -> Handler[ForgotPasswordCommand, None]:
-        return PasswordChangeHtmlRenderer(
-            'forgotten_password.html', 
-            jinja, 
-            settings
-        )
+    a_ph = alias(Argon2PasswordHasher, provides=PasswordHasher)
 
     @provide
     def jwt_manager(self, settings: Settings) -> TokenManager:
-        return PyJWTTokenManager(settings.for_jwt_manager())
-
+        return PyJWTTokenManager(settings.jwt_manager)
+    
     @provide
-    def web_session_service(
-        self,
-        settings: Settings,
-        web_session_repository: WebSessionRepository
-    ) -> WebSessionFactory:
-        return WebSessionFactory(
-            settings.max_age_session,
-            web_session_repository
+    def activate_jwt_message_renderer(
+        self, 
+        settings: Settings, 
+        jinja: Environment
+    ) -> MessageRenderer[ActivateHtmlSettings, str]:
+        return JwtTokenHtmlRenderer(
+            jinja,
+            settings.activate_html_settings
+        )
+    
+    @provide
+    def forgot_pwd_message_renderer(
+        self, 
+        settings: Settings, 
+        jinja: Environment
+    ) -> MessageRenderer[ForgotPasswordHtmlSettings, str]:
+        return JwtTokenHtmlRenderer(
+            jinja,
+            settings.forgot_pwd_html_settings
         )
 
-    # handlers = provide_all(
-    #     provide(UserRegistration, provides=Handler[UserRegistrationCommand, None]),
-    #     provide(PasswordChange, provides=Handler[PasswordChangeCommand, None]),
-    #     provide(NewPassword, provides=Handler[NewPasswordCommand, None]),
-    #     provide(UserActivate, provides=Handler[UserAcivateCommand, None]),
-    #     provide(UserLoginHandler, provides=Handler[UserLoginCommand, dict[str, str]]),
-    #     provide(ForgottenPassword, provides=Handler[ForgottenPasswordCommand, None])
-    # )
-    # x = provide(
-        UserRegistration, 
-        provides=Handler[UserRegistrationCommand, None]
-        # provides=alias(source=UserRegistration, provides=Handler[UserRegistrationCommand, None])
-    # ),
+    handlers = provide_all(
+        UserRegistrationHandler,
+        PasswordChangeHandler,
+        NewPasswordHandler,
+        UserActivateHandler,
+        UserLoginHandler,
+        ForgotPasswordHandler
+    )
+    
+    a_user_reg = alias(UserRegistrationHandler, provides=Handler[UserRegistrationCommand, None])
+    a_pwd_change = alias(PasswordChangeHandler, provides=Handler[PasswordChangeCommand, None])
+    a_new_pwd = alias(NewPasswordHandler, Handler[NewPasswordCommand, None])
+    a_user_activate = alias(UserActivateHandler, provides=Handler[UserAcivateCommand, None])
+    a_user_login = alias(UserLoginHandler, provides=Handler[UserLoginCommand, dict[str, str]])
+    a_forgot_pwd = alias(ForgotPasswordHandler, provides=Handler[ForgotPasswordHandler, None])
 
     @decorate
     def wrapped_handler(

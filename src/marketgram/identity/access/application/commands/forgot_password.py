@@ -6,6 +6,7 @@ from marketgram.common.application.jwt_manager import TokenManager
 from marketgram.identity.access.domain.model.user_repository import (
     UserRepository
 )
+from marketgram.identity.access.settings import ForgotPasswordHtmlSettings
 
 
 @dataclass
@@ -18,7 +19,9 @@ class ForgotPasswordHandler:
         self,
         user_repository: UserRepository,
         jwt_manager: TokenManager,
-        message_renderer: MessageRenderer,
+        message_renderer: MessageRenderer[
+            ForgotPasswordHtmlSettings, str
+        ],
         email_sender: EmailSender
     ) -> None:
         self._user_repository = user_repository

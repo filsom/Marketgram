@@ -11,35 +11,40 @@ class ContentFields:
     pass
 
 
-CF = TypeVar('CF', bound=ContentFields | str)
-
-
 @dataclass
 class HtmlSettings:
     sender: str
     subject: str
-    activate_link: str
-    password_change_link: str
+    template_name: str
 
 
-class MessageRenderer(Generic[CF]):
-    def render(self, recipient: str, fields: CF) -> MIMEMultipart:
-        raise NotImplementedError
+@dataclass
+class JwtHtmlSettings(HtmlSettings):
+    link: str
 
 
-class HtmlRenderer(MessageRenderer[CF]):
+S = TypeVar('S', bound=HtmlSettings)
+CF = TypeVar('CF', bound=ContentFields | str)
+
+
+class MessageRenderer(Generic[S, CF]):
     def __init__(
         self,
-        template_name: str,
         jinja: Environment,
-        html_settings: HtmlSettings
+        html_settings: S
     ) -> None:
-        self._template_name = template_name
         self._jinja = jinja
         self._html_settings = html_settings
 
     def render(self, recipient: str, fields: CF) -> MIMEMultipart:
-        template = self._jinja.get_template(self._template_name)
+        raise NotImplementedError
+
+
+class HtmlRenderer(MessageRenderer[S, CF]):
+    def render(self, recipient: str, fields: CF) -> MIMEMultipart:
+        template = self._jinja.get_template(
+            self._html_settings.template_name
+        )
         content = self.make_html_content(template, fields)
 
         message = MIMEMultipart('alternative')

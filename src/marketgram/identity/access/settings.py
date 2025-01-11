@@ -1,6 +1,7 @@
 import os
-from datetime import timedelta
 from dataclasses import dataclass
+
+from marketgram.common.application.message_renderer import JwtHtmlSettings
 
 
 @dataclass
@@ -17,11 +18,20 @@ class JWTManagerSettings:
     secret: str
 
 
+class ActivateHtmlSettings(JwtHtmlSettings):
+    pass
+
+
+class ForgotPasswordHtmlSettings(JwtHtmlSettings):
+    pass
+
+
 @dataclass
 class Settings:
     email_client: EmailClientSettings
     jwt_manager: JWTManagerSettings
-    max_age_session: timedelta
+    activate_html_settings: ActivateHtmlSettings
+    forgot_pwd_html_settings: ForgotPasswordHtmlSettings
 
     def for_email_client(self) -> EmailClientSettings:
         return self.email_client
@@ -31,6 +41,18 @@ class Settings:
     
 
 def identity_access_load_settings() -> Settings:
+    activate_html_settings = ActivateHtmlSettings(
+        os.environ.get('SENDER'),
+        os.environ.get('SUBJECT'),
+        os.environ.get('TEMPLATE_NAME'),
+        os.environ.get('ACTIVATE_LINK'),
+    )
+    forgot_pwd_html_settings = ActivateHtmlSettings(
+        os.environ.get('SENDER'),
+        os.environ.get('SUBJECT'),
+        os.environ.get('TEMPLATE_NAME'),
+        os.environ.get('FORGOT_PWD_LINK'),
+    )
     email_client = EmailClientSettings(
         os.environ.get('HOSTNAME'),
         os.environ.get('PORT'),
@@ -44,5 +66,6 @@ def identity_access_load_settings() -> Settings:
     return Settings(
         email_client,
         jwt_manager,
-        timedelta(days=15)
+        activate_html_settings,
+        forgot_pwd_html_settings
     )

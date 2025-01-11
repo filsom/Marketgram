@@ -25,12 +25,10 @@ class PasswordChangeCommand:
 class PasswordChangeHandler:
     def __init__(
         self,
-        auth_service: AuthenticationService,
         user_repository: UserRepository,
         web_session_repository: WebSessionRepository,
         password_hasher: PasswordHasher
     ) -> None:
-        self._auth_service = auth_service
         self._user_repository = user_repository
         self._web_session_repository = web_session_repository
         self._password_hasher = password_hasher
@@ -44,7 +42,8 @@ class PasswordChangeHandler:
         
         user = await self._user_repository.with_id(web_session.user_id)
 
-        self._auth_service.authenticate(user, command.old_password)
+        AuthenticationService(self._password_hasher) \
+            .authenticate(user, command.old_password)
 
         user.change_password(command.new_password, self._password_hasher)
 
