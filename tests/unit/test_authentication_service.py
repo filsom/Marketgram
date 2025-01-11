@@ -1,9 +1,12 @@
-from unittest.mock import Mock
 from uuid import uuid4
-from marketgram.identity.access.domain.model.authentication_service import AuthenticationService
+
+from marketgram.identity.access.domain.model.authentication_service import (
+    AuthenticationService
+)
 from marketgram.identity.access.domain.model.user import User
-from marketgram.identity.access.domain.model.user_factory import UserFactory
-from marketgram.identity.access.port.adapter.argon2_password_hasher import Argon2PasswordHasher
+from marketgram.identity.access.port.adapter.argon2_password_hasher import (
+    Argon2PasswordHasher
+)
 
 
 class TestAuthenticationService:
