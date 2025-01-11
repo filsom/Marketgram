@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
+from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
 from marketgram.trade.domain.model.p2p.time_tags import TimeTags
 from marketgram.trade.domain.model.rule.agreement.entry import PostingEntry
 from marketgram.trade.domain.model.rule.agreement.entry_status import EntryStatus
