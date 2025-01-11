@@ -9,7 +9,7 @@ from marketgram.identity.access.domain.model.user_repository import UserReposito
 from marketgram.identity.access.domain.model.web_session_repository import (
     WebSessionRepository
 )
-from marketgram.identity.access.domain.model.web_factory import (
+from marketgram.identity.access.domain.model.web_session_factory import (
     WebSessionFactory
 )
 
