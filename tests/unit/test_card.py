@@ -1,5 +1,6 @@
 from datetime import UTC, datetime
 from decimal import Decimal
+from typing import Callable, TypeAlias
 from uuid import uuid4
 
 import pytest
@@ -11,7 +12,6 @@ from marketgram.trade.domain.model.trade_item.description import (
     Region
 )
 from marketgram.trade.domain.model.trade_item.exceptions import (
-    DISCOUNT_ERROR, 
     DomainError
 )
 from marketgram.trade.domain.model.p2p.delivery import Delivery
@@ -36,42 +36,46 @@ class TestCard:
 
     def test_remove_discounted_price(self):
         # Arrange 
-        sut = self.make_card(Money(200), Money(100), Decimal('0.1'))
+        initial_price = Money(200)
+
+        sut = self.make_card(initial_price, Money(100), Decimal('0.1'))
         sut.set_discounted_price(Money(150))
 
         # Act
         sut.remove_discount()
 
         # Assert
-        assert sut.price == Money(200)
+        assert initial_price == sut.price
 
     def test_setting_discounted_price_at_a_minimum_price(self) -> None:
         # Arrange
         new_price = Money(90)
+        initial_price = Money(100)
         min_price = Money(100)
 
-        sut = self.make_card(min_price, min_price, Decimal('0.1'))
+        sut = self.make_card(initial_price, min_price, Decimal('0.1'))
 
         # Act
-        with pytest.raises(DomainError) as excinfo:
+        with pytest.raises(DomainError):
             sut.set_discounted_price(new_price)
 
         # Assert
-        assert DISCOUNT_ERROR == str(excinfo.value)
+        assert initial_price == sut.price
 
-    @pytest.mark.parametrize('incorrect_price', [(Money(10)), (Money(200))])
+    @pytest.mark.parametrize('incorrect_price', [Money(10), Money(200), Money(300)])
     def test_incorrect_min_and_max_values_of_the_discounted_price(self, incorrect_price) -> None:
         # Arrange
         min_price = Money(100)
+        initial_price = Money(200)
 
-        sut = self.make_card(Money(200), min_price, Decimal('0.1'))
+        sut = self.make_card(initial_price, min_price, Decimal('0.1'))
 
         # Act
-        with pytest.raises(DomainError) as excinfo:
+        with pytest.raises(DomainError):
             sut.set_discounted_price(incorrect_price)
 
         # Assert
-        assert 'Некорректная скидочная цена!' in str(excinfo.value)
+        assert initial_price == sut.price
             
     def make_card(
         self, 
