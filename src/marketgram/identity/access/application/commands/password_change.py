@@ -3,8 +3,8 @@ from datetime import UTC, datetime
 from uuid import UUID
 
 from marketgram.common.application.exceptions import ApplicationError
-from marketgram.identity.access.domain.model.password_security_hasher import (
-    PasswordSecurityHasher
+from marketgram.identity.access.domain.model.password_hasher import (
+    PasswordHasher
 )
 from marketgram.identity.access.domain.model.user_repository import UserRepository
 from marketgram.identity.access.domain.model.web_session_repository import (
@@ -28,7 +28,7 @@ class PasswordChangeHandler:
         auth_service: AuthenticationService,
         user_repository: UserRepository,
         web_session_repository: WebSessionRepository,
-        password_hasher: PasswordSecurityHasher
+        password_hasher: PasswordHasher
     ) -> None:
         self._auth_service = auth_service
         self._user_repository = user_repository

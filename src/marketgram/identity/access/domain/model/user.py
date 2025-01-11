@@ -4,8 +4,8 @@ from marketgram.identity.access.domain.model.exceptions import (
     INVALID_EMAIL_OR_PASSWORD,
     PersonalDataError
 )
-from marketgram.identity.access.domain.model.password_security_hasher import (
-    PasswordSecurityHasher
+from marketgram.identity.access.domain.model.password_hasher import (
+    PasswordHasher
 )
 
 
@@ -25,7 +25,7 @@ class User:
     def change_password(
         self,
         password: str,
-        password_hasher: PasswordSecurityHasher
+        password_hasher: PasswordHasher
     ) -> None:
         if not self._is_active:
             raise PersonalDataError(INVALID_EMAIL_OR_PASSWORD)

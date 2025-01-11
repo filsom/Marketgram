@@ -10,8 +10,8 @@ from marketgram.common.application.email_sender import EmailSender
 from marketgram.common.application.handler import Handler, Cmd, Res
 from marketgram.common.application.jwt_manager import TokenManager
 from marketgram.common.application.message_renderer import HtmlSettings, MessageRenderer
-from marketgram.identity.access.domain.model.password_security_hasher import (
-    PasswordSecurityHasher
+from marketgram.identity.access.domain.model.password_hasher import (
+    PasswordHasher
 )
 from marketgram.identity.access.domain.model.role_repository import RoleRepository
 from marketgram.identity.access.domain.model.user_repository import UserRepository
@@ -116,7 +116,7 @@ class IdentityAccessIoC(Provider):
         PasswordChangeService,
         AuthenticationService,
         UserCreationService,
-        provide(lambda hasher: PasswordHasher(), provides=PasswordSecurityHasher)
+        provide(lambda hasher: PasswordHasher(), provides=PasswordHasher)
     )
 
     @provide

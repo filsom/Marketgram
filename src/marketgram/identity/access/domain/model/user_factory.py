@@ -5,8 +5,8 @@ from marketgram.identity.access.domain.model.exceptions import (
     DomainError,
     PersonalDataError
 )
-from marketgram.identity.access.domain.model.password_security_hasher import (
-    PasswordSecurityHasher
+from marketgram.identity.access.domain.model.password_hasher import (
+    PasswordHasher
 )
 from marketgram.identity.access.domain.model.user import User
     
@@ -14,7 +14,7 @@ from marketgram.identity.access.domain.model.user import User
 class UserFactory:
     def __init__(
         self,
-        password_hasher: PasswordSecurityHasher
+        password_hasher: PasswordHasher
     ) -> None:
         self._password_hasher = password_hasher
 

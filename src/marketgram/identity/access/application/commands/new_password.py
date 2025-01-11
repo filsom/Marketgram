@@ -2,8 +2,8 @@ from dataclasses import dataclass
 
 from marketgram.common.application.exceptions import ApplicationError
 from marketgram.common.application.jwt_manager import TokenManager
-from marketgram.identity.access.domain.model.password_security_hasher import (
-    PasswordSecurityHasher
+from marketgram.identity.access.domain.model.password_hasher import (
+    PasswordHasher
 )
 from marketgram.identity.access.domain.model.web_session_repository import (
     WebSessionRepository
@@ -25,7 +25,7 @@ class NewPasswordHandler:
         user_repository: UserRepository,
         jwt_manager: TokenManager,
         web_session_repository: WebSessionRepository,
-        password_hasher: PasswordSecurityHasher
+        password_hasher: PasswordHasher
     ) -> None:
         self._user_repository = user_repository
         self._jwt_manager = jwt_manager

@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from marketgram.common.application.exceptions import ApplicationError
 from marketgram.common.application.jwt_manager import TokenManager
+from marketgram.identity.access.domain.model.password_hasher import PasswordHasher
 from marketgram.identity.access.domain.model.role import Role
 from marketgram.identity.access.domain.model.role_permission import Permission
 from marketgram.identity.access.domain.model.role_repository import RoleRepository
@@ -25,7 +26,8 @@ class UserRegistrationHandler:
         user_factory: UserFactory,
         jwt_manager: TokenManager,
         message_renderer: MessageRenderer,
-        email_sender: EmailSender
+        email_sender: EmailSender,
+        password_hasher: PasswordHasher
     ) -> None:
         self._user_repository = user_repository
         self._role_repository = role_repository
@@ -33,13 +35,15 @@ class UserRegistrationHandler:
         self._jwt_manager = jwt_manager
         self._message_renderer = message_renderer
         self._email_sender = email_sender
+        self._password_hasher = password_hasher
         
     async def handle(self, command: UserRegistrationCommand) -> None:
         user = await self._user_repository.with_email(command.email)
         if user is not None:
             raise ApplicationError()
         
-        user = self._user_factory.create(command.email, command.password)
+        user = UserFactory(self._password_hasher) \
+            .create(command.email, command.password)
         role = Role(user.user_id, Permission.USER)
 
         jwt_token = self._jwt_manager.encode({
