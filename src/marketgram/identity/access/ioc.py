@@ -159,14 +159,3 @@ class IdentityAccessIoC(Provider):
             handler,
             async_session
         )
-    
-
-async def main():
-    cont = make_async_container(IdentityAccessIoC(), DatabaseProvider())
-    # async with cont() as c:
-    h = await cont.get(RoleRepository)     
-    print(h)
-
-
-if __name__ ==' __main__':
-    asyncio.run(main())
