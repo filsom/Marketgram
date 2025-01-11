@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from uuid import UUID
 
 
@@ -22,7 +22,7 @@ class WebSession:
     def extend_service_life(
         self, 
         new_id: UUID,
-        max_age: timedelta,
+        expires_in: datetime,
         current_time: datetime
     ) -> None:
         difference = self._expires_in - current_time
@@ -30,7 +30,7 @@ class WebSession:
         if difference.days <= 1:
             self._session_id = new_id
             self._created_at = current_time
-            self._expires_in = current_time + max_age
+            self._expires_in = expires_in
     
     def to_formatted_time(self) -> str:
         return self._expires_in.strftime(self.FORMAT)

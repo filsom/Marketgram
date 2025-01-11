@@ -1,7 +1,7 @@
 from typing import Optional
-from uuid import UUID, uuid4
+from uuid import UUID
 
-from sqlalchemy import and_, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from marketgram.identity.access.domain.model.user import User
@@ -13,9 +13,6 @@ class SQLAlchemyUserRepository:
         async_session: AsyncSession
     ) -> None:
         self._async_session = async_session
-
-    def next_identity(self) -> UUID:
-        return uuid4()
     
     async def with_id(self, user_id: UUID) -> Optional[User]:
         stmt = select(User).where(User._user_id == user_id)

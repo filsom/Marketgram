@@ -5,9 +5,6 @@ from marketgram.identity.access.domain.model.user import User
 
 
 class UserRepository(Protocol):
-    def next_identity(self) -> UUID:
-        raise NotImplementedError
-    
     async def with_id(self, user_id: UUID) -> Optional[User]:
         raise NotImplementedError
     

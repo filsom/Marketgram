@@ -1,6 +1,7 @@
+import asyncio
 from typing import AsyncGenerator
 
-from dishka import Provider, Scope, alias, decorate, provide, provide_all
+from dishka import Provider, Scope, alias, decorate, make_async_container, provide, provide_all
 from aiosmtplib import SMTP
 from argon2 import PasswordHasher
 from jinja2 import Environment
@@ -30,14 +31,14 @@ from marketgram.identity.access.port.adapter.html_renderers import (
     PasswordChangeHtmlRenderer,
     UserActivationHtmlRenderer
 )
-from marketgram.common.ioc import AS
+from marketgram.common.ioc import AS, DatabaseProvider
 from marketgram.identity.access.application.commands.password_change import (
     PasswordChangeCommand,
     PasswordChange,
 )
-from marketgram.identity.access.application.commands.forgotten_password import (
-    ForgottenPasswordCommand,
-    ForgottenPassword
+from marketgram.identity.access.application.commands.forgot_password import (
+    ForgotPasswordCommand,
+    ForgotPassword
 )
 from marketgram.identity.access.application.commands.new_password import (
     NewPasswordCommand,
@@ -62,17 +63,17 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_de
 from marketgram.identity.access.domain.model.password_change_service import (
     PasswordChangeService
 )
-from marketgram.identity.access.domain.model.user_authentication_service import (
-    UserAuthenticationService
+from marketgram.identity.access.domain.model.authentication_service import (
+    AuthenticationService
 )
-from marketgram.identity.access.domain.model.user_creation_service import (
+from marketgram.identity.access.domain.model.user_factory import (
     UserCreationService
 )
 from marketgram.identity.access.domain.model.web_session_repository import (
     WebSessionRepository
 )
-from marketgram.identity.access.domain.model.web_session_service import (
-    WebSessionService
+from marketgram.identity.access.domain.model.web_factory import (
+    WebSessionFactory
 )
 
 
@@ -113,7 +114,7 @@ class IdentityAccessIoC(Provider):
 
     dependencies = provide_all(
         PasswordChangeService,
-        UserAuthenticationService,
+        AuthenticationService,
         UserCreationService,
         provide(lambda hasher: PasswordHasher(), provides=PasswordSecurityHasher)
     )
@@ -135,7 +136,7 @@ class IdentityAccessIoC(Provider):
         self,
         settings: HtmlSettings,
         jinja: Environment,
-    ) -> Handler[ForgottenPasswordCommand, None]:
+    ) -> Handler[ForgotPasswordCommand, None]:
         return PasswordChangeHtmlRenderer(
             'forgotten_password.html', 
             jinja, 
@@ -151,20 +152,25 @@ class IdentityAccessIoC(Provider):
         self,
         settings: Settings,
         web_session_repository: WebSessionRepository
-    ) -> WebSessionService:
-        return WebSessionService(
+    ) -> WebSessionFactory:
+        return WebSessionFactory(
             settings.max_age_session,
             web_session_repository
         )
 
-    handlers = provide_all(
-        provide(UserRegistration, provides=Handler[UserRegistrationCommand, None]),
-        provide(PasswordChange, provides=Handler[PasswordChangeCommand, None]),
-        provide(NewPassword, provides=Handler[NewPasswordCommand, None]),
-        provide(UserActivate, provides=Handler[UserAcivateCommand, None]),
-        provide(UserLoginHandler, provides=Handler[UserLoginCommand, dict[str, str]]),
-        provide(ForgottenPassword, provides=Handler[ForgottenPasswordCommand, None])
-    )
+    # handlers = provide_all(
+    #     provide(UserRegistration, provides=Handler[UserRegistrationCommand, None]),
+    #     provide(PasswordChange, provides=Handler[PasswordChangeCommand, None]),
+    #     provide(NewPassword, provides=Handler[NewPasswordCommand, None]),
+    #     provide(UserActivate, provides=Handler[UserAcivateCommand, None]),
+    #     provide(UserLoginHandler, provides=Handler[UserLoginCommand, dict[str, str]]),
+    #     provide(ForgottenPassword, provides=Handler[ForgottenPasswordCommand, None])
+    # )
+    # x = provide(
+        UserRegistration, 
+        provides=Handler[UserRegistrationCommand, None]
+        # provides=alias(source=UserRegistration, provides=Handler[UserRegistrationCommand, None])
+    # ),
 
     @decorate
     def wrapped_handler(
@@ -176,3 +182,14 @@ class IdentityAccessIoC(Provider):
             handler,
             async_session
         )
+    
+
+async def main():
+    cont = make_async_container(IdentityAccessIoC(), DatabaseProvider())
+    # async with cont() as c:
+    h = await cont.get(RoleRepository)     
+    print(h)
+
+
+if __name__ ==' __main__':
+    asyncio.run(main())

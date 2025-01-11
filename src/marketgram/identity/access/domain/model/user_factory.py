@@ -1,32 +1,28 @@
+from uuid import uuid4
+
 from marketgram.identity.access.domain.model.exceptions import (
-    INVALID_EMAIL_OR_PASSWORD,
-    DomainError, 
+    INVALID_EMAIL_OR_PASSWORD, 
+    DomainError
 )
 from marketgram.identity.access.domain.model.password_security_hasher import (
     PasswordSecurityHasher
 )
 from marketgram.identity.access.domain.model.user import User
+    
 
-
-class PasswordChangeService:
+class UserFactory:
     def __init__(
         self,
         password_hasher: PasswordSecurityHasher
     ) -> None:
         self._password_hasher = password_hasher
-    
-    def change(
-        self, 
-        user: User, 
-        password: str, 
-        same_password: str
-    ) -> None:
-        if password != same_password:
-            raise DomainError(INVALID_EMAIL_OR_PASSWORD)
-        
-        if user.email == password:
+
+    def create(self, email: str, password: str) -> User:
+        if email == password:
             raise DomainError(INVALID_EMAIL_OR_PASSWORD)
 
-        return user.change_password(
+        return User(
+            uuid4(),
+            email.lower(),
             self._password_hasher.hash(password)
-        ) 
+        )

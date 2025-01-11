@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
 from marketgram.common.application.exceptions import ApplicationError
-from marketgram.common.application.handler import Handler
 from marketgram.common.application.jwt_manager import TokenManager
 from marketgram.identity.access.domain.model.user_repository import (
     UserRepository
@@ -13,9 +12,7 @@ class UserAcivateCommand:
     token: str
 
 
-class UserActivate(
-    Handler[UserAcivateCommand, None]
-):
+class UserActivateHandler:
     def __init__(
         self,
         jwt_manager: TokenManager,
@@ -26,11 +23,9 @@ class UserActivate(
 
     async def handle(self, command: UserAcivateCommand) -> None:
         user_id = self._jwt_manager.decode(
-            command.token,
-            'user:activate'
+            command.token, 'user:activate'
         )
-        exists_user = await self._user_repository \
-            .with_id(user_id)
+        exists_user = await self._user_repository.with_id(user_id)
         
         if exists_user is None:
             raise ApplicationError()
