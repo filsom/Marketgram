@@ -68,6 +68,9 @@ def test_inactive_user_password_change() -> None:
     with pytest.raises(PersonalDataError):
         sut.change_password(new_password, password_hasher)
 
+    # Assert
+    assert new_password != sut.password
+
     
 def test_changing_password_when_email_matches() -> None:
     # Arrange
@@ -79,6 +82,9 @@ def test_changing_password_when_email_matches() -> None:
     # Act
     with pytest.raises(PersonalDataError):
         sut.change_password(new_password, password_hasher)
+
+    # Act
+    assert new_password != sut.password
 
 
 def test_user_activation() -> None:
