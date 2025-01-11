@@ -1,7 +1,8 @@
 from uuid import UUID
 
 from marketgram.identity.access.domain.model.exceptions import (
-    DomainError
+    INVALID_EMAIL_OR_PASSWORD,
+    PersonalDataError
 )
 from marketgram.identity.access.domain.model.password_security_hasher import (
     PasswordSecurityHasher
@@ -27,10 +28,10 @@ class User:
         password_hasher: PasswordSecurityHasher
     ) -> None:
         if not self._is_active:
-            raise DomainError()
+            raise PersonalDataError(INVALID_EMAIL_OR_PASSWORD)
         
         if password == self._email:
-            raise DomainError
+            raise PersonalDataError(INVALID_EMAIL_OR_PASSWORD)
         
         self._password = password_hasher.hash(password)
 

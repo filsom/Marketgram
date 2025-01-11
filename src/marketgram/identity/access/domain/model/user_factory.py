@@ -2,7 +2,8 @@ from uuid import uuid4
 
 from marketgram.identity.access.domain.model.exceptions import (
     INVALID_EMAIL_OR_PASSWORD, 
-    DomainError
+    DomainError,
+    PersonalDataError
 )
 from marketgram.identity.access.domain.model.password_security_hasher import (
     PasswordSecurityHasher
@@ -19,7 +20,7 @@ class UserFactory:
 
     def create(self, email: str, password: str) -> User:
         if email == password:
-            raise DomainError(INVALID_EMAIL_OR_PASSWORD)
+            raise PersonalDataError(INVALID_EMAIL_OR_PASSWORD)
 
         return User(
             uuid4(),
