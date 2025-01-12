@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from marketgram.identity.access.domain.model.user import User
 
 
-class SQLAlchemyUserRepository:
+class UserRepository:
     def __init__(
         self,
         async_session: AsyncSession

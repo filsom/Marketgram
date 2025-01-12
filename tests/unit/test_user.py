@@ -6,16 +6,26 @@ import pytest
 from marketgram.identity.access.domain.model.errors import PersonalDataError
 from marketgram.identity.access.domain.model.user import User
 from marketgram.identity.access.domain.model.user_factory import UserFactory
+from marketgram.identity.access.port.adapter.argon2_password_hasher import Argon2PasswordHasher
+
+
+@pytest.fixture(scope='class')
+def password_hasher() -> Argon2PasswordHasher:
+    return Argon2PasswordHasher(
+        time_cost=2,
+        memory_cost=19 * 1024,
+        parallelism=1
+    )
 
 
 class TestUser:
-    def test_create_new_user(self) -> None:
+    def test_create_new_user(
+        self, 
+        password_hasher: Argon2PasswordHasher
+    ) -> None:
         # Arrange
         email = 'test@mail.ru'
         password = 'unprotected'
-
-        password_hasher = Mock()
-        password_hasher.hash = Mock(return_value='protected')
 
         sut = UserFactory(password_hasher)
 
@@ -23,15 +33,16 @@ class TestUser:
         new_user = sut.create(email, password)
 
         # Assert
-        assert 'protected' == new_user.password
+        assert password_hasher.verify(new_user.password, password)
         assert new_user.email.islower()
 
-    def test_create_new_user_with_same_password_and_email(self) -> None:
+    def test_create_new_user_with_same_password_and_email(
+        self, 
+        password_hasher: Argon2PasswordHasher
+    )-> None:
         # Arrange
         email = 'test@mail.ru'
         password = 'test@mail.ru'
-
-        password_hasher = Mock()
 
         sut = UserFactory(password_hasher)
 
@@ -39,49 +50,65 @@ class TestUser:
         with pytest.raises(PersonalDataError):
             sut.create(email, password)
 
-    def test_change_user_password(self) -> None:
+    def test_change_user_password(
+        self, 
+        password_hasher: Argon2PasswordHasher
+    )-> None:
         # Arrange
-        new_password = 'new_unprotected'
-
-        password_hasher = Mock()
-        password_hasher.hash = Mock(return_value='new_protected') 
-
-        sut = User(uuid4(), 'test@mail.ru', 'old_protected')
+        new_password = 'new_unprotected' 
+        
+        sut = User(
+            uuid4(), 
+            'test@mail.ru', 
+            password_hasher.hash('old_protected')
+        )
         sut.activate()
 
         # Act
         sut.change_password(new_password, password_hasher)
 
         # Assert
-        assert 'new_protected' == sut.password
+        assert password_hasher.verify(sut.password, new_password)
 
-    def test_inactive_user_password_change(self) -> None:
+    def test_inactive_user_password_change(
+        self, 
+        password_hasher: Argon2PasswordHasher
+    )-> None:
         # Arrange
         new_password = 'new_unprotected'
-        password_hasher = Mock()
 
-        sut = User(uuid4(), 'test@mail.ru', 'old_protected')
+        sut = User(
+            uuid4(), 
+            'test@mail.ru', 
+            password_hasher.hash('old_protected')
+        )
 
         # Act
         with pytest.raises(PersonalDataError):
             sut.change_password(new_password, password_hasher)
 
         # Assert
-        assert new_password != sut.password
+        assert not password_hasher.verify(sut.password, new_password)
  
-    def test_changing_password_when_email_matches(self) -> None:
+    def test_changing_password_when_email_matches(
+        self, 
+        password_hasher: Argon2PasswordHasher
+    )-> None:
         # Arrange
         new_password = 'test@mail.ru'
-        password_hasher = Mock()
 
-        sut = User(uuid4(), 'test@mail.ru', 'old_protected')
+        sut = User(
+            uuid4(), 
+            'test@mail.ru', 
+            password_hasher.hash('old_protected')
+        )
         
         # Act
         with pytest.raises(PersonalDataError):
             sut.change_password(new_password, password_hasher)
 
         # Act
-        assert new_password != sut.password
+        assert not password_hasher.verify(sut.password, new_password)
 
     def test_user_activation(self) -> None:
         # Arrange

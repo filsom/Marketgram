@@ -6,11 +6,15 @@ from marketgram.common.application.jwt_manager import TokenManager
 from marketgram.identity.access.domain.model.password_hasher import PasswordHasher
 from marketgram.identity.access.domain.model.role import Role
 from marketgram.identity.access.domain.model.role_permission import Permission
-from marketgram.identity.access.domain.model.role_repository import RoleRepository
 from marketgram.identity.access.domain.model.user_factory import UserFactory
 from marketgram.common.application.email_sender import EmailSender
 from marketgram.common.application.message_renderer import MessageRenderer
-from marketgram.identity.access.domain.model.user_repository import UserRepository
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.role_repository import (
+    RoleRepository
+)
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
+    UserRepository
+)
 from marketgram.identity.access.settings import ActivateHtmlSettings
 
 

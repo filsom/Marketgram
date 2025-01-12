@@ -3,7 +3,7 @@ from sqlalchemy.orm import registry
 from marketgram.identity.access.domain.model.role import Role
 from marketgram.identity.access.domain.model.web_session import WebSession
 from marketgram.identity.access.domain.model.user import User
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_identity_table import (
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.identity_table import (
     user_table,
     role_table,
     web_session_table

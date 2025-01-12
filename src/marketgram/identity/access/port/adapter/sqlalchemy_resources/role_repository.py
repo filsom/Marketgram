@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from marketgram.identity.access.domain.model.role import Role
 
 
-class SQLAlchemyRoleRepository:
+class RoleRepository:
     def __init__(
         self,
         async_session: AsyncSession

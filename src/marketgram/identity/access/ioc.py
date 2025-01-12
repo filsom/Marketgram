@@ -31,13 +31,13 @@ from marketgram.identity.access.settings import (
     identity_access_load_settings
 )
 from marketgram.identity.access.port.adapter.pyjwt_token_manager import PyJWTTokenManager
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_role_repository import (
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.role_repository import (
     SQLAlchemyRoleRepository
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_user_repository import (
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
     SQLAlchemyUserRepository
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_web_session_repository import (
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.web_session_repository import (
     SQLAlchemyWebSessionRepository
 )
 from marketgram.common.ioc import AS

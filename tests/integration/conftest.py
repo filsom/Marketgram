@@ -8,10 +8,10 @@ from sqlalchemy.orm import registry
 from marketgram.common.application.message_renderer import MessageRenderer
 from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
 from marketgram.identity.access.port.adapter.html_renderers import JwtTokenHtmlRenderer
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_identity_mapper import (
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.identity_mapper import (
     identity_registry_mapper
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_identity_table import (
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.identity_table import (
     role_table, 
     user_table, 
     web_session_table

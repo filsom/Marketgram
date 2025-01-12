@@ -9,7 +9,7 @@ from marketgram.identity.access.domain.model.web_session import (
 )
 
 
-class SQLAlchemyWebSessionRepository:
+class WebSessionRepository:
     def __init__(
         self,
         async_session: AsyncSession

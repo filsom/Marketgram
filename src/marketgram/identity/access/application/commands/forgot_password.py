@@ -4,7 +4,7 @@ from marketgram.common.application.email_sender import EmailSender
 from marketgram.common.application.handler import Command
 from marketgram.common.application.message_renderer import MessageRenderer
 from marketgram.common.application.jwt_manager import TokenManager
-from marketgram.identity.access.domain.model.user_repository import (
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
     UserRepository
 )
 from marketgram.identity.access.settings import ForgotPasswordHtmlSettings

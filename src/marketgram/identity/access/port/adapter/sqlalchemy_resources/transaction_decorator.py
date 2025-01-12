@@ -44,3 +44,12 @@ class TransactionDecorator:
         # ) as error:
         #     await self._async_session.rollback()
         #     raise UnknowException(UNKNOWN_EXCEPTION)
+
+
+class IAMContext:
+    def __init__(
+        self, 
+        async_session: AsyncSession
+    ) -> None:
+        self._async_session = async_session
+        

@@ -6,11 +6,11 @@ from marketgram.common.application.jwt_manager import TokenManager
 from marketgram.identity.access.domain.model.password_hasher import (
     PasswordHasher
 )
-from marketgram.identity.access.domain.model.web_session_repository import (
-    WebSessionRepository
-)
-from marketgram.identity.access.domain.model.user_repository import (
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
     UserRepository
+)
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.web_session_repository import (
+    WebSessionRepository
 )
 
 

@@ -14,11 +14,11 @@ from marketgram.identity.access.domain.model.web_session import WebSession
 from marketgram.identity.access.port.adapter.argon2_password_hasher import (
     Argon2PasswordHasher
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_user_repository import (
-    SQLAlchemyUserRepository
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
+    UserRepository
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.sqlalchemy_web_session_repository import (
-    SQLAlchemyWebSessionRepository
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.web_session_repository import (
+    WebSessionRepository
 )
 
 
@@ -33,8 +33,7 @@ async def test_user_login(
     async_session: AsyncSession
 ) -> None:
     # Arrange
-    user_repository = SQLAlchemyUserRepository(async_session)
-    web_session_repository = SQLAlchemyWebSessionRepository(async_session)
+    user_repository = UserRepository(async_session)
     password_hasher = Argon2PasswordHasher()
 
     user_id = uuid4()
@@ -51,7 +50,7 @@ async def test_user_login(
     sut = UserLoginHandler(
         user_repository,
         password_hasher,
-        web_session_repository
+        WebSessionRepository(async_session)
     )
 
     # Act
@@ -67,27 +66,3 @@ async def test_user_login(
     assert result['expires_in'] == web_session.to_formatted_time()
     assert result['user_id'] == str(user_id)
     assert web_session.device == device
-
-
-@pytest.mark.asyncio
-@pytest.mark.parametrize(
-    'email,password,device', [('test@mail.ru', 'protected', 'Nokia 3210')]
-)
-async def logging_into_a_non_existent_account(
-    email: str, 
-    password: str,
-    device: str, 
-    async_session: AsyncSession
-) -> None:
-    # Arrange
-    sut = UserLoginHandler(
-        SQLAlchemyUserRepository(async_session),
-        Argon2PasswordHasher(),
-        SQLAlchemyWebSessionRepository(async_session)
-    )
-
-    # Act
-    with pytest.raises(ApplicationError):
-        await sut.handle(UserLoginCommand(
-            email, password, device
-        ))
