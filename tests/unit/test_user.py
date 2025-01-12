@@ -1,4 +1,3 @@
-from unittest.mock import Mock
 from uuid import uuid4
 
 import pytest
@@ -6,10 +5,12 @@ import pytest
 from marketgram.identity.access.domain.model.errors import PersonalDataError
 from marketgram.identity.access.domain.model.user import User
 from marketgram.identity.access.domain.model.user_factory import UserFactory
-from marketgram.identity.access.port.adapter.argon2_password_hasher import Argon2PasswordHasher
+from marketgram.identity.access.port.adapter.argon2_password_hasher import (
+    Argon2PasswordHasher
+)
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture
 def password_hasher() -> Argon2PasswordHasher:
     return Argon2PasswordHasher(
         time_cost=2,
