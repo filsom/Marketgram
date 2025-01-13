@@ -30,7 +30,7 @@ async def test_change_user_password(engine: AsyncGenerator[AsyncEngine, None]) -
     user_id = uuid4()
     session_id = uuid4()
     old_password = 'old_protected'
-    new_password = 'new_protected'
+    new_password = 'new_unprotected'
     password_hasher = Argon2PasswordHasher()
 
     async with AsyncSession(engine) as session:
