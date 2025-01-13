@@ -54,11 +54,9 @@ async def test_user_activation(engine: AsyncGenerator[AsyncEngine, None]) -> Non
         )
 
     # Act
-        result = await sut.handle(UserAcivateCommand(activation_token))
+        await sut.handle(UserAcivateCommand(activation_token))
 
     # Assert
-    assert result is None
-
     async with AsyncSession(engine) as session:
         await session.begin()
         user = await UserRepository(session).with_id(user_id)

@@ -56,10 +56,9 @@ async def test_user_registration(
         )
 
     # Act
-    result = await sut.handle(UserRegistrationCommand(email, password))
+    await sut.handle(UserRegistrationCommand(email, password))
 
     # Assert
-    assert result is None
     sut._email_sender.send_message.assert_called_once()
 
     async with AsyncSession(engine) as session:

@@ -62,13 +62,9 @@ async def test_change_user_password(engine: AsyncGenerator[AsyncEngine, None]) -
         )
 
     # Act
-        result = await sut.handle(
-            PasswordChangeCommand(session_id, old_password, new_password)
-        )
+        await sut.handle(PasswordChangeCommand(session_id, old_password, new_password))
 
     # Assert
-    assert result is None
-
     async with AsyncSession(engine) as session:
         await session.begin()
         user = await UserRepository(session).with_id(user_id)

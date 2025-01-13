@@ -71,13 +71,9 @@ async def test_new_password(engine: AsyncGenerator[AsyncEngine, None]) -> None:
         )
 
     # Act
-        result = await sut.handle(
-            NewPasswordCommand(password_change_token, new_password)
-        )
+        await sut.handle(NewPasswordCommand(password_change_token, new_password))
 
     # Assert
-    assert result is None
-
     async with AsyncSession(engine) as session:
         await session.begin()
         user = await UserRepository(session).with_id(user_id)

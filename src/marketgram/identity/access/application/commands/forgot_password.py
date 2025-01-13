@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from marketgram.common.application.email_sender import EmailSender
 from marketgram.common.application.message_renderer import MessageRenderer
 from marketgram.identity.access.port.adapter.jwt_token_manager import JwtTokenManager
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import IAMContext
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
     UserRepository
 )
