@@ -1,5 +1,7 @@
 from datetime import datetime
+from uuid import UUID
 
+from marketgram.trade.domain.model.rule.agreement.money import Money
 from marketgram.trade.domain.model.trade_item.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
@@ -15,6 +17,8 @@ class ConfirmationDeal:
     def __init__(
         self, 
         deal_id: int,
+        seller_id: UUID,
+        price: Money,
         card_created_at: datetime,
         time_tags: TimeTags,
         deadlines: Deadlines,
@@ -22,6 +26,8 @@ class ConfirmationDeal:
         entries: list[PostingEntry]
     ) -> None:
         self._deal_id = deal_id
+        self._seller_id = seller_id
+        self._price = price
         self._card_created_at = card_created_at
         self._time_tags = time_tags
         self._deadlines = deadlines
@@ -32,15 +38,18 @@ class ConfirmationDeal:
     def confirm_quality(self, occurred_at: datetime) -> None:
         if self.check_deadline() < occurred_at:
             raise DomainError()
-        
-        limits = self._agreement.limits_from(   
-            self._card_created_at
-        )
+
         rule = self._agreement.find_deal_rule(
             EventType.PRODUCT_CONFIRMED
         )
-        rule.process(self, limits)
-
+        entries = rule.process(
+            self._seller_id,
+            self._price,
+            [],
+            self._agreement,
+            self._card_created_at
+        )
+        self._entries.extend(entries)
         self._time_tags.closed(occurred_at)
         self._status = StatusDeal.CLOSED
 
@@ -50,13 +59,6 @@ class ConfirmationDeal:
 
     def accept_agreement(self, agreement: ServiceAgreement) -> None:
         self._agreement = agreement
-
-    def add_entry(self, entry: PostingEntry) -> None:
-        self._entries.append(entry)
-    
-    @property
-    def agreement(self) -> ServiceAgreement:
-        return self._agreement
 
     def __eq__(self, other: 'ConfirmationDeal') -> bool:
         if not isinstance(other, ConfirmationDeal):

@@ -8,8 +8,9 @@ from marketgram.trade.domain.model.rule.agreement.money import Money
 from marketgram.trade.domain.model.rule.agreement.types import AccountType, Operation
 
 if TYPE_CHECKING:
-    from marketgram.trade.domain.model.rule.agreement.service_agreement import ServiceAgreement
-
+    from marketgram.trade.domain.model.rule.agreement.service_agreement import (
+        ServiceAgreement
+    )
 
 
 class PostingRule:
@@ -34,9 +35,9 @@ class PostingRule:
     @property   
     def entry_status(self) -> EntryStatus:
         return self._entry_status
-    
+        
     def process(
-        self, 
+        self,
         member_id: UUID,
         amount: Money,
         empty_list: list, 

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import datetime
 
 from marketgram.common.application.exceptions import ApplicationError
 from marketgram.common.application.handler import Command
@@ -9,6 +9,9 @@ from marketgram.identity.access.domain.model.authentication_service import (
 from marketgram.identity.access.domain.model.password_hasher import PasswordHasher
 from marketgram.identity.access.domain.model.web_session_factory import (
     WebSessionFactory
+)
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import (
+    IAMContext
 )
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
     UserRepository
@@ -28,10 +31,12 @@ class UserLoginCommand(Command):
 class UserLoginHandler:
     def __init__(
         self,
+        context: IAMContext,
         user_repository: UserRepository,
-        password_hasher: PasswordHasher,
         web_session_repository: WebSessionRepository,
+        password_hasher: PasswordHasher,
     ) -> None:
+        self._context = context
         self._user_repository = user_repository
         self._password_hasher = password_hasher
         self._web_session_repository = web_session_repository
@@ -50,6 +55,9 @@ class UserLoginHandler:
         web_session = WebSessionFactory().create(
             user.user_id, datetime.now(), command.device
         )
-        await self._web_session_repository.add(web_session)
+        web_session_details = web_session.for_browser()
 
-        return web_session.for_browser()
+        await self._web_session_repository.add(web_session)
+        await self._context.save_changes()
+
+        return web_session_details

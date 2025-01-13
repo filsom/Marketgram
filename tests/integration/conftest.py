@@ -2,7 +2,7 @@ from typing import AsyncGenerator
 
 import pytest
 import pytest_asyncio
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, AsyncEngine
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine
 from sqlalchemy.orm import registry
 
 from marketgram.common.application.message_renderer import MessageRenderer
@@ -24,6 +24,10 @@ from marketgram.identity.access.settings import (
 )
 
 
+class IntegrationTest:
+    pass
+
+
 mapper = registry()
 identity_registry_mapper(mapper)
 
@@ -34,10 +38,10 @@ def settings() -> Settings:
 
 
 @pytest_asyncio.fixture(loop_scope='session')
-async def sqlalchemy_async_engine():
+async def engine() -> AsyncGenerator[AsyncEngine, None]:
     engine = create_async_engine(
         'postgresql+psycopg://postgres:som@localhost:5433',
-        echo=False,
+        echo=True,
     )
     async with engine.begin() as connection:
         await connection.run_sync(metadata.create_all)
@@ -48,14 +52,6 @@ async def sqlalchemy_async_engine():
         await connection.run_sync(metadata.drop_all)
 
     await engine.dispose()
-
-
-@pytest_asyncio.fixture(loop_scope='function')
-async def async_session(
-    sqlalchemy_async_engine: AsyncGenerator[AsyncEngine]
-) -> AsyncGenerator[AsyncSession]:
-    async with AsyncSession(sqlalchemy_async_engine) as session:
-        yield session
 
 
 @pytest.fixture(scope='function')
