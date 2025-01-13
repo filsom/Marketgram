@@ -51,7 +51,7 @@ class TestUserLoginHandler(IntegrationTest):
                 password_hasher.hash(password)    
             )
             user.activate()
-            
+
             session.add(user)
             await session.commit()
 
@@ -64,7 +64,8 @@ class TestUserLoginHandler(IntegrationTest):
                 WebSessionRepository(session),
                 password_hasher
             )
-            # Act
+            
+        # Act
             result = await sut.handle(UserLoginCommand(email, password, device))
 
         # Assert
