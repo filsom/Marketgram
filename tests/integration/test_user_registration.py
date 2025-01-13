@@ -1,58 +1,74 @@
-# from unittest.mock import AsyncMock
+from typing import AsyncGenerator
+from unittest.mock import AsyncMock
 
-# import pytest
-# from sqlalchemy.ext.asyncio import AsyncSession
+import pytest
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 
-# from marketgram.common.application.message_renderer import MessageRenderer
-# from marketgram.identity.access.application.commands.user_registration import (
-#     UserRegistrationCommand, 
-#     UserRegistrationHandler
-# )
-# from marketgram.identity.access.port.adapter.argon2_password_hasher import (
-#     Argon2PasswordHasher
-# )
-# from marketgram.identity.access.port.adapter.pyjwt_token_manager import (
-#     PyJWTTokenManager
-# )
-# from marketgram.identity.access.port.adapter.sqlalchemy_resources.role_repository import (
-#     RoleRepository
-# )
-# from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
-#     UserRepository
-# )
-# from marketgram.identity.access.settings import ActivateHtmlSettings, JWTManagerSecret
+from marketgram.common.application.message_renderer import MessageRenderer
+from marketgram.identity.access.application.commands.user_registration import (
+    UserRegistrationCommand, 
+    UserRegistrationHandler
+)
+from marketgram.identity.access.domain.model.role_permission import Permission
+from marketgram.identity.access.port.adapter.argon2_password_hasher import (
+    Argon2PasswordHasher
+)
+from marketgram.identity.access.port.adapter.pyjwt_token_manager import (
+    PyJWTTokenManager
+)
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.role_repository import (
+    RoleRepository
+)
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import (
+    IAMContext
+)
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
+    UserRepository
+)
+from marketgram.identity.access.settings import (
+    ActivateHtmlSettings, 
+    JWTManagerSecret
+)
 
 
-# @pytest.mark.asyncio
-# @pytest.mark.parametrize('email,password', [('test@mail.ru', 'unprotected')])
-# async def test_user_registration(
-#     email: str, 
-#     password: str,
-#     async_session: AsyncSession,
-#     activate_msg_renderer: MessageRenderer[ActivateHtmlSettings, str]
-# ) -> None:
-#     # Arrange
-#     email_sender = AsyncMock()
+@pytest.mark.asyncio
+async def test_user_registration(
+    engine: AsyncGenerator[AsyncEngine, None],
+    activate_msg_renderer: MessageRenderer[ActivateHtmlSettings, str]
+) -> None:
+    # Arrange
+    email = 'test@mail.ru'
+    password = 'unprotected'
 
-#     sut = UserRegistrationHandler(
-#         UserRepository(async_session),
-#         RoleRepository(async_session),
-#         PyJWTTokenManager(JWTManagerSecret('secret')),
-#         activate_msg_renderer,
-#         email_sender,
-#         Argon2PasswordHasher()
-#     )
+    password_hasher = Argon2PasswordHasher()
+    email_sender = AsyncMock()
 
-#     # Act
-#     result = await sut.handle(UserRegistrationCommand(email, password))
+    async with AsyncSession(engine) as session:
+        await session.begin()
+        sut = UserRegistrationHandler(
+            IAMContext(session),
+            UserRepository(session),
+            RoleRepository(session),
+            PyJWTTokenManager(JWTManagerSecret('secret')),
+            activate_msg_renderer,
+            email_sender,
+            password_hasher
+        )
 
-#     # Assert
-#     user_repository = UserRepository(async_session)
-#     role_repository = RoleRepository(async_session)
-#     user = await user_repository.with_email('test@mail.ru')
+    # Act
+    result = await sut.handle(UserRegistrationCommand(email, password))
 
-#     assert result == None
-#     assert user.email == email
-#     assert user.password != password
-#     assert user.is_active == False
-#     sut._email_sender.send_message.assert_called_once()
+    # Assert
+    assert result is None
+    sut._email_sender.send_message.assert_called_once()
+
+    async with AsyncSession(engine) as session:
+        await session.begin()
+        user = await UserRepository(session).with_email(email)
+        role = await RoleRepository(session).with_id(user.user_id)
+
+        assert user.email.islower()
+        assert user.email == email
+        assert password_hasher.verify(user.password, password)
+        assert user.is_active == False
+        assert role.permission == Permission.USER

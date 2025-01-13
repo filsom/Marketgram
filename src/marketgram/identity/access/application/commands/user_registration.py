@@ -12,6 +12,7 @@ from marketgram.common.application.message_renderer import MessageRenderer
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.role_repository import (
     RoleRepository
 )
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import IAMContext
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
     UserRepository
 )
@@ -27,6 +28,7 @@ class UserRegistrationCommand(Command):
 class UserRegistrationHandler:
     def __init__(
         self,
+        context: IAMContext,
         user_repository: UserRepository,
         role_repository: RoleRepository,
         jwt_manager: TokenManager,
@@ -36,6 +38,7 @@ class UserRegistrationHandler:
         email_sender: EmailSender,
         password_hasher: PasswordHasher
     ) -> None:
+        self._context = context
         self._user_repository = user_repository
         self._role_repository = role_repository
         self._jwt_manager = jwt_manager
