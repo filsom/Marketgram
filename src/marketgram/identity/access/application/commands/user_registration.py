@@ -62,8 +62,8 @@ class UserRegistrationHandler:
         })
         message = self._message_renderer.render(command.email, jwt_token)
         
-        await self._user_repository.add(user)
-        await self._role_repository.add(role)
+        self._user_repository.add(user)
+        self._role_repository.add(role)
 
         await self._email_sender.send_message(message)
 

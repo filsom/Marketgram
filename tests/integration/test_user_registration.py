@@ -1,5 +1,5 @@
 from typing import AsyncGenerator
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, Mock
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
@@ -50,13 +50,13 @@ async def test_user_registration(
             UserRepository(session),
             RoleRepository(session),
             JwtTokenManager(JWTManagerSecret('secret')),
-            activate_msg_renderer,
+            Mock(),
             email_sender,
             password_hasher
         )
 
     # Act
-    await sut.handle(UserRegistrationCommand(email, password))
+        await sut.handle(UserRegistrationCommand(email, password))
 
     # Assert
     sut._email_sender.send_message.assert_called_once()
