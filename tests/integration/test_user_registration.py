@@ -1,7 +1,6 @@
 from typing import AsyncGenerator
 from unittest.mock import AsyncMock, Mock
 
-import pytest
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 
 from marketgram.common.application.message_renderer import MessageRenderer
@@ -31,7 +30,6 @@ from marketgram.identity.access.settings import (
 )
 
 
-@pytest.mark.asyncio
 async def test_user_registration(
     engine: AsyncGenerator[AsyncEngine, None],
     activate_msg_renderer: MessageRenderer[ActivateHtmlSettings, str]

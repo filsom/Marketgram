@@ -34,6 +34,7 @@ async def test_new_password(engine: AsyncGenerator[AsyncEngine, None]) -> None:
     user_id = uuid4()
     session_id = uuid4()
     new_password = 'new_protected'
+    
     password_hasher = Argon2PasswordHasher()
 
     async with AsyncSession(engine) as session:

@@ -1,7 +1,6 @@
 from typing import AsyncGenerator
 from uuid import uuid4
 
-import pytest
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 
@@ -25,18 +24,13 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.web_session_re
 )
                 
 
-@pytest.mark.asyncio
-@pytest.mark.parametrize(
-    'email,password,device', [('test@mail.ru', 'protected', 'Nokia 3210')]
-)
-async def test_user_login(
-    email: str, 
-    password: str,
-    device: str, 
-    engine: AsyncGenerator[AsyncEngine, None]
-) -> None:
+async def test_user_login(engine: AsyncGenerator[AsyncEngine, None]) -> None:
     # Arrange
     user_id = uuid4()
+    email = 'test@mail.ru'
+    password = 'protected'
+    device = 'Nokia 3210'
+    
     password_hasher = Argon2PasswordHasher()
 
     async with AsyncSession(engine) as session:

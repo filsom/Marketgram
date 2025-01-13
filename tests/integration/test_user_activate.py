@@ -1,7 +1,6 @@
 from typing import AsyncGenerator
 from uuid import uuid4
 
-import pytest
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 
 from marketgram.identity.access.application.commands.user_activate import (
@@ -24,10 +23,10 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repositor
 from marketgram.identity.access.settings import JWTManagerSecret
 
 
-@pytest.mark.asyncio
 async def test_user_activation(engine: AsyncGenerator[AsyncEngine, None]) -> None:
     # Arrange
     user_id = uuid4()
+    
     password_hasher = Argon2PasswordHasher()
 
     async with AsyncSession(engine) as session:
