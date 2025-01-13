@@ -44,7 +44,6 @@ class TestUserLoginHandler(IntegrationTest):
 
         async with AsyncSession(engine) as session:
             await session.begin()
-
             user = User(
                 user_id,
                 email,
@@ -57,14 +56,13 @@ class TestUserLoginHandler(IntegrationTest):
 
         async with AsyncSession(engine) as session:
             await session.begin()
-
             sut = UserLoginHandler(
                 IAMContext(session),
                 UserRepository(session),
                 WebSessionRepository(session),
                 password_hasher
             )
-            
+
         # Act
             result = await sut.handle(UserLoginCommand(email, password, device))
 
