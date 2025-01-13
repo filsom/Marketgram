@@ -64,4 +64,6 @@ class UserRegistrationHandler:
         await self._user_repository.add(user)
         await self._role_repository.add(role)
 
-        return await self._email_sender.send_message(message)
+        await self._email_sender.send_message(message)
+
+        return await self._context.save_changes()
