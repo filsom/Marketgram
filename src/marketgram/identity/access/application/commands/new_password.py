@@ -6,6 +6,7 @@ from marketgram.common.application.jwt_manager import TokenManager
 from marketgram.identity.access.domain.model.password_hasher import (
     PasswordHasher
 )
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import IAMContext
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
     UserRepository
 )
@@ -23,14 +24,16 @@ class NewPasswordCommand(Command):
 class NewPasswordHandler:
     def __init__(
         self, 
+        context: IAMContext,
         user_repository: UserRepository,
-        jwt_manager: TokenManager,
         web_session_repository: WebSessionRepository,
+        jwt_manager: TokenManager,
         password_hasher: PasswordHasher
     ) -> None:
+        self._context = context
         self._user_repository = user_repository
-        self._jwt_manager = jwt_manager
         self._web_session_repository = web_session_repository
+        self._jwt_manager = jwt_manager
         self._password_hasher = password_hasher
     
     async def handle(self, command: NewPasswordCommand) -> None:
@@ -43,6 +46,8 @@ class NewPasswordHandler:
         
         user.change_password(command.password, self._password_hasher)
 
-        return await self._web_session_repository \
+        await self._web_session_repository \
             .delete_all_with_user_id(user.user_id)
+        
+        return await self._context.save_changes()
         
