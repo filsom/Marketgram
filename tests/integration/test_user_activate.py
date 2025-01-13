@@ -24,44 +24,43 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repositor
 from marketgram.identity.access.settings import JWTManagerSecret
 
 
-class TestUserActivateHandler:
-    @pytest.mark.asyncio
-    async def test_user_activation(self, engine: AsyncGenerator[AsyncEngine, None]) -> None:
-        # Arrange
-        user_id = uuid4()
-        password_hasher = Argon2PasswordHasher()
+@pytest.mark.asyncio
+async def test_user_activation(engine: AsyncGenerator[AsyncEngine, None]) -> None:
+    # Arrange
+    user_id = uuid4()
+    password_hasher = Argon2PasswordHasher()
 
-        async with AsyncSession(engine) as session:
-            await session.begin()
-            user = User(
-                user_id,
-                'test@mail.ru',
-                password_hasher.hash('protected')    
-            )
-            session.add(user)
-            await session.commit()
+    async with AsyncSession(engine) as session:
+        await session.begin()
+        user = User(
+            user_id,
+            'test@mail.ru',
+            password_hasher.hash('protected')    
+        )
+        session.add(user)
+        await session.commit()
 
-        token_manager = PyJWTTokenManager(JWTManagerSecret('secret'))
-        activation_token = token_manager.encode({
-            'sub': str(user_id),
-            'aud': 'user:activate'
-        })
-        async with AsyncSession(engine) as session:
-            await session.begin()
-            sut = UserActivateHandler(
-                IAMContext(session),
-                UserRepository(session),
-                token_manager
-            )
+    token_manager = PyJWTTokenManager(JWTManagerSecret('secret'))
+    activation_token = token_manager.encode({
+        'sub': str(user_id),
+        'aud': 'user:activate'
+    })
+    async with AsyncSession(engine) as session:
+        await session.begin()
+        sut = UserActivateHandler(
+            IAMContext(session),
+            UserRepository(session),
+            token_manager
+        )
 
-        # Act
-            result = await sut.handle(UserAcivateCommand(activation_token))
+    # Act
+        result = await sut.handle(UserAcivateCommand(activation_token))
 
-        # Assert
-        assert result is None
+    # Assert
+    assert result is None
 
-        async with AsyncSession(engine) as session:
-            await session.begin()
-            user = await UserRepository(session).with_id(user_id)
-            
-            assert user.is_active is True
+    async with AsyncSession(engine) as session:
+        await session.begin()
+        user = await UserRepository(session).with_id(user_id)
+        
+        assert user.is_active is True

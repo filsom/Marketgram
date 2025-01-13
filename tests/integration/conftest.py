@@ -27,10 +27,6 @@ from marketgram.identity.access.settings import (
 )
 
 
-class IntegrationTest:
-    pass
-
-
 mapper = registry()
 identity_registry_mapper(mapper)
 
