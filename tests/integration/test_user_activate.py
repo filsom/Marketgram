@@ -2,15 +2,25 @@ from typing import AsyncGenerator
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 
-from marketgram.identity.access.application.commands.user_activate import UserAcivateCommand, UserActivateHandler
+from marketgram.identity.access.application.commands.user_activate import (
+    UserAcivateCommand, 
+    UserActivateHandler
+)
 from marketgram.identity.access.domain.model.user import User
-from marketgram.identity.access.port.adapter.argon2_password_hasher import Argon2PasswordHasher
-from marketgram.identity.access.port.adapter.pyjwt_token_manager import PyJWTTokenManager
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import IAMContext
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import UserRepository
+from marketgram.identity.access.port.adapter.argon2_password_hasher import (
+    Argon2PasswordHasher
+)
+from marketgram.identity.access.port.adapter.pyjwt_token_manager import (
+    PyJWTTokenManager
+)
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import (
+    IAMContext
+)
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
+    UserRepository
+)
 from marketgram.identity.access.settings import JWTManagerSecret
 
 
