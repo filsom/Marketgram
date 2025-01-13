@@ -36,7 +36,7 @@ class TestUserLoginHandler(IntegrationTest):
         email: str, 
         password: str,
         device: str, 
-        engine: AsyncGenerator[AsyncEngine]
+        engine: AsyncGenerator[AsyncEngine, None]
     ) -> None:
         # Arrange
         user_id = uuid4()

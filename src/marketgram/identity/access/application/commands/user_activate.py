@@ -3,6 +3,9 @@ from dataclasses import dataclass
 from marketgram.common.application.exceptions import ApplicationError
 from marketgram.common.application.handler import Command
 from marketgram.common.application.jwt_manager import TokenManager
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import (
+    IAMContext
+)
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
     UserRepository
 )
@@ -16,11 +19,13 @@ class UserAcivateCommand(Command):
 class UserActivateHandler:
     def __init__(
         self,
-        jwt_manager: TokenManager,
-        user_repository: UserRepository
+        context: IAMContext,
+        user_repository: UserRepository,
+        jwt_manager: TokenManager
     ) -> None:
-        self._jwt_manager = jwt_manager
+        self._context = context
         self._user_repository = user_repository
+        self._jwt_manager = jwt_manager
 
     async def handle(self, command: UserAcivateCommand) -> None:
         user_id = self._jwt_manager.decode(
@@ -31,4 +36,6 @@ class UserActivateHandler:
         if exists_user is None:
             raise ApplicationError()
         
-        return exists_user.activate()
+        exists_user.activate()
+        
+        return await self._context.save_changes()

@@ -19,7 +19,7 @@ class PyJWTTokenManager:
 
     def encode(self, payload: dict[str, str]) -> str:
         exp = datetime.now(tz=timezone.utc) + timedelta(minutes=15)
-        payload['exp'] = str(exp)
+        payload['exp'] = exp
 
         return jwt.encode(
             payload, 
@@ -31,7 +31,7 @@ class PyJWTTokenManager:
         try:
             payload = jwt.decode(
                 token, 
-                key=self._secret, 
+                key=self._secret.secret, 
                 audience=audience, 
                 algorithms=['HS256']
             )

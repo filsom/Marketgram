@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-class IAMContext(AsyncSession):
+class IAMContext:
     def __init__(
         self, 
         async_session: AsyncSession

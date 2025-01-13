@@ -1,4 +1,5 @@
 from typing import AsyncGenerator
+from uuid import UUID
 
 import pytest
 import pytest_asyncio
@@ -7,6 +8,8 @@ from sqlalchemy.orm import registry
 
 from marketgram.common.application.message_renderer import MessageRenderer
 from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
+from marketgram.identity.access.domain.model.user import User
+from marketgram.identity.access.port.adapter.argon2_password_hasher import Argon2PasswordHasher
 from marketgram.identity.access.port.adapter.html_renderers import JwtTokenHtmlRenderer
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.identity_mapper import (
     identity_registry_mapper
@@ -41,7 +44,7 @@ def settings() -> Settings:
 async def engine() -> AsyncGenerator[AsyncEngine, None]:
     engine = create_async_engine(
         'postgresql+psycopg://postgres:som@localhost:5433',
-        echo=True,
+        echo=False,
     )
     async with engine.begin() as connection:
         await connection.run_sync(metadata.create_all)
