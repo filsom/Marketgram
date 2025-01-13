@@ -1,5 +1,6 @@
 from __future__ import annotations
 from datetime import datetime
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 from marketgram.trade.domain.model.rule.agreement.entry import (
@@ -16,38 +17,79 @@ from marketgram.trade.domain.model.rule.agreement.types import (
     EventType, 
     Operation
 )
-from marketgram.trade.domain.model.p2p.payout import Payout
+
+if TYPE_CHECKING:
+    from marketgram.trade.domain.model.rule.agreement.service_agreement import (
+        ServiceAgreement
+    )
 
 
 class PayoutPostingRule(PostingRule):
-    def make_entry(self, payout: Payout, amount: Money) -> None:
+    def make_entry(
+        self, 
+        member_id: UUID, 
+        empty_list: list, 
+        amount: Money
+    ) -> None:
         entry = PostingEntry(
-            payout._user_id,
+            member_id,
             amount,
             datetime.now(),
             self._account_type,
             self._operation_type,
             self._entry_status
         )
-        payout.add_entry(entry)
-    
-    def process(self, payout: Payout, limits: Limits) -> None:
-        self.make_entry(payout, self.calculate_amount(
-            payout._tax_free, limits
-        ))
+        empty_list.append(entry)
+
+    def process(
+        self, 
+        member_id: UUID,
+        amount: Money,
+        empty_list: list, 
+        agreement: ServiceAgreement,
+        occurred_at: datetime
+    ) -> list[PostingEntry]:
+        limits = agreement.limits_from(occurred_at)
+
+        self.make_entry(
+            member_id, 
+            empty_list, 
+            self.calculate_amount(amount, limits)
+        )
+
+        return empty_list
 
     def calculate_amount(self, amount: Money, limits: Limits) -> Money:
         raise NotImplementedError
 
 
 class PayoutFormula(PayoutPostingRule):
-    def process(self, payout: Payout, limits: Limits) -> None:
-        super().process(payout, limits)
-        secondary_rule = payout.agreement.find_payout_rule(
-            EventType.TAX_PAYOUT
+    def process(
+        self, 
+        member_id: UUID,
+        amount: Money,
+        empty_list: list, 
+        agreement: ServiceAgreement,
+        occurred_at: datetime
+    ) -> list[PostingEntry]:
+        super().process(
+            member_id, 
+            amount, 
+            empty_list, 
+            agreement, 
+            occurred_at
         )
-        secondary_rule.process(payout, limits)
+        secondary_rule = agreement.find_payout_rule(EventType.TAX_PAYOUT)
+        secondary_rule.process(
+            member_id, 
+            amount, 
+            empty_list, 
+            agreement, 
+            occurred_at
+        )
 
+        return empty_list
+    
     def calculate_amount(self, amount: Money, limits: Limits) -> Money:
         return -amount + amount * limits.tax_payout
     
@@ -67,7 +109,12 @@ class PayoutTaxFormula(PayoutPostingRule):
         )
         self._superuser_id = superuser_id
 
-    def make_entry(self, payout: Payout, amount: Money) -> None:
+    def make_entry(
+        self, 
+        member_id: UUID, 
+        empty_list: list, 
+        amount: Money
+    ) -> None:
         entry = PostingEntry(
             self._superuser_id,
             amount,
@@ -76,7 +123,7 @@ class PayoutTaxFormula(PayoutPostingRule):
             self._operation_type,
             self._entry_status
         )
-        payout.add_entry(entry)
+        empty_list.append(entry)
 
     def calculate_amount(self, amount: Money, limits: Limits) -> Money:
         return amount * limits.tax_payout

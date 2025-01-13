@@ -49,14 +49,18 @@ class Payout:
         if self._is_processed or self._count_block:
             raise DomainError()
         
-        limits = self._agreement.limits_from(self._created_at)
-
         rule = self._agreement.find_payout_rule(
             EventType.USER_DEDUCED
         )
-        rule.process(self, limits)
-
-        for entry in self._entries:
+        result = rule.process(
+            self._user_id, 
+            self._tax_free, 
+            [], 
+            self._agreement, 
+            self._created_at
+        )
+        for entry in result:
+            self._entries.append(entry)
             if entry._account_type == AccountType.SELLER:
                 amount_payout = entry._amount
 
@@ -78,9 +82,6 @@ class Payout:
 
         if self._count_block == 0:
             self._is_blocked = False
-
-    def add_entry(self, entry) -> None:
-        self._entries.append(entry) 
 
     @property
     def entries(self) -> list[PostingEntry]:
