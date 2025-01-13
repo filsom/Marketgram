@@ -55,6 +55,3 @@ class TestUserActivateHandler:
             user = await UserRepository(session).with_id(user_id)
             
             assert user.is_active is True
-
-
-        
