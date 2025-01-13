@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 
 from marketgram.common.application.exceptions import ApplicationError
-from marketgram.common.application.handler import Command
-from marketgram.common.application.jwt_manager import TokenManager
+from marketgram.identity.access.port.adapter.jwt_token_manager import JwtTokenManager
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import (
     IAMContext
 )
@@ -12,7 +11,7 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repositor
 
 
 @dataclass
-class UserAcivateCommand(Command):
+class UserAcivateCommand:
     token: str
 
 
@@ -21,7 +20,7 @@ class UserActivateHandler:
         self,
         context: IAMContext,
         user_repository: UserRepository,
-        jwt_manager: TokenManager
+        jwt_manager: JwtTokenManager
     ) -> None:
         self._context = context
         self._user_repository = user_repository

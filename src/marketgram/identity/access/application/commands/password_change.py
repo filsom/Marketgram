@@ -3,7 +3,6 @@ from datetime import datetime
 from uuid import UUID
 
 from marketgram.common.application.exceptions import ApplicationError
-from marketgram.common.application.handler import Command
 from marketgram.identity.access.domain.model.password_hasher import (
     PasswordHasher
 )
@@ -22,7 +21,7 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.web_session_re
 
 
 @dataclass
-class PasswordChangeCommand(Command):
+class PasswordChangeCommand:
     session_id: UUID
     old_password: str
     new_password: str

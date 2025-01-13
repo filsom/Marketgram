@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 
 from marketgram.common.application.exceptions import ApplicationError
-from marketgram.common.application.handler import Command
-from marketgram.common.application.jwt_manager import TokenManager
 from marketgram.identity.access.domain.model.password_hasher import (
     PasswordHasher
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import IAMContext
+from marketgram.identity.access.port.adapter.jwt_token_manager import JwtTokenManager
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import (
+    IAMContext
+)
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
     UserRepository
 )
@@ -16,7 +17,7 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.web_session_re
 
 
 @dataclass
-class NewPasswordCommand(Command):
+class NewPasswordCommand:
     token: str
     password: str
 
@@ -27,7 +28,7 @@ class NewPasswordHandler:
         context: IAMContext,
         user_repository: UserRepository,
         web_session_repository: WebSessionRepository,
-        jwt_manager: TokenManager,
+        jwt_manager: JwtTokenManager,
         password_hasher: PasswordHasher
     ) -> None:
         self._context = context

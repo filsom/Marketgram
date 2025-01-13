@@ -13,8 +13,8 @@ from marketgram.identity.access.domain.model.role_permission import Permission
 from marketgram.identity.access.port.adapter.argon2_password_hasher import (
     Argon2PasswordHasher
 )
-from marketgram.identity.access.port.adapter.pyjwt_token_manager import (
-    PyJWTTokenManager
+from marketgram.identity.access.port.adapter.jwt_token_manager import (
+    JwtTokenManager
 )
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.role_repository import (
     RoleRepository
@@ -49,7 +49,7 @@ async def test_user_registration(
             IAMContext(session),
             UserRepository(session),
             RoleRepository(session),
-            PyJWTTokenManager(JWTManagerSecret('secret')),
+            JwtTokenManager(JWTManagerSecret('secret')),
             activate_msg_renderer,
             email_sender,
             password_hasher

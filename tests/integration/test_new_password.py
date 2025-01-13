@@ -14,8 +14,8 @@ from marketgram.identity.access.domain.model.web_session import WebSession
 from marketgram.identity.access.port.adapter.argon2_password_hasher import (
     Argon2PasswordHasher
 )
-from marketgram.identity.access.port.adapter.pyjwt_token_manager import (
-    PyJWTTokenManager
+from marketgram.identity.access.port.adapter.jwt_token_manager import (
+    JwtTokenManager
 )
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import (
     IAMContext
@@ -55,7 +55,7 @@ async def test_new_password(engine: AsyncGenerator[AsyncEngine, None]) -> None:
         session.add_all([user, web_session])
         await session.commit()
 
-    token_manager = PyJWTTokenManager(JWTManagerSecret('secret'))
+    token_manager = JwtTokenManager(JWTManagerSecret('secret'))
     password_change_token = token_manager.encode({
         'sub': str(user_id),
         'aud': 'user:password'

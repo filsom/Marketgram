@@ -1,9 +1,8 @@
 from dataclasses import dataclass
 
 from marketgram.common.application.email_sender import EmailSender
-from marketgram.common.application.handler import Command
 from marketgram.common.application.message_renderer import MessageRenderer
-from marketgram.common.application.jwt_manager import TokenManager
+from marketgram.identity.access.port.adapter.jwt_token_manager import JwtTokenManager
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
     UserRepository
 )
@@ -11,7 +10,7 @@ from marketgram.identity.access.settings import ForgotPasswordHtmlSettings
 
 
 @dataclass
-class ForgotPasswordCommand(Command):
+class ForgotPasswordCommand:
     email: str
 
 
@@ -19,7 +18,7 @@ class ForgotPasswordHandler:
     def __init__(
         self,
         user_repository: UserRepository,
-        jwt_manager: TokenManager,
+        jwt_manager: JwtTokenManager,
         message_renderer: MessageRenderer[
             ForgotPasswordHtmlSettings, str
         ],

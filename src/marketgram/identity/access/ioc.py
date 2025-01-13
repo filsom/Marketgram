@@ -30,7 +30,7 @@ from marketgram.identity.access.settings import (
     Settings, 
     identity_access_load_settings
 )
-from marketgram.identity.access.port.adapter.pyjwt_token_manager import PyJWTTokenManager
+from marketgram.identity.access.port.adapter.jwt_token_manager import JwtTokenManager
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.role_repository import (
     SQLAlchemyRoleRepository
 )
@@ -120,7 +120,7 @@ class IdentityAccessIoC(Provider):
 
     @provide
     def jwt_manager(self, settings: Settings) -> TokenManager:
-        return PyJWTTokenManager(settings.jwt_manager)
+        return JwtTokenManager(settings.jwt_manager)
     
     @provide
     def activate_jwt_message_renderer(
