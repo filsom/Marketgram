@@ -51,7 +51,7 @@ class TestUserLoginHandler(IntegrationTest):
             )
             user.activate()
 
-            session.add(user)
+            UserRepository(session).add(user)
             await session.commit()
 
         async with AsyncSession(engine) as session:
