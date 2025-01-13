@@ -26,5 +26,5 @@ class UserRepository:
 
         return result.scalar_one_or_none()
     
-    async def add(self, user: User) -> None:
+    def add(self, user: User) -> None:
         self._async_session.add(user)
