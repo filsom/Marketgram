@@ -47,7 +47,7 @@ class UserRegistrationHandler:
         self._email_sender = email_sender
         self._password_hasher = password_hasher
         
-    async def handle(self, command: UserRegistrationCommand) -> None:
+    async def execute(self, command: UserRegistrationCommand) -> None:
         user = await self._user_repository.with_email(command.email)
         if user is not None:
             raise ApplicationError()

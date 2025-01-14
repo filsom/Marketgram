@@ -36,7 +36,7 @@ class TestUserLoginHandler(IAMTestCase):
             UUID(result['session_id'])
         )
         web_session_from_db \
-            .should_exsiting() \
+            .should_existing() \
             .with_user_id(user.user_id) \
             .with_session_id(result['session_id']) \
             .with_device('Nokia 3210') \
