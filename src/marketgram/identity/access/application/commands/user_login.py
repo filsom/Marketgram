@@ -40,7 +40,7 @@ class UserLoginHandler:
         self._password_hasher = password_hasher
         self._web_session_repository = web_session_repository
 
-    async def handle(self, command: UserLoginCommand) -> dict[str, str]:
+    async def execute(self, command: UserLoginCommand) -> dict[str, str]:
         user = await self._user_repository.with_email(command.email)
         if user is None:
             raise ApplicationError()

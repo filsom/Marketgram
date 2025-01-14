@@ -40,7 +40,7 @@ def settings() -> Settings:
 async def engine() -> AsyncGenerator[AsyncEngine, None]:
     engine = create_async_engine(
         'postgresql+psycopg://postgres:som@localhost:5433',
-        echo=False,
+        echo=True,
     )
     async with engine.begin() as connection:
         await connection.run_sync(metadata.create_all)

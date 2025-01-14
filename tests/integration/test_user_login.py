@@ -1,15 +1,11 @@
-from typing import AsyncGenerator
-from uuid import uuid4
+from uuid import UUID
 
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from marketgram.identity.access.application.commands.user_login import (
     UserLoginCommand, 
     UserLoginHandler
 )
-from marketgram.identity.access.domain.model.user import User
-from marketgram.identity.access.domain.model.web_session import WebSession
 from marketgram.identity.access.port.adapter.argon2_password_hasher import (
     Argon2PasswordHasher
 )
@@ -22,48 +18,37 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repositor
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.web_session_repository import (
     WebSessionRepository
 )
+from tests.integration.base import IAMTestCase
                 
 
-async def test_user_login(engine: AsyncGenerator[AsyncEngine, None]) -> None:
-    # Arrange
-    user_id = uuid4()
-    email = 'test@mail.ru'
-    password = 'protected'
-    device = 'Nokia 3210'
-    
-    password_hasher = Argon2PasswordHasher()
+class TestUserLoginHandler(IAMTestCase):
+    async def test_user_login(self) -> None:
+        # Arrange
+        user = await self.create_user()
 
-    async with AsyncSession(engine) as session:
-        await session.begin()
-        user = User(
-            user_id,
-            email,
-            password_hasher.hash(password)    
-        )
-        user.activate()
-
-        session.add(user)
-        await session.commit()
-
-    async with AsyncSession(engine) as session:
-        await session.begin()
-        sut = UserLoginHandler(
-            IAMContext(session),
-            UserRepository(session),
-            WebSessionRepository(session),
-            password_hasher
+        # Act
+        result = await self.execute(
+            UserLoginCommand('test@mail.ru', 'protected', 'Nokia 3210')
         )
 
-    # Act
-        result = await sut.handle(UserLoginCommand(email, password, device))
+        # Assert
+        web_session_from_db = await self.query_web_session(
+            UUID(result['session_id'])
+        )
+        web_session_from_db \
+            .should_exsiting() \
+            .with_user_id(user.user_id) \
+            .with_session_id(result['session_id']) \
+            .with_device('Nokia 3210') \
+            .with_service_life_of_up_to(result['expires_in'])
 
-    # Assert
-    async with AsyncSession(engine) as session:
-        await session.begin()
-        stmt = select(WebSession).where(WebSession.user_id == user_id)
-        web_session = (await session.execute(stmt)).scalar()
-
-        assert result['session_id'] == web_session.to_string_id()
-        assert result['expires_in'] == web_session.to_formatted_time()
-        assert result['user_id'] == str(user_id)
-        assert web_session.device == device
+    async def execute(self, command: UserLoginCommand) -> dict[str, str]:
+        async with AsyncSession(self._engine) as session:
+            await session.begin()
+            sut = UserLoginHandler(
+                IAMContext(session),
+                UserRepository(session),
+                WebSessionRepository(session),
+                Argon2PasswordHasher()
+            )
+            return await sut.execute(command)
