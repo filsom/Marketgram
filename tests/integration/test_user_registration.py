@@ -53,16 +53,16 @@ class TestUserRegistrationHandler(IAMTestCase):
         # Assert
         email_sender.send_message.assert_called_once()
 
-        user = await self.query_user_with_email('test@mail.ru')
-        user \
+        user_from_db = await self.query_user_with_email('test@mail.ru')
+        user_from_db \
             .should_existing() \
             .with_email('test@mail.ru') \
             .email_is_lower() \
             .not_activated() \
             .with_hashed_password('unprotected', password_hasher)
         
-        role = await self.query_role(user.user_id)
-        assert role.permission == Permission.USER
+        role_from_db = await self.query_role(user_from_db.user_id)
+        assert role_from_db.permission == Permission.USER
 
     async def execute(
         self, 
