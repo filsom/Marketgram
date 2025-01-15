@@ -89,7 +89,6 @@ class IAMTestCase(IntegrationTest):
             await session.begin()
             stmt = select(WebSession).where(WebSession.session_id == session_id)
             result = (await session.execute(stmt)).scalar_one_or_none()
-
             return WebSessionExtensions(result)
         
     async def query_user_with_email(self, email: str) -> UserExtensions:
