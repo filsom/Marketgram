@@ -19,7 +19,7 @@ from tests.integration.identity.access.iam_test_case import IAMTestCase
 
 
 class TestForgotPasswordHandler(IAMTestCase):
-    async def test_forgot_password(
+    async def test_activated_user_forgot_password(
         self,
         forgot_password_msg_renderer: MessageRenderer[ForgotPasswordHtmlSettings, str]
     ) -> None:
@@ -39,6 +39,27 @@ class TestForgotPasswordHandler(IAMTestCase):
 
         # Assert 
         email_sender.send_message.assert_called_once()
+
+    async def test_non_activated_user_forgot_password(
+        self,
+        forgot_password_msg_renderer: MessageRenderer[ForgotPasswordHtmlSettings, str]
+    ) -> None:
+        # Arrange
+        await self.create_user(is_active=False)
+
+        email_sender = AsyncMock()
+        email_sender.send_message = AsyncMock()
+
+        # Act
+        await self.execute(
+            ForgotPasswordCommand('test@mail.ru'),
+            JwtTokenManager('secret'),
+            Mock(),
+            email_sender
+        )
+
+        # Assert 
+        email_sender.send_message.assert_not_called()
 
     async def execute(
         self,
