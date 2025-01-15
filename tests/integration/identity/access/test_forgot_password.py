@@ -1,4 +1,4 @@
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
