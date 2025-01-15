@@ -10,7 +10,7 @@ class WebSessionExtensions:
     def __init__(self, web_session: WebSession | None) -> None:
         self._web_session = web_session
 
-    def should_existing(self) -> Self:
+    def should_exist(self) -> Self:
         assert self._web_session is not None
         return self
     
