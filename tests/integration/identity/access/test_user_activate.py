@@ -1,3 +1,4 @@
+from datetime import UTC, datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from marketgram.identity.access.application.commands.user_activate import (
@@ -19,10 +20,10 @@ class TestUserActivateHandler(IAMTestCase):
         user = await self.create_user()
 
         token_manager = JwtTokenManager('secret')
-        activation_token = token_manager.encode({
-            'sub': user.to_string_id(),
-            'aud': 'user:activate'
-        })
+        activation_token = token_manager.encode(
+            datetime.now(UTC),
+            {'sub': user.to_string_id(), 'aud': 'user:activate'}
+        )
 
         # Act
         await self.execute(

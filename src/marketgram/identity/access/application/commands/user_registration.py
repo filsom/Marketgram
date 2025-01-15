@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import UTC, datetime
 
 from marketgram.common.application.exceptions import ApplicationError
 from marketgram.identity.access.domain.model.password_hasher import PasswordHasher
@@ -50,11 +51,11 @@ class UserRegistrationHandler:
         user = UserFactory(self._password_hasher) \
             .create(command.email, command.password)
         role = Role(user.user_id, Permission.USER)
-
-        jwt_token = self._jwt_manager.encode({
-            'sub': user.to_string_id(),
-            'aud': 'user:activate'
-        })
+    
+        jwt_token = self._jwt_manager.encode(
+            datetime.now(UTC),
+            {'sub': user.to_string_id(), 'aud': 'user:activate'}
+        )
         message = self._message_renderer.render(command.email, jwt_token)
         
         self._users_repository.add(user)

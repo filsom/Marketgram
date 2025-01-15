@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import UTC, datetime
 
 from marketgram.common.application.email_sender import EmailSender
 from marketgram.common.application.message_renderer import MessageRenderer
@@ -36,10 +37,10 @@ class ForgotPasswordHandler:
         if user is None or not user.is_active:
             return 
         
-        jwt_token = self._jwt_manager.encode({
-            'sub': user.to_string_id(),
-            'aud': 'user:password'
-        })
+        jwt_token = self._jwt_manager.encode(
+            datetime.now(UTC),
+            {'sub': user.to_string_id(), 'aud': 'user:password'}
+        )
         message = self._message_renderer.render(user.email, jwt_token)
 
         await self._email_sender.send_message(message)

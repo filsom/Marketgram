@@ -1,42 +1,39 @@
 import jwt
 
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from uuid import UUID
 
 from marketgram.identity.access.port.adapter.exceptions import (
     JWT_ERROR, 
     JWTVerifyException
-
 )
 
 
 class JwtTokenManager:
-    def __init__(
-        self,
-        secret: str,
-    ) -> None:
+    MIN = 15
+    ALGORITHM = 'HS256'
+
+    def __init__(self, secret: str) -> None:
         self._secret = secret
 
-    def encode(self, payload: dict[str, str]) -> str:
-        exp = datetime.now(tz=timezone.utc) + timedelta(minutes=15)
-        payload['exp'] = exp
+    def encode(
+        self, 
+        current_time: datetime, 
+        payload: dict[str, str]
+    ) -> str:
+        payload['exp'] = current_time + timedelta(minutes=self.MIN)
 
-        return jwt.encode(
-            payload, 
-            self._secret, 
-            algorithm='HS256'
-        )
+        return jwt.encode(payload, self._secret, algorithm=self.ALGORITHM)
     
-    def decode(self, token: str, audience: str):
+    def decode(self, token: str, audience: str) -> UUID:
         try:
             payload = jwt.decode(
                 token, 
                 key=self._secret, 
                 audience=audience, 
-                algorithms=['HS256']
+                algorithms=[self.ALGORITHM]
             )
-
-        except (jwt.ExpiredSignatureError, jwt.InvalidAudienceError):
-            raise JWTVerifyException(JWT_ERROR)
+        except jwt.PyJWTError:
+            raise JWTVerifyException(JWT_ERROR) 
         
         return UUID(payload['sub'])

@@ -1,3 +1,4 @@
+from datetime import UTC, datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from marketgram.identity.access.application.commands.new_password import (
@@ -25,10 +26,10 @@ class TestNewPasswordHandler(IAMTestCase):
 
         password_hasher = Argon2PasswordHasher()
         token_manager = JwtTokenManager('secret')
-        password_change_token = token_manager.encode({
-            'sub': user.to_string_id(),
-            'aud': 'user:password'
-        })
+        password_change_token = token_manager.encode(
+            datetime.now(UTC),
+            {'sub': user.to_string_id(), 'aud': 'user:password'}
+        )
 
         # Act
         await self.execute(
