@@ -25,41 +25,6 @@ class UserLoginCommand:
     email: str
     password: str
     device: str
-
-
-# class UserLoginHandler:
-#     def __init__(
-#         self,
-#         context: IAMContext,
-#         user_repository: UserRepository,
-#         web_session_repository: WebSessionRepository,
-#         password_hasher: PasswordHasher,
-#     ) -> None:
-#         self._context = context
-#         self._user_repository = user_repository
-#         self._password_hasher = password_hasher
-#         self._web_session_repository = web_session_repository
-
-#     async def execute(self, command: UserLoginCommand) -> dict[str, str]:
-#         user = await self._user_repository.with_email(command.email)
-#         if user is None:
-#             raise ApplicationError()
-        
-#         AuthenticationService(self._password_hasher) \
-#             .authenticate(user, command.password)
-        
-#         await self._web_session_repository \
-#             .delete_this_device(user.user_id, command.device)       
-
-#         web_session = WebSessionFactory().create(
-#             user.user_id, datetime.now(), command.device
-#         )
-#         web_session_details = web_session.for_browser()
-
-#         await self._web_session_repository.add(web_session)
-#         await self._context.save_changes()
-
-#         return web_session_details
     
 
 class UserLoginHandler:
