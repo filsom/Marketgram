@@ -16,11 +16,7 @@ class JwtTokenManager:
     def __init__(self, secret: str) -> None:
         self._secret = secret
 
-    def encode(
-        self, 
-        current_time: datetime, 
-        payload: dict[str, str]
-    ) -> str:
+    def encode(self, current_time: datetime, payload: dict[str, str]) -> str:
         payload['exp'] = current_time + timedelta(minutes=self.MIN)
 
         return jwt.encode(payload, self._secret, algorithm=self.ALGORITHM)
