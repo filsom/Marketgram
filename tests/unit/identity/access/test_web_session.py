@@ -1,11 +1,12 @@
 from datetime import UTC, datetime
 from uuid import uuid4
+from unittest import TestCase
 
 from marketgram.identity.access.domain.model.web_session_factory import (
     WebSessionFactory
 )
 
-class TestWebSession:
+class TestWebSession(TestCase):
     def test_new_web_session(self) -> None:
         # Arrange
         user_id = uuid4()
@@ -18,7 +19,7 @@ class TestWebSession:
         web_session = sut.create(user_id, current_time, device)
 
         # Assert
-        assert user_id == web_session.user_id
-        assert current_time == web_session.created_at
-        assert current_time < web_session.expires_in
-        assert device == web_session.device
+        self.assertEqual(user_id, web_session.user_id)
+        self.assertEqual(current_time,  web_session.created_at)
+        self.assertEqual(device, web_session.device)
+        self.assertLess(current_time, web_session.expires_in)

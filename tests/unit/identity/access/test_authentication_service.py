@@ -1,4 +1,5 @@
 from uuid import uuid4
+from unittest import TestCase
 
 from marketgram.identity.access.domain.model.authentication_service import (
     AuthenticationService
@@ -9,7 +10,7 @@ from marketgram.identity.access.port.adapter.argon2_password_hasher import (
 )
 
 
-class TestAuthenticationService:
+class TestAuthenticationService(TestCase):
     def test_successful_authenticate(self) -> None:
         # Arrange
         email = 'test@mail.ru'
