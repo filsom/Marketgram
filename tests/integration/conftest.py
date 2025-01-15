@@ -9,12 +9,22 @@ from marketgram.common.application.message_renderer import MessageRenderer
 from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
 from marketgram.identity.access.port.adapter.html_renderers import JwtTokenHtmlRenderer
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.mapping.table.users_registry import (
-    identity_registry_mapper
+    users_registry_mapper
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.identity_table import (
-    role_table, 
-    user_table, 
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.mapping.table.web_sessions_registry import (
+    web_sessions_registry_mapper
+)
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.mapping.table.roles_registry import (
+    roles_registry_mapper
+)
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.mapping.table.roles_table import (
+    role_table
+)
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.mapping.table.web_sessions_table import (
     web_session_table
+)
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.mapping.table.users_table import (
+    user_table
 )
 from marketgram.identity.access.settings import (
     Settings, 
@@ -36,7 +46,9 @@ class IntegrationTest:
 
 
 mapper = registry()
-identity_registry_mapper(mapper)
+users_registry_mapper(mapper)
+web_sessions_registry_mapper(mapper)
+roles_registry_mapper(mapper)
 
 
 @pytest.fixture(scope='module')

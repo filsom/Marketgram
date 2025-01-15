@@ -9,6 +9,7 @@ from marketgram.identity.access.port.adapter.exceptions import (
 
 )
 
+
 class JwtTokenManager:
     def __init__(
         self,

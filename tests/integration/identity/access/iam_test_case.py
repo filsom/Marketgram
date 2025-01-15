@@ -14,9 +14,11 @@ from marketgram.identity.access.domain.model.web_session_factory import (
 from marketgram.identity.access.port.adapter.argon2_password_hasher import (
     Argon2PasswordHasher
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.identity_table import (
-    user_table, 
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.mapping.table.web_sessions_table import (
     web_session_table
+)
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.mapping.table.users_table import (
+    user_table
 )
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.roles_repository import (
     RolesRepository
