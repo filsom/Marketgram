@@ -19,7 +19,7 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repositor
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.web_session_repository import (
     WebSessionRepository
 )
-from tests.integration.base import IAMTestCase
+from tests.integration.identity.access.iam_test_case import IAMTestCase
                 
 
 class TestUserLoginHandler(IAMTestCase):

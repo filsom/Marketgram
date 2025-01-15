@@ -21,7 +21,7 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_de
 )
 from marketgram.identity.access.settings import ActivateHtmlSettings
 
-from tests.integration.base import IAMTestCase
+from tests.integration.identity.access.iam_test_case import IAMTestCase
 
 
 class TestUserRegistrationHandler(IAMTestCase):

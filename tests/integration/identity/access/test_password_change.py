@@ -16,7 +16,7 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_de
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
     UserRepository
 )
-from tests.integration.base import IAMTestCase
+from tests.integration.identity.access.iam_test_case import IAMTestCase
 
 class TestPasswordChangeHandler(IAMTestCase):
     async def test_change_user_password(self) -> None:
@@ -25,7 +25,7 @@ class TestPasswordChangeHandler(IAMTestCase):
         web_session = await self.create_web_session(user.user_id)
 
         password_hasher = Argon2PasswordHasher()
-        
+
         # Act
         await self.execute(
             PasswordChangeCommand(

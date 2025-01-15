@@ -15,7 +15,7 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_de
     IAMContext
 )
 from marketgram.identity.access.settings import ForgotPasswordHtmlSettings
-from tests.integration.base import IAMTestCase
+from tests.integration.identity.access.iam_test_case import IAMTestCase
 
 
 class TestForgotPasswordHandler(IAMTestCase):

@@ -1,5 +1,4 @@
 from typing import AsyncGenerator
-from uuid import UUID
 
 import pytest
 import pytest_asyncio
@@ -8,8 +7,6 @@ from sqlalchemy.orm import registry
 
 from marketgram.common.application.message_renderer import MessageRenderer
 from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
-from marketgram.identity.access.domain.model.user import User
-from marketgram.identity.access.port.adapter.argon2_password_hasher import Argon2PasswordHasher
 from marketgram.identity.access.port.adapter.html_renderers import JwtTokenHtmlRenderer
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.identity_mapper import (
     identity_registry_mapper
@@ -25,6 +22,15 @@ from marketgram.identity.access.settings import (
     Settings, 
     identity_access_load_settings
 )
+
+
+class IntegrationTest:
+    @pytest.fixture(autouse=True)
+    def _set_async_engine(
+        self, 
+        engine: AsyncGenerator[AsyncEngine, None]
+    ) -> None:
+        self._engine = engine
 
 
 mapper = registry()
