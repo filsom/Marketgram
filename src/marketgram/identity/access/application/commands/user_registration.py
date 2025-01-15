@@ -11,7 +11,7 @@ from marketgram.identity.access.port.adapter.jwt_token_manager import JwtTokenMa
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.role_repository import (
     RoleRepository
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import (
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.context import (
     IAMContext
 )
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (

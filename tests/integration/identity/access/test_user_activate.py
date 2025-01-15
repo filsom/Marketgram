@@ -7,7 +7,7 @@ from marketgram.identity.access.application.commands.user_activate import (
 from marketgram.identity.access.port.adapter.jwt_token_manager import (
     JwtTokenManager
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import (
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.context import (
     IAMContext
 )
 from tests.integration.identity.access.iam_test_case import IAMTestCase

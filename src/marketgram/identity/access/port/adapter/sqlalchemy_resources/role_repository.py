@@ -2,7 +2,7 @@ from uuid import UUID
 from sqlalchemy import select
 
 from marketgram.identity.access.domain.model.role import Role
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import (
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.context import (
     IAMContext
 )
 

@@ -9,7 +9,7 @@ from marketgram.identity.access.domain.model.password_hasher import PasswordHash
 from marketgram.identity.access.domain.model.web_session_factory import (
     WebSessionFactory
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import (
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.context import (
     IAMContext
 )
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (

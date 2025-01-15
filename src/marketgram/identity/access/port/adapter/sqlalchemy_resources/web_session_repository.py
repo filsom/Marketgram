@@ -6,7 +6,7 @@ from sqlalchemy import and_, delete, select
 from marketgram.identity.access.domain.model.web_session import (
     WebSession
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import (
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.context import (
     IAMContext
 )
 
