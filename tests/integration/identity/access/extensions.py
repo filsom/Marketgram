@@ -32,7 +32,7 @@ class WebSessionExtensions:
     
 
 class UserExtensions:
-    def __init__(self, user: User) -> None:
+    def __init__(self, user: User | None) -> None:
         self._user = user
 
     @property
