@@ -31,16 +31,14 @@ class PasswordChangeHandler:
     def __init__(
         self,
         context: IAMContext,
-        user_repository: UserRepository,
-        web_session_repository: WebSessionRepository,
         password_hasher: PasswordHasher
     ) -> None:
         self._context = context
-        self._user_repository = user_repository
-        self._web_session_repository = web_session_repository
+        self._user_repository = UserRepository(context)
+        self._web_session_repository = WebSessionRepository(context)
         self._password_hasher = password_hasher
 
-    async def handle(self, command: PasswordChangeCommand) -> None:
+    async def execute(self, command: PasswordChangeCommand) -> None:
         web_session = await self._web_session_repository.lively_with_id(
             command.session_id, datetime.now()
         )

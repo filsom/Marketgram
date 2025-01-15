@@ -1,16 +1,10 @@
-from datetime import datetime, timedelta
-from typing import AsyncGenerator
-from uuid import uuid4
-
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from marketgram.identity.access.application.commands.new_password import (
     NewPasswordCommand, 
     NewPasswordHandler
 )
-from marketgram.identity.access.domain.model.user import User
-from marketgram.identity.access.domain.model.web_session import WebSession
+from marketgram.identity.access.domain.model.password_hasher import PasswordHasher
 from marketgram.identity.access.port.adapter.argon2_password_hasher import (
     Argon2PasswordHasher
 )
@@ -20,66 +14,49 @@ from marketgram.identity.access.port.adapter.jwt_token_manager import (
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import (
     IAMContext
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
-    UserRepository
-)
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.web_session_repository import (
-    WebSessionRepository
-)
-from marketgram.identity.access.settings import JWTManagerSecret
+from tests.integration.base import IAMTestCase
 
 
-async def test_new_password(engine: AsyncGenerator[AsyncEngine, None]) -> None:
-    # Arrange
-    user_id = uuid4()
-    session_id = uuid4()
-    new_password = 'new_protected'
-    
-    password_hasher = Argon2PasswordHasher()
+class TestNewPasswordHandler(IAMTestCase):
+    async def test_new_password(self) -> None:
+        # Arrange        
+        user = await self.create_user()
+        await self.create_web_session(user.user_id)
 
-    async with AsyncSession(engine) as session:
-        await session.begin()
-        user = User(
-            user_id,
-            'test@mail.ru',
-            password_hasher.hash('protected')
-        )
-        user.activate()
+        password_hasher = Argon2PasswordHasher()
+        token_manager = JwtTokenManager('secret')
+        password_change_token = token_manager.encode({
+            'sub': user.to_string_id(),
+            'aud': 'user:password'
+        })
 
-        web_session = WebSession(
-            user_id,
-            session_id,
-            datetime.now(),
-            datetime.now() + timedelta(days=15),
-            'Nokia 3210'
-        )
-        session.add_all([user, web_session])
-        await session.commit()
-
-    token_manager = JwtTokenManager(JWTManagerSecret('secret'))
-    password_change_token = token_manager.encode({
-        'sub': str(user_id),
-        'aud': 'user:password'
-    })
-    async with AsyncSession(engine) as session:
-        await session.begin()
-        sut = NewPasswordHandler(
-            IAMContext(session),
-            UserRepository(session),
-            WebSessionRepository(session),
+        # Act
+        await self.execute(
+            NewPasswordCommand(password_change_token, 'new_protected'),
             token_manager,
             password_hasher
         )
 
-    # Act
-        await sut.handle(NewPasswordCommand(password_change_token, new_password))
+        # Assert
+        user_from_db = await self.query_user_with_id(user.user_id)
+        user_from_db \
+            .should_exist() \
+            .with_hashed_password('new_protected', password_hasher)
 
-    # Assert
-    async with AsyncSession(engine) as session:
-        await session.begin()
-        user = await UserRepository(session).with_id(user_id)
-        stmt = select(WebSession).where(WebSession.user_id == user_id)
-        web_sessions = (await session.execute(stmt)).scalars().all()
+        count_web_sessions = await self.query_count_web_sessions(user_from_db.user_id)
+        assert not count_web_sessions
 
-        assert password_hasher.verify(user.password, new_password)
-        assert not web_sessions
+    async def execute(
+        self,
+        command: NewPasswordCommand,
+        token_manager: JwtTokenManager,
+        password_hasher: PasswordHasher
+    ) -> None:
+        async with AsyncSession(self._engine) as session:
+            await session.begin()
+            handler = NewPasswordHandler(
+                IAMContext(session),
+                token_manager,
+                password_hasher
+            )
+            return await handler.execute(command)

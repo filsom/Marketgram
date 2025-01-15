@@ -1,4 +1,4 @@
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, Mock
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -8,6 +8,7 @@ from marketgram.identity.access.application.commands.user_registration import (
     UserRegistrationCommand, 
     UserRegistrationHandler
 )
+from marketgram.identity.access.domain.model.password_hasher import PasswordHasher
 from marketgram.identity.access.domain.model.role_permission import Permission
 from marketgram.identity.access.port.adapter.argon2_password_hasher import (
     Argon2PasswordHasher
@@ -15,19 +16,11 @@ from marketgram.identity.access.port.adapter.argon2_password_hasher import (
 from marketgram.identity.access.port.adapter.jwt_token_manager import (
     JwtTokenManager
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.role_repository import (
-    RoleRepository
-)
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import (
     IAMContext
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
-    UserRepository
-)
-from marketgram.identity.access.settings import (
-    ActivateHtmlSettings, 
-    JWTManagerSecret
-)
+from marketgram.identity.access.settings import ActivateHtmlSettings
+
 from tests.integration.base import IAMTestCase
 
 
@@ -44,8 +37,8 @@ class TestUserRegistrationHandler(IAMTestCase):
         # Act
         await self.execute(
             UserRegistrationCommand('test@mail.ru', 'unprotected'),
-            JwtTokenManager(JWTManagerSecret('secret')),
-            activate_msg_renderer,
+            JwtTokenManager('secret'),
+            Mock(),
             email_sender,
             password_hasher
         )
@@ -55,7 +48,7 @@ class TestUserRegistrationHandler(IAMTestCase):
 
         user_from_db = await self.query_user_with_email('test@mail.ru')
         user_from_db \
-            .should_existing() \
+            .should_exist() \
             .with_email('test@mail.ru') \
             .email_is_lower() \
             .not_activated() \
@@ -70,17 +63,15 @@ class TestUserRegistrationHandler(IAMTestCase):
         jwt_token_manager: JwtTokenManager,
         message_renderer: MessageRenderer[ActivateHtmlSettings, str],
         email_sender: EmailSender, 
-        password_hasher: Argon2PasswordHasher
+        password_hasher: PasswordHasher
     ) -> None:
         async with AsyncSession(self._engine) as session:
             await session.begin()
-            sut = UserRegistrationHandler(
+            handler = UserRegistrationHandler(
                 IAMContext(session),
-                UserRepository(session),
-                RoleRepository(session),
                 jwt_token_manager,
                 message_renderer,
                 email_sender,
                 password_hasher
             )
-            return await sut.execute(command)
+            return await handler.execute(command)

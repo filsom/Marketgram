@@ -30,18 +30,14 @@ class UserRegistrationHandler:
     def __init__(
         self,
         context: IAMContext,
-        user_repository: UserRepository,
-        role_repository: RoleRepository,
         jwt_manager: JwtTokenManager,
-        message_renderer: MessageRenderer[
-            ActivateHtmlSettings, str
-        ],
+        message_renderer: MessageRenderer[ActivateHtmlSettings, str],
         email_sender: EmailSender,
         password_hasher: PasswordHasher
     ) -> None:
         self._context = context
-        self._user_repository = user_repository
-        self._role_repository = role_repository
+        self._user_repository = UserRepository(context)
+        self._role_repository = RoleRepository(context)
         self._jwt_manager = jwt_manager
         self._message_renderer = message_renderer
         self._email_sender = email_sender

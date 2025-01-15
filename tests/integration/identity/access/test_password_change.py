@@ -1,15 +1,11 @@
-from datetime import datetime, timedelta
-from typing import AsyncGenerator
-from uuid import uuid4
-
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from marketgram.identity.access.application.commands.password_change import (
     PasswordChangeCommand, 
     PasswordChangeHandler
 )
-from marketgram.identity.access.domain.model.user import User
+from marketgram.identity.access.domain.model.password_hasher import PasswordHasher
 from marketgram.identity.access.domain.model.web_session import WebSession
 from marketgram.identity.access.port.adapter.argon2_password_hasher import (
     Argon2PasswordHasher
@@ -20,59 +16,43 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_de
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
     UserRepository
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.web_session_repository import (
-    WebSessionRepository
-)
+from tests.integration.base import IAMTestCase
 
+class TestPasswordChangeHandler(IAMTestCase):
+    async def test_change_user_password(self) -> None:
+        # Arrange
+        user = await self.create_user()
+        web_session = await self.create_web_session(user.user_id)
 
-async def test_change_user_password(engine: AsyncGenerator[AsyncEngine, None]) -> None:
-    # Arrange
-    user_id = uuid4()
-    session_id = uuid4()
-    old_password = 'old_protected'
-    new_password = 'new_unprotected'
-    
-    password_hasher = Argon2PasswordHasher()
-
-    async with AsyncSession(engine) as session:
-        await session.begin()
-        user = User(
-            user_id,
-            'test@mail.ru',
-            password_hasher.hash(old_password)
-        )
-        user.activate()
-
-        web_session = WebSession(
-            user_id,
-            session_id,
-            datetime.now(),
-            datetime.now() + timedelta(days=15),
-            'Nokia 3210'
-        )
-        session.add_all([user, web_session])
-        await session.commit()
-
-    async with AsyncSession(engine) as session:
-        await session.begin()
-        sut = PasswordChangeHandler(
-            IAMContext(session),
-            UserRepository(session),
-            WebSessionRepository(session),
+        password_hasher = Argon2PasswordHasher()
+        # Act
+        await self.execute(
+            PasswordChangeCommand(
+                web_session.session_id, 
+                'protected', 
+                'new_protected'
+            ),
             password_hasher
         )
 
-    # Act
-        await sut.handle(PasswordChangeCommand(session_id, old_password, new_password))
+        # Assert
+        user_from_db = await self.query_user_with_id(user.user_id)
+        user_from_db \
+            .should_exist() \
+            .with_hashed_password('new_protected', password_hasher)
 
-    # Assert
-    async with AsyncSession(engine) as session:
-        await session.begin()
-        user = await UserRepository(session).with_id(user_id)
-        stmt = select(WebSession).where(WebSession.user_id == user_id)
-        web_sessions = (await session.execute(stmt)).scalars().all()
+        count_web_sessions = await self.query_count_web_sessions(user_from_db.user_id)
+        assert not count_web_sessions
 
-        assert password_hasher.verify(user.password, new_password)
-        assert not web_sessions
-
-
+    async def execute(
+        self,
+        command: PasswordChangeCommand,
+        password_hasher: PasswordHasher
+    ) -> None:
+        async with AsyncSession(self._engine) as session:
+            await session.begin()
+            handler = PasswordChangeHandler(
+                IAMContext(session),
+                password_hasher
+            )
+            return await handler.execute(command)

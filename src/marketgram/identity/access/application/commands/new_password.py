@@ -26,18 +26,16 @@ class NewPasswordHandler:
     def __init__(
         self, 
         context: IAMContext,
-        user_repository: UserRepository,
-        web_session_repository: WebSessionRepository,
         jwt_manager: JwtTokenManager,
         password_hasher: PasswordHasher
     ) -> None:
         self._context = context
-        self._user_repository = user_repository
-        self._web_session_repository = web_session_repository
+        self._user_repository = UserRepository(context)
+        self._web_session_repository = WebSessionRepository(context)
         self._jwt_manager = jwt_manager
         self._password_hasher = password_hasher
     
-    async def handle(self, command: NewPasswordCommand) -> None:
+    async def execute(self, command: NewPasswordCommand) -> None:
         user_id = self._jwt_manager.decode(
             command.token, 'user:password',
         )      

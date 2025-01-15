@@ -3,7 +3,7 @@ from typing import AsyncGenerator, Self
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import and_, insert, select
+from sqlalchemy import and_, func, insert, select
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 
 from marketgram.identity.access.domain.model.role import Role
@@ -12,8 +12,9 @@ from marketgram.identity.access.domain.model.user_factory import UserFactory
 from marketgram.identity.access.domain.model.web_session import WebSession
 from marketgram.identity.access.domain.model.web_session_factory import WebSessionFactory
 from marketgram.identity.access.port.adapter.argon2_password_hasher import Argon2PasswordHasher
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.identity_table import user_table
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.identity_table import user_table, web_session_table
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.role_repository import RoleRepository
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import IAMContext
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import UserRepository
 
 
@@ -26,7 +27,7 @@ class IntegrationTest:
         self._engine = engine
 
 
-class WebSessionExpression:
+class WebSessionExtensions:
     def __init__(self, web_session: WebSession | None) -> None:
         self._web_session = web_session
 
@@ -51,7 +52,7 @@ class WebSessionExpression:
         return self
     
 
-class UserExpression:
+class UserExtensions:
     def __init__(self, user: User) -> None:
         self._user = user
 
@@ -59,7 +60,7 @@ class UserExpression:
     def user_id(self) -> UUID:
         return self._user.user_id
 
-    def should_existing(self) -> Self:
+    def should_exist(self) -> Self:
         assert self._user is not None
         return self
 
@@ -73,6 +74,10 @@ class UserExpression:
     
     def not_activated(self) -> Self:
         assert not self._user.is_active
+        return self
+    
+    def activated(self) -> Self:
+        assert self._user.is_active
         return self
     
     def with_hashed_password(
@@ -113,34 +118,61 @@ class IAMTestCase(IntegrationTest):
 
             return user
         
-    async def query_web_session(self, session_id: UUID) -> WebSessionExpression:
-        async with AsyncSession(self._engine) as session:
-            await session.begin()
-            stmt = select(WebSession).where(
-                WebSession.session_id == session_id,
-            )
-            result = (await session.execute(stmt)).scalar_one_or_none()
-
-            return WebSessionExpression(result)
-        
-    async def query_user_with_email(self, email: str) -> UserExpression:
-        async with AsyncSession(self._engine) as session:
-            await session.begin()
-            user = await UserRepository(session).with_email(email)
-            return UserExpression(user)
-        
-    async def query_role(self, user_id: UUID) -> Role:
-        async with AsyncSession(self._engine) as session:
-            await session.begin()
-            return await RoleRepository(session).with_id(user_id)
-
     async def create_web_session(self, user_id: UUID) -> WebSession:
         async with AsyncSession(self._engine) as session:
             await session.begin()
             web_session = WebSessionFactory().create(
                 user_id, datetime.now(), 'Nokia 3210'
             )
-            session.add(web_session)
+            await session.execute(
+                insert(web_session_table)
+                .values(
+                    user_id=web_session.user_id,
+                    session_id=web_session.session_id,
+                    created_at=web_session.created_at,
+                    expires_in=web_session.expires_in,
+                    device=web_session.device,
+                    version_id=1
+                )
+            )
             await session.commit()
 
             return web_session
+        
+    async def query_web_session(self, session_id: UUID) -> WebSessionExtensions:
+        async with AsyncSession(self._engine) as session:
+            await session.begin()
+            stmt = select(WebSession).where(WebSession.session_id == session_id)
+            result = (await session.execute(stmt)).scalar_one_or_none()
+
+            return WebSessionExtensions(result)
+        
+    async def query_user_with_email(self, email: str) -> UserExtensions:
+        async with AsyncSession(self._engine) as session:
+            await session.begin()
+            result = await UserRepository(IAMContext(session)).with_email(email)
+            return UserExtensions(result)
+        
+    async def query_user_with_id(self, user_id: UUID) -> UserExtensions:
+        async with AsyncSession(self._engine) as session:
+            await session.begin()
+            result = await UserRepository(IAMContext(session)).with_id(user_id)
+            return UserExtensions(result)
+                    
+    async def query_role(self, user_id: UUID) -> Role:
+        async with AsyncSession(self._engine) as session:
+            await session.begin()
+            return await RoleRepository(IAMContext(session)).with_id(user_id)
+        
+    async def query_count_web_sessions(self, user_id: UUID) -> int:
+        async with AsyncSession(self._engine) as session:
+            await session.begin()
+            stmt = (
+                select(func.count())
+                .select_from(web_session_table)
+                .group_by(web_session_table.c.user_id)
+                .where(web_session_table.c.user_id == user_id)
+            )
+            result = await session.execute(stmt)
+
+            return result.scalar()

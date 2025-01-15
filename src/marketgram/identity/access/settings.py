@@ -17,11 +17,6 @@ class EmailClientSettings:
     validate_certs: bool
 
 
-@dataclass
-class JWTManagerSecret:
-    secret: str
-
-
 class ActivateHtmlSettings(JwtHtmlSettings):
     pass
 
@@ -33,7 +28,7 @@ class ForgotPasswordHtmlSettings(JwtHtmlSettings):
 @dataclass
 class Settings:
     email_client: EmailClientSettings
-    jwt_manager: JWTManagerSecret
+    jwt_manager: str
     activate_html_settings: JwtHtmlSettings
     forgot_pwd_html_settings: JwtHtmlSettings
     jinja_env: Environment
@@ -68,9 +63,8 @@ def identity_access_load_settings() -> Settings:
         os.environ.get('PASSWORD'),
         os.environ.get('VALIDATE_CERTS')
     )
-    jwt_manager = JWTManagerSecret(
-        os.environ.get('JWT_SECRET')
-    )
+    jwt_manager = os.environ.get('JWT_SECRET')
+    
     return Settings(
         email_client,
         jwt_manager,

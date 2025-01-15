@@ -1,24 +1,13 @@
 from typing import AsyncGenerator
 
-from dishka import Provider, Scope, alias, decorate, provide, provide_all
+from dishka import Provider, Scope, alias, provide, provide_all
 from aiosmtplib import SMTP
 from jinja2 import Environment
 
 from marketgram.common.application.email_sender import EmailSender
-from marketgram.common.application.handler import Handler, Cmd, Res
-from marketgram.common.application.jwt_manager import TokenManager
 from marketgram.common.application.message_renderer import MessageRenderer
 from marketgram.identity.access.domain.model.password_hasher import (
     PasswordHasher
-)
-from marketgram.identity.access.domain.model.role_repository import (
-    RoleRepository
-)
-from marketgram.identity.access.domain.model.user_repository import (
-    UserRepository
-)
-from marketgram.identity.access.domain.model.web_session_repository import (
-    WebSessionRepository
 )
 from marketgram.identity.access.port.adapter.argon2_password_hasher import (
     Argon2PasswordHasher
@@ -31,15 +20,6 @@ from marketgram.identity.access.settings import (
     identity_access_load_settings
 )
 from marketgram.identity.access.port.adapter.jwt_token_manager import JwtTokenManager
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.role_repository import (
-    SQLAlchemyRoleRepository
-)
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
-    SQLAlchemyUserRepository
-)
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.web_session_repository import (
-    SQLAlchemyWebSessionRepository
-)
 from marketgram.common.ioc import AS
 from marketgram.identity.access.application.commands.password_change import (
     PasswordChangeCommand,
@@ -64,12 +44,6 @@ from marketgram.identity.access.application.commands.user_login import (
 from marketgram.identity.access.application.commands.user_registration import (
     UserRegistrationHandler,
     UserRegistrationCommand,
-)
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import (
-    TransactionDecorator
-)
-from marketgram.identity.access.domain.model.web_session_repository import (
-    WebSessionRepository
 )
 
 
@@ -97,18 +71,6 @@ class IdentityAccessIoC(Provider):
     a_smtp = alias(source=SMTP, provides=EmailSender) 
 
     @provide
-    def user_repository(self, async_session: AS) -> UserRepository:
-        return SQLAlchemyUserRepository(async_session)
-    
-    @provide
-    def web_session_repository(self, async_session: AS) -> WebSessionRepository:
-        return SQLAlchemyWebSessionRepository(async_session)
-    
-    @provide
-    def role_repository(self, async_session: AS) -> RoleRepository:
-        return SQLAlchemyRoleRepository(async_session)
-
-    @provide
     def password_hasher(self) -> Argon2PasswordHasher:
         return Argon2PasswordHasher(
             time_cost=2,
@@ -119,7 +81,7 @@ class IdentityAccessIoC(Provider):
     a_ph = alias(Argon2PasswordHasher, provides=PasswordHasher)
 
     @provide
-    def jwt_manager(self, settings: Settings) -> TokenManager:
+    def jwt_manager(self, settings: Settings) -> JwtTokenManager:
         return JwtTokenManager(settings.jwt_manager)
     
     @provide
@@ -153,20 +115,9 @@ class IdentityAccessIoC(Provider):
         ForgotPasswordHandler
     )
     
-    a_user_reg = alias(UserRegistrationHandler, provides=Handler[UserRegistrationCommand, None])
-    a_pwd_change = alias(PasswordChangeHandler, provides=Handler[PasswordChangeCommand, None])
-    a_new_pwd = alias(NewPasswordHandler, provides=Handler[NewPasswordCommand, None])
-    a_user_activate = alias(UserActivateHandler, provides=Handler[UserAcivateCommand, None])
-    a_user_login = alias(UserLoginHandler, provides=Handler[UserLoginCommand, dict[str, str]])
-    a_forgot_pwd = alias(ForgotPasswordHandler, provides=Handler[ForgotPasswordCommand, None])
-
-    @decorate
-    def wrapped_handler(
-        self, 
-        handler: Handler[Cmd, Res], 
-        async_session: AS
-    ) -> Handler[Cmd, Res]:
-        return TransactionDecorator(
-            handler,
-            async_session
-        )
+    # a_user_reg = alias(UserRegistrationHandler, provides=Handler[UserRegistrationCommand, None])
+    # a_pwd_change = alias(PasswordChangeHandler, provides=Handler[PasswordChangeCommand, None])
+    # a_new_pwd = alias(NewPasswordHandler, provides=Handler[NewPasswordCommand, None])
+    # a_user_activate = alias(UserActivateHandler, provides=Handler[UserAcivateCommand, None])
+    # a_user_login = alias(UserLoginHandler, provides=Handler[UserLoginCommand, dict[str, str]])
+    # a_forgot_pwd = alias(ForgotPasswordHandler, provides=Handler[ForgotPasswordCommand, None])
