@@ -25,6 +25,7 @@ class TestPasswordChangeHandler(IAMTestCase):
         web_session = await self.create_web_session(user.user_id)
 
         password_hasher = Argon2PasswordHasher()
+        
         # Act
         await self.execute(
             PasswordChangeCommand(
