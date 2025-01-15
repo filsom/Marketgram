@@ -8,11 +8,11 @@ from marketgram.identity.access.port.adapter.jwt_token_manager import JwtTokenMa
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.context import (
     IAMContext
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
-    UserRepository
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.users_repository import (
+    UsersRepository
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.web_session_repository import (
-    WebSessionRepository
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.web_sessions_repository import (
+    WebSessionsRepository
 )
 
 
@@ -30,8 +30,8 @@ class NewPasswordHandler:
         password_hasher: PasswordHasher
     ) -> None:
         self._context = context
-        self._user_repository = UserRepository(context)
-        self._web_session_repository = WebSessionRepository(context)
+        self._users_repository = UsersRepository(context)
+        self._web_sessions_repository = WebSessionsRepository(context)
         self._jwt_manager = jwt_manager
         self._password_hasher = password_hasher
     
@@ -39,13 +39,13 @@ class NewPasswordHandler:
         user_id = self._jwt_manager.decode(
             command.token, 'user:password',
         )      
-        user = await self._user_repository.with_id(user_id)
+        user = await self._users_repository.with_id(user_id)
         if user is None:
             raise ApplicationError()
         
         user.change_password(command.password, self._password_hasher)
 
-        await self._web_session_repository \
+        await self._web_sessions_repository \
             .delete_all_with_user_id(user.user_id)
         
         return await self._context.save_changes()

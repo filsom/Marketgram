@@ -5,8 +5,8 @@ from marketgram.identity.access.port.adapter.jwt_token_manager import JwtTokenMa
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.context import (
     IAMContext
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
-    UserRepository
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.users_repository import (
+    UsersRepository
 )
 
 
@@ -22,14 +22,14 @@ class UserActivateHandler:
         jwt_manager: JwtTokenManager
     ) -> None:
         self._context = context
-        self._user_repository = UserRepository(context)
+        self._users_repository = UsersRepository(context)
         self._jwt_manager = jwt_manager
 
     async def execute(self, command: UserAcivateCommand) -> None:
         user_id = self._jwt_manager.decode(
             command.token, 'user:activate'
         )
-        exists_user = await self._user_repository.with_id(user_id)
+        exists_user = await self._users_repository.with_id(user_id)
         
         if exists_user is None:
             raise ApplicationError()

@@ -1,12 +1,12 @@
 from sqlalchemy.orm import registry
 
 from marketgram.identity.access.domain.model.user import User
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.mapping.table.user_table import (
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.mapping.table.users_table import (
     user_table
 )
 
 
-def user_registry_mapper(mapper: registry):
+def users_registry_mapper(mapper: registry):
     mapper.map_imperatively(
         User,
         user_table,

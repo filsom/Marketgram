@@ -12,11 +12,11 @@ from marketgram.identity.access.domain.model.authentication_service import (
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.context import (
     IAMContext
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
-    UserRepository
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.users_repository import (
+    UsersRepository
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.web_session_repository import (
-    WebSessionRepository
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.web_sessions_repository import (
+    WebSessionsRepository
 )
 
 
@@ -34,25 +34,25 @@ class PasswordChangeHandler:
         password_hasher: PasswordHasher
     ) -> None:
         self._context = context
-        self._user_repository = UserRepository(context)
-        self._web_session_repository = WebSessionRepository(context)
+        self._users_repository = UsersRepository(context)
+        self._web_sessions_repository = WebSessionsRepository(context)
         self._password_hasher = password_hasher
 
     async def execute(self, command: PasswordChangeCommand) -> None:
-        web_session = await self._web_session_repository.lively_with_id(
+        web_session = await self._web_sessions_repository.lively_with_id(
             command.session_id, datetime.now()
         )
         if web_session is None:
             raise ApplicationError()
         
-        user = await self._user_repository.with_id(web_session.user_id)
+        user = await self._users_repository.with_id(web_session.user_id)
 
         AuthenticationService(self._password_hasher) \
             .authenticate(user, command.old_password)
 
         user.change_password(command.new_password, self._password_hasher)
 
-        await self._web_session_repository \
+        await self._web_sessions_repository \
             .delete_all_with_user_id(user.user_id)
         
         await self._context.save_changes()

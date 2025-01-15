@@ -8,14 +8,14 @@ from marketgram.identity.access.domain.model.user_factory import UserFactory
 from marketgram.common.application.email_sender import EmailSender
 from marketgram.common.application.message_renderer import MessageRenderer
 from marketgram.identity.access.port.adapter.jwt_token_manager import JwtTokenManager
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.role_repository import (
-    RoleRepository
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.roles_repository import (
+    RolesRepository
 )
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.context import (
     IAMContext
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
-    UserRepository
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.users_repository import (
+    UsersRepository
 )
 
 
@@ -35,15 +35,15 @@ class UserRegistrationHandler:
         password_hasher: PasswordHasher
     ) -> None:
         self._context = context
-        self._user_repository = UserRepository(context)
-        self._role_repository = RoleRepository(context)
+        self._users_repository = UsersRepository(context)
+        self._roles_repository = RolesRepository(context)
         self._jwt_manager = jwt_manager
         self._message_renderer = message_renderer
         self._email_sender = email_sender
         self._password_hasher = password_hasher
         
     async def execute(self, command: UserRegistrationCommand) -> None:
-        user = await self._user_repository.with_email(command.email)
+        user = await self._users_repository.with_email(command.email)
         if user is not None:
             raise ApplicationError()
         
@@ -57,8 +57,8 @@ class UserRegistrationHandler:
         })
         message = self._message_renderer.render(command.email, jwt_token)
         
-        self._user_repository.add(user)
-        self._role_repository.add(role)
+        self._users_repository.add(user)
+        self._roles_repository.add(role)
 
         await self._email_sender.send_message(message)
 

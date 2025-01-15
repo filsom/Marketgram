@@ -6,8 +6,8 @@ from marketgram.identity.access.port.adapter.jwt_token_manager import JwtTokenMa
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.context import (
     IAMContext
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
-    UserRepository
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.users_repository import (
+    UsersRepository
 )
 
 
@@ -25,13 +25,13 @@ class ForgotPasswordHandler:
         email_sender: EmailSender
     ) -> None:
         self._context = context
-        self._user_repository = UserRepository(context)
+        self._users_repository = UsersRepository(context)
         self._jwt_manager = jwt_manager
         self._message_renderer = message_renderer
         self._email_sender = email_sender
     
     async def execute(self, command: ForgotPasswordCommand) -> None:
-        user = await self._user_repository.with_email(command.email)
+        user = await self._users_repository.with_email(command.email)
         
         if user is None or not user.is_active:
             return 

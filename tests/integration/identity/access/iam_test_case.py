@@ -18,14 +18,14 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.identity_table
     user_table, 
     web_session_table
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.role_repository import (
-    RoleRepository
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.roles_repository import (
+    RolesRepository
 )
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.context import (
     IAMContext
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
-    UserRepository
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.users_repository import (
+    UsersRepository
 )
 from tests.integration.conftest import IntegrationTest
 from tests.integration.identity.access.extensions import (
@@ -94,19 +94,19 @@ class IAMTestCase(IntegrationTest):
     async def query_user_with_email(self, email: str) -> UserExtensions:
         async with AsyncSession(self.engine) as session:
             await session.begin()
-            result = await UserRepository(IAMContext(session)).with_email(email)
+            result = await UsersRepository(IAMContext(session)).with_email(email)
             return UserExtensions(result)
         
     async def query_user_with_id(self, user_id: UUID) -> UserExtensions:
         async with AsyncSession(self.engine) as session:
             await session.begin()
-            result = await UserRepository(IAMContext(session)).with_id(user_id)
+            result = await UsersRepository(IAMContext(session)).with_id(user_id)
             return UserExtensions(result)
                     
     async def query_role(self, user_id: UUID) -> Role:
         async with AsyncSession(self.engine) as session:
             await session.begin()
-            return await RoleRepository(IAMContext(session)).with_id(user_id)
+            return await RolesRepository(IAMContext(session)).with_id(user_id)
         
     async def query_count_web_sessions(self, user_id: UUID) -> int:
         async with AsyncSession(self.engine) as session:

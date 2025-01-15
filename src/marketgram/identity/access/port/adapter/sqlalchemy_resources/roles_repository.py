@@ -7,7 +7,7 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.context import
 )
 
 
-class RoleRepository:
+class RolesRepository:
     def __init__(
         self,
         session: IAMContext

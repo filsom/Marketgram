@@ -11,7 +11,7 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.context import
 )
 
 
-class WebSessionRepository:
+class WebSessionsRepository:
     def __init__(
         self,
         context: IAMContext

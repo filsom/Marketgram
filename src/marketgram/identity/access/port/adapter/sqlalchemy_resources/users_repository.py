@@ -9,7 +9,7 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.context import
 )
 
 
-class UserRepository:
+class UsersRepository:
     def __init__(
         self,
         context: IAMContext

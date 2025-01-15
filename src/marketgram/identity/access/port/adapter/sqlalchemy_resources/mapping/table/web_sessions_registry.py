@@ -1,11 +1,11 @@
 from sqlalchemy.orm import registry
 
 from marketgram.identity.access.domain.model.web_session import WebSession
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.mapping.table.web_session_table import (
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.mapping.table.web_sessions_table import (
     web_session_table
 )
 
-def web_session_registry_mapper(mapper: registry) -> None:
+def web_sessions_registry_mapper(mapper: registry) -> None:
     mapper.map_imperatively(
         WebSession, 
         web_session_table,
