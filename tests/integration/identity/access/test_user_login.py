@@ -33,7 +33,7 @@ class TestUserLoginHandler(IAMTestCase):
         )
         web_session_from_db \
             .should_exist() \
-            .with_user_id(user.user_id) \
+            .with_user_id(result['user_id']) \
             .with_session_id(result['session_id']) \
             .with_device('Nokia 3210') \
             .with_service_life_of_up_to(result['expires_in'])

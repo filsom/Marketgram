@@ -19,7 +19,7 @@ class WebSessionExtensions:
         return self
 
     def with_user_id(self, user_id: str) -> Self:
-        assert self._web_session.user_id == user_id
+        assert str(self._web_session.user_id) == user_id
         return self
     
     def with_device(self, device: str) -> Self:
