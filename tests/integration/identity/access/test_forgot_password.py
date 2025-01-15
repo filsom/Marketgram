@@ -64,7 +64,7 @@ class TestForgotPasswordHandler(IAMTestCase):
         self,
         command: ForgotPasswordCommand,
         token_manager: JwtTokenManager,
-        message_renderer: MessageRenderer,
+        message_renderer: MessageRenderer[str],
         email_sender: EmailSender
     ) -> None:
         async with AsyncSession(self.engine) as session:
