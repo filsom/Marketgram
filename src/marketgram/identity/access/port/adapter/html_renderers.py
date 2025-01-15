@@ -9,7 +9,7 @@ class JwtTokenHtmlRenderer(HtmlRenderer[str]):
         self, 
         jinja: Environment, 
         html_settings: JwtHtmlSettings
-    ):
+    ) -> None:
         super().__init__(jinja, html_settings)
 
     def _make_html_content(self, template: Template, fields: str) -> str:
