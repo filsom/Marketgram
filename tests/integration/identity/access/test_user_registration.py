@@ -44,7 +44,7 @@ class TestUserRegistrationHandler(IAMTestCase):
         # Assert
         email_sender.send_message.assert_called_once()
 
-        user_from_db = await self.query_user_with_email('test@mail.ru')
+        user_from_db = await self.query_user_with_email('Test@mail.ru')
         user_from_db \
             .should_exist() \
             .with_email('test@mail.ru') \
