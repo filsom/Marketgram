@@ -3,9 +3,9 @@ import jwt
 from datetime import datetime, timedelta
 from uuid import UUID
 
-from marketgram.identity.access.port.adapter.exceptions import (
+from marketgram.identity.access.port.adapter.errors import (
     JWT_ERROR, 
-    JWTVerifyException
+    JwtVerifyError
 )
 
 
@@ -30,6 +30,6 @@ class JwtTokenManager:
                 algorithms=[self.ALGORITHM]
             )
         except jwt.PyJWTError:
-            raise JWTVerifyException(JWT_ERROR) 
+            raise JwtVerifyError(JWT_ERROR) 
         
         return UUID(payload['sub'])
