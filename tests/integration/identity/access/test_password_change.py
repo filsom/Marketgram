@@ -1,4 +1,3 @@
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from marketgram.identity.access.application.commands.password_change import (
@@ -6,17 +5,14 @@ from marketgram.identity.access.application.commands.password_change import (
     PasswordChangeHandler
 )
 from marketgram.identity.access.domain.model.password_hasher import PasswordHasher
-from marketgram.identity.access.domain.model.web_session import WebSession
 from marketgram.identity.access.port.adapter.argon2_password_hasher import (
     Argon2PasswordHasher
 )
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import (
     IAMContext
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
-    UserRepository
-)
 from tests.integration.identity.access.iam_test_case import IAMTestCase
+
 
 class TestPasswordChangeHandler(IAMTestCase):
     async def test_change_user_password(self) -> None:

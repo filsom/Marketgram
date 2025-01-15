@@ -13,12 +13,6 @@ from marketgram.identity.access.port.adapter.argon2_password_hasher import (
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import (
     IAMContext
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
-    UserRepository
-)
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.web_session_repository import (
-    WebSessionRepository
-)
 from tests.integration.identity.access.iam_test_case import IAMTestCase
                 
 
