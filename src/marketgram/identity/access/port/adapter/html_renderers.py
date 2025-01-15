@@ -12,11 +12,7 @@ class JwtTokenHtmlRenderer(HtmlRenderer[str]):
     ):
         super().__init__(jinja, html_settings)
 
-    def _make_html_content(
-        self, 
-        template: Template, 
-        fields: str
-    ) -> str:
+    def _make_html_content(self, template: Template, fields: str) -> str:
         link = '{}{}'.format(self._html_settings.link, fields)
 
         return template.render(link=link)

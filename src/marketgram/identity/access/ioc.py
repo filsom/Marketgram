@@ -14,8 +14,6 @@ from marketgram.identity.access.port.adapter.argon2_password_hasher import (
 )
 from marketgram.identity.access.port.adapter.html_renderers import JwtTokenHtmlRenderer
 from marketgram.identity.access.settings import (
-    ActivateHtmlSettings, 
-    ForgotPasswordHtmlSettings, 
     Settings, 
     identity_access_load_settings
 )
@@ -89,7 +87,7 @@ class IdentityAccessIoC(Provider):
         self, 
         settings: Settings, 
         jinja: Environment
-    ) -> MessageRenderer[ActivateHtmlSettings, str]:
+    ) -> MessageRenderer[str]:
         return JwtTokenHtmlRenderer(
             jinja,
             settings.activate_html_settings
@@ -100,7 +98,7 @@ class IdentityAccessIoC(Provider):
         self, 
         settings: Settings, 
         jinja: Environment
-    ) -> MessageRenderer[ForgotPasswordHtmlSettings, str]:
+    ) -> MessageRenderer[str]:
         return JwtTokenHtmlRenderer(
             jinja,
             settings.forgot_pwd_html_settings
