@@ -36,7 +36,7 @@ class TestUserRegistrationHandler(IAMTestCase):
         await self.execute(
             UserRegistrationCommand('test@mail.ru', 'unprotected'),
             JwtTokenManager('secret'),
-            Mock(),
+            activate_msg_renderer,
             email_sender,
             password_hasher
         )

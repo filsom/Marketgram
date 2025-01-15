@@ -32,7 +32,7 @@ class TestForgotPasswordHandler(IAMTestCase):
         await self.execute(
             ForgotPasswordCommand('test@mail.ru'),
             JwtTokenManager('secret'),
-            Mock(),
+            forgot_password_msg_renderer,
             email_sender
         )
 
@@ -53,7 +53,7 @@ class TestForgotPasswordHandler(IAMTestCase):
         await self.execute(
             ForgotPasswordCommand('test@mail.ru'),
             JwtTokenManager('secret'),
-            Mock(),
+            forgot_password_msg_renderer,
             email_sender
         )
 
