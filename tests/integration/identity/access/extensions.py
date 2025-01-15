@@ -47,10 +47,6 @@ class UserExtensions:
         assert self._user.email == email
         return self
     
-    def email_is_lower(self) -> Self:
-        assert self._user.email.islower()
-        return self
-    
     def not_activated(self) -> Self:
         assert not self._user.is_active
         return self

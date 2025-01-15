@@ -48,7 +48,6 @@ class TestUserRegistrationHandler(IAMTestCase):
         user_from_db \
             .should_exist() \
             .with_email('test@mail.ru') \
-            .email_is_lower() \
             .not_activated() \
             .with_hashed_password('unprotected', password_hasher)
         
