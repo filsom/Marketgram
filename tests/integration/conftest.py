@@ -32,6 +32,10 @@ class IntegrationTest:
     ) -> None:
         self._engine = engine
 
+    @property
+    def engine(self) -> AsyncGenerator[AsyncEngine, None]:
+        return self._engine
+
 
 mapper = registry()
 identity_registry_mapper(mapper)

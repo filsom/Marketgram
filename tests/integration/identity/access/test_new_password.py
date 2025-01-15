@@ -52,7 +52,7 @@ class TestNewPasswordHandler(IAMTestCase):
         token_manager: JwtTokenManager,
         password_hasher: PasswordHasher
     ) -> None:
-        async with AsyncSession(self._engine) as session:
+        async with AsyncSession(self.engine) as session:
             await session.begin()
             handler = NewPasswordHandler(
                 IAMContext(session),

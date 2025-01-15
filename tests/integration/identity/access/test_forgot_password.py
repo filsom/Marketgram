@@ -47,7 +47,7 @@ class TestForgotPasswordHandler(IAMTestCase):
         message_renderer: MessageRenderer,
         email_sender: EmailSender
     ) -> None:
-        async with AsyncSession(self._engine) as session:
+        async with AsyncSession(self.engine) as session:
             await session.begin()
             handler = ForgotPasswordHandler(
                 IAMContext(session),

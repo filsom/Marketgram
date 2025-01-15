@@ -41,7 +41,7 @@ class IAMTestCase(IntegrationTest):
         password: str = 'protected',
         is_active: bool = True
     ) -> User:
-        async with AsyncSession(self._engine) as session:
+        async with AsyncSession(self.engine) as session:
             await session.begin()
             user = UserFactory(Argon2PasswordHasher()).create(
                 email, password
@@ -64,7 +64,7 @@ class IAMTestCase(IntegrationTest):
             return user
         
     async def create_web_session(self, user_id: UUID) -> WebSession:
-        async with AsyncSession(self._engine) as session:
+        async with AsyncSession(self.engine) as session:
             await session.begin()
             web_session = WebSessionFactory().create(
                 user_id, datetime.now(), 'Nokia 3210'
@@ -85,7 +85,7 @@ class IAMTestCase(IntegrationTest):
             return web_session
         
     async def query_web_session(self, session_id: UUID) -> WebSessionExtensions:
-        async with AsyncSession(self._engine) as session:
+        async with AsyncSession(self.engine) as session:
             await session.begin()
             stmt = select(WebSession).where(WebSession.session_id == session_id)
             result = (await session.execute(stmt)).scalar_one_or_none()
@@ -93,24 +93,24 @@ class IAMTestCase(IntegrationTest):
             return WebSessionExtensions(result)
         
     async def query_user_with_email(self, email: str) -> UserExtensions:
-        async with AsyncSession(self._engine) as session:
+        async with AsyncSession(self.engine) as session:
             await session.begin()
             result = await UserRepository(IAMContext(session)).with_email(email)
             return UserExtensions(result)
         
     async def query_user_with_id(self, user_id: UUID) -> UserExtensions:
-        async with AsyncSession(self._engine) as session:
+        async with AsyncSession(self.engine) as session:
             await session.begin()
             result = await UserRepository(IAMContext(session)).with_id(user_id)
             return UserExtensions(result)
                     
     async def query_role(self, user_id: UUID) -> Role:
-        async with AsyncSession(self._engine) as session:
+        async with AsyncSession(self.engine) as session:
             await session.begin()
             return await RoleRepository(IAMContext(session)).with_id(user_id)
         
     async def query_count_web_sessions(self, user_id: UUID) -> int:
-        async with AsyncSession(self._engine) as session:
+        async with AsyncSession(self.engine) as session:
             await session.begin()
             stmt = (
                 select(func.count())

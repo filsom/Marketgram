@@ -65,7 +65,7 @@ class TestUserRegistrationHandler(IAMTestCase):
         email_sender: EmailSender, 
         password_hasher: PasswordHasher
     ) -> None:
-        async with AsyncSession(self._engine) as session:
+        async with AsyncSession(self.engine) as session:
             await session.begin()
             handler = UserRegistrationHandler(
                 IAMContext(session),

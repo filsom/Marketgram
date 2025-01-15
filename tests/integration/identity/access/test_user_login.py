@@ -43,7 +43,7 @@ class TestUserLoginHandler(IAMTestCase):
         command: UserLoginCommand, 
         password_hasher: PasswordHasher
     ) -> dict[str, str]:
-        async with AsyncSession(self._engine) as session:
+        async with AsyncSession(self.engine) as session:
             await session.begin()
             handler = UserLoginHandler(
                 IAMContext(session),
