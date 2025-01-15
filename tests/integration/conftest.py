@@ -17,8 +17,6 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.identity_table
     web_session_table
 )
 from marketgram.identity.access.settings import (
-    ActivateHtmlSettings, 
-    ForgotPasswordHtmlSettings, 
     Settings, 
     identity_access_load_settings
 )
@@ -66,7 +64,7 @@ async def engine() -> AsyncGenerator[AsyncEngine, None]:
 @pytest.fixture(scope='function')
 async def activate_msg_renderer(
     settings: Settings
-) -> MessageRenderer[ActivateHtmlSettings, str]:
+) -> MessageRenderer[str]:
     return JwtTokenHtmlRenderer(
         settings.jinja_env, 
         settings.activate_html_settings
@@ -76,7 +74,7 @@ async def activate_msg_renderer(
 @pytest.fixture(scope='function')
 async def forgot_password_msg_renderer(
     settings: Settings
-) -> MessageRenderer[ForgotPasswordHtmlSettings, str]:
+) -> MessageRenderer[str]:
     return JwtTokenHtmlRenderer(
         settings.jinja_env, 
         settings.forgot_pwd_html_settings

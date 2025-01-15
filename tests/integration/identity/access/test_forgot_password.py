@@ -14,14 +14,13 @@ from marketgram.identity.access.port.adapter.jwt_token_manager import (
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import (
     IAMContext
 )
-from marketgram.identity.access.settings import ForgotPasswordHtmlSettings
 from tests.integration.identity.access.iam_test_case import IAMTestCase
 
 
 class TestForgotPasswordHandler(IAMTestCase):
     async def test_activated_user_forgot_password(
         self,
-        forgot_password_msg_renderer: MessageRenderer[ForgotPasswordHtmlSettings, str]
+        forgot_password_msg_renderer: MessageRenderer[str]
     ) -> None:
         # Arrange
         await self.create_user()
@@ -42,7 +41,7 @@ class TestForgotPasswordHandler(IAMTestCase):
 
     async def test_non_activated_user_forgot_password(
         self,
-        forgot_password_msg_renderer: MessageRenderer[ForgotPasswordHtmlSettings, str]
+        forgot_password_msg_renderer: MessageRenderer[str]
     ) -> None:
         # Arrange
         await self.create_user(is_active=False)

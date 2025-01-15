@@ -17,7 +17,6 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_de
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
     UserRepository
 )
-from marketgram.identity.access.settings import ActivateHtmlSettings
 
 
 @dataclass
@@ -31,7 +30,7 @@ class UserRegistrationHandler:
         self,
         context: IAMContext,
         jwt_manager: JwtTokenManager,
-        message_renderer: MessageRenderer[ActivateHtmlSettings, str],
+        message_renderer: MessageRenderer[str],
         email_sender: EmailSender,
         password_hasher: PasswordHasher
     ) -> None:

@@ -1,9 +1,10 @@
 from jinja2 import Environment, Template
 
-from marketgram.common.application.message_renderer import HtmlRenderer, JwtHtmlSettings
+from marketgram.common.application.message_renderer import HtmlRenderer
+from marketgram.identity.access.settings import JwtHtmlSettings
     
 
-class JwtTokenHtmlRenderer(HtmlRenderer[JwtHtmlSettings, str]):
+class JwtTokenHtmlRenderer(HtmlRenderer[str]):
     def __init__(
         self, 
         jinja: Environment, 
@@ -11,7 +12,7 @@ class JwtTokenHtmlRenderer(HtmlRenderer[JwtHtmlSettings, str]):
     ):
         super().__init__(jinja, html_settings)
 
-    def make_html_content(
+    def _make_html_content(
         self, 
         template: Template, 
         fields: str

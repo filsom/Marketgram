@@ -3,9 +3,7 @@ from dataclasses import dataclass
 
 from jinja2 import Environment, FileSystemLoader
 
-from marketgram.common.application.message_renderer import (
-    JwtHtmlSettings
-)
+from marketgram.common.application.message_renderer import HtmlSettings
 
 
 @dataclass
@@ -17,12 +15,9 @@ class EmailClientSettings:
     validate_certs: bool
 
 
-class ActivateHtmlSettings(JwtHtmlSettings):
-    pass
-
-
-class ForgotPasswordHtmlSettings(JwtHtmlSettings):
-    pass
+@dataclass
+class JwtHtmlSettings(HtmlSettings):
+    link: str
 
 
 @dataclass
@@ -44,13 +39,13 @@ def identity_access_load_settings() -> Settings:
     loader = FileSystemLoader('templates')
     env = Environment(loader=loader)
 
-    activate_html_settings = ActivateHtmlSettings(
+    activate_html_settings = JwtHtmlSettings(
         os.environ.get('SENDER'),
         os.environ.get('SUBJECT'),
         os.environ.get('TEMPLATE_NAME'),
         os.environ.get('ACTIVATE_LINK'),
     )
-    forgot_pwd_html_settings = ActivateHtmlSettings(
+    forgot_pwd_html_settings = JwtHtmlSettings(
         os.environ.get('SENDER'),
         os.environ.get('SUBJECT'),
         os.environ.get('TEMPLATE_NAME'),

@@ -19,15 +19,13 @@ from marketgram.identity.access.port.adapter.jwt_token_manager import (
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_decorator import (
     IAMContext
 )
-from marketgram.identity.access.settings import ActivateHtmlSettings
-
 from tests.integration.identity.access.iam_test_case import IAMTestCase
 
 
 class TestUserRegistrationHandler(IAMTestCase):
     async def test_user_registration(
         self,
-        activate_msg_renderer: MessageRenderer[ActivateHtmlSettings, str]
+        activate_msg_renderer: MessageRenderer[str]
     ) -> None:
         # Arrange
         password_hasher = Argon2PasswordHasher()
@@ -61,7 +59,7 @@ class TestUserRegistrationHandler(IAMTestCase):
         self, 
         command: UserRegistrationCommand, 
         jwt_token_manager: JwtTokenManager,
-        message_renderer: MessageRenderer[ActivateHtmlSettings, str],
+        message_renderer: MessageRenderer[str],
         email_sender: EmailSender, 
         password_hasher: PasswordHasher
     ) -> None:

@@ -9,7 +9,6 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.transaction_de
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.user_repository import (
     UserRepository
 )
-from marketgram.identity.access.settings import ForgotPasswordHtmlSettings
 
 
 @dataclass
@@ -22,9 +21,7 @@ class ForgotPasswordHandler:
         self,
         context: IAMContext,
         jwt_manager: JwtTokenManager,
-        message_renderer: MessageRenderer[
-            ForgotPasswordHtmlSettings, str
-        ],
+        message_renderer: MessageRenderer[str],
         email_sender: EmailSender
     ) -> None:
         self._context = context
