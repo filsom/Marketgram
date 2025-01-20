@@ -91,7 +91,7 @@ class IAMTestCase(IntegrationTest):
         async with AsyncSession(self.engine) as session:
             await session.begin()
             return await RolesRepository(session).with_id(user_id)
-        
+         
     async def query_count_web_sessions(self, user_id: UUID) -> int:
         async with AsyncSession(self.engine) as session:
             await session.begin()
