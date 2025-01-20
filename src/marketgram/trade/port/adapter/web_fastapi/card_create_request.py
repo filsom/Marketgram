@@ -10,7 +10,7 @@ from marketgram.trade.domain.model.trade_item.description import (
     AccountFormat, 
     Region
 )
-from marketgram.trade.domain.model.p2p.format import Format
+from marketgram.trade.domain.model.p2p.format import TransferFormat
 from marketgram.trade.domain.model.p2p.transfer_method import (
     TransferMethod
 )
@@ -24,7 +24,7 @@ class CardCreateRequest(BaseModel):
     account_format: AccountFormat
     region: Region
     spam_block: bool
-    format: Format
+    format: TransferFormat
     method: TransferMethod
     shipping_hours: int | None
     receipt_hours: int | None

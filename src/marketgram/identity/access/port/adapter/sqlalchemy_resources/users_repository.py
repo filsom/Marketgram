@@ -2,19 +2,17 @@ from typing import Optional
 from uuid import UUID
 
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from marketgram.identity.access.domain.model.user import User
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.context import (
-    IAMContext
-)
 
 
 class UsersRepository:
     def __init__(
         self,
-        context: IAMContext
+        session: AsyncSession
     ) -> None:
-        self.session = context.session
+        self.session = session
     
     async def with_id(self, user_id: UUID) -> Optional[User]:
         stmt = select(User).where(User._user_id == user_id)

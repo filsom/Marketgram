@@ -19,10 +19,11 @@ class UserActivateHandler:
     def __init__(
         self,
         context: IAMContext,
+        users_repository: UsersRepository,
         jwt_manager: JwtTokenManager
     ) -> None:
         self._context = context
-        self._users_repository = UsersRepository(context)
+        self._users_repository = users_repository
         self._jwt_manager = jwt_manager
 
     async def execute(self, command: UserAcivateCommand) -> None:

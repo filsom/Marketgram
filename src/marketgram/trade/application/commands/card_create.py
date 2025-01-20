@@ -1,10 +1,11 @@
 from dataclasses import dataclass
 from datetime import UTC, datetime
+
 from marketgram.common.application.id_provider import IdProvider
 from marketgram.trade.domain.model.trade_item.cards_repository import CardsRepository
 from marketgram.trade.domain.model.trade_item.description import AccountFormat, Description, Region
 from marketgram.trade.domain.model.p2p.delivery import Delivery
-from marketgram.trade.domain.model.p2p.format import Format
+from marketgram.trade.domain.model.p2p.format import TransferFormat
 from marketgram.trade.domain.model.p2p.members_repository import MembersRepository
 from marketgram.trade.domain.model.p2p.transfer_method import TransferMethod
 from marketgram.trade.domain.model.rule.agreement.money import Money
@@ -18,7 +19,7 @@ class CardCreateCommand:
     account_format: AccountFormat
     region: Region
     spam_block: bool
-    format: Format
+    format: TransferFormat
     method: TransferMethod
     shipping_hours: int | None
     receipt_hours: int | None

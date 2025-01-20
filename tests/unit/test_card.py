@@ -14,7 +14,7 @@ from marketgram.trade.domain.model.trade_item.exceptions import (
     DomainError
 )
 from marketgram.trade.domain.model.p2p.delivery import Delivery
-from marketgram.trade.domain.model.p2p.format import Format
+from marketgram.trade.domain.model.p2p.format import TransferFormat
 from marketgram.trade.domain.model.p2p.transfer_method import (
     TransferMethod
 )
@@ -83,8 +83,8 @@ class TestCard:
         min_discount: Decimal,
     ) -> Card:
         delivery = Delivery(
-            Format.LOGIN_CODE,
-            TransferMethod.PROVIDES_SELLER
+            TransferFormat.LOGIN_CODE,
+            TransferMethod.SELLER
         )
         return Card(
             uuid4(),

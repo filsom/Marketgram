@@ -1,18 +1,17 @@
 from uuid import UUID
+
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from marketgram.identity.access.domain.model.role import Role
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.context import (
-    IAMContext
-)
 
 
 class RolesRepository:
     def __init__(
         self,
-        session: IAMContext
+        session: AsyncSession
     ) -> None:
-        self.session = session.session
+        self.session = session
 
     def add(self, role: Role) -> None:
         self.session.add(role)

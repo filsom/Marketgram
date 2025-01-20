@@ -7,13 +7,13 @@ from marketgram.trade.domain.model.p2p.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
 from marketgram.trade.domain.model.p2p.time_tags import TimeTags
 from marketgram.trade.domain.model.p2p.transfer_method import TransferMethod
-from marketgram.trade.domain.model.p2p.format import Format
+from marketgram.trade.domain.model.p2p.format import TransferFormat
 from marketgram.trade.domain.model.p2p.type_deal import TypeDeal
 
 
 @dataclass(frozen=True)
 class Delivery:
-    format: Format
+    format: TransferFormat
     method: TransferMethod
 
     def __post_init__(self) -> None:

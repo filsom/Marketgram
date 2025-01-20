@@ -2,21 +2,19 @@ from datetime import datetime
 from uuid import UUID
 
 from sqlalchemy import and_, delete, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from marketgram.identity.access.domain.model.web_session import (
     WebSession
-)
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.context import (
-    IAMContext
 )
 
 
 class WebSessionsRepository:
     def __init__(
         self,
-        context: IAMContext
+        session: AsyncSession
     ) -> None:
-        self.session = context.session
+        self.session = session
 
     async def add(self, web_session: WebSession) -> None:
         self.session.add(web_session)

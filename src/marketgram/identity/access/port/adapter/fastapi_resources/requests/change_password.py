@@ -2,7 +2,6 @@ from uuid import UUID
 from fastapi import HTTPException, Request, Response, status
 from pydantic import BaseModel
 
-from marketgram.common.application.handler import Handler
 from marketgram.common.port.adapter.container import Container
 from marketgram.identity.access.application.commands.password_change import (
     PasswordChangeCommand, 

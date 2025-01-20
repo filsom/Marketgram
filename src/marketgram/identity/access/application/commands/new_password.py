@@ -26,12 +26,14 @@ class NewPasswordHandler:
     def __init__(
         self, 
         context: IAMContext,
+        users_repository: UsersRepository,
+        web_sessions_repository: WebSessionsRepository, 
         jwt_manager: JwtTokenManager,
         password_hasher: PasswordHasher
     ) -> None:
         self._context = context
-        self._users_repository = UsersRepository(context)
-        self._web_sessions_repository = WebSessionsRepository(context)
+        self._users_repository = users_repository
+        self._web_sessions_repository = web_sessions_repository
         self._jwt_manager = jwt_manager
         self._password_hasher = password_hasher
     

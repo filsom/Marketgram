@@ -1,6 +1,5 @@
 from fastapi import Request, Response
 
-from marketgram.common.application.handler import Handler
 from marketgram.common.port.adapter.container import Container
 from marketgram.identity.access.application.commands.forgot_password import (
     ForgotPasswordCommand, 
@@ -15,10 +14,10 @@ async def forgot_password_controller(
     res: Response
 ) -> str:
     async with Container(req) as container:
-        handler = await container.get(
-            Handler[ForgotPasswordCommand, None]
-        )
-        await handler.handle(
-            ForgotPasswordCommand(email)
-        )
+        # handler = await container.get(
+        #     ForgotPasswordCommand, None]
+        # )
+        # await handler.handle(
+        #     ForgotPasswordCommand(email)
+        # )
         return 'OK'

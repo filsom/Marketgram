@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from sqlalchemy import func, insert, select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from marketgram.identity.access.domain.model.role import Role
@@ -22,9 +22,6 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.mapping.table.
 )
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.roles_repository import (
     RolesRepository
-)
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.context import (
-    IAMContext
 )
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.users_repository import (
     UsersRepository
@@ -51,17 +48,10 @@ class IAMTestCase(IntegrationTest):
             if is_active:
                 user.activate()
 
-            await session.execute(
-                insert(user_table)
-                .values(
-                    user_id=user.user_id,
-                    email=user.email,
-                    password=user.password,
-                    is_active=user.is_active,
-                    version_id=1
-                )
-            )
+            session.add(user)
+
             await session.commit()
+            await session.refresh(user)
 
             return user
         
@@ -71,18 +61,10 @@ class IAMTestCase(IntegrationTest):
             web_session = WebSessionFactory().create(
                 user_id, datetime.now(), 'Nokia 3210'
             )
-            await session.execute(
-                insert(web_session_table)
-                .values(
-                    user_id=web_session.user_id,
-                    session_id=web_session.session_id,
-                    created_at=web_session.created_at,
-                    expires_in=web_session.expires_in,
-                    device=web_session.device,
-                    version_id=1
-                )
-            )
+            session.add(web_session)
+
             await session.commit()
+            await session.refresh(web_session)
 
             return web_session
         
@@ -96,19 +78,19 @@ class IAMTestCase(IntegrationTest):
     async def query_user_with_email(self, email: str) -> UserExtensions:
         async with AsyncSession(self.engine) as session:
             await session.begin()
-            result = await UsersRepository(IAMContext(session)).with_email(email)
+            result = await UsersRepository(session).with_email(email)
             return UserExtensions(result)
         
     async def query_user_with_id(self, user_id: UUID) -> UserExtensions:
         async with AsyncSession(self.engine) as session:
             await session.begin()
-            result = await UsersRepository(IAMContext(session)).with_id(user_id)
+            result = await UsersRepository(session).with_id(user_id)
             return UserExtensions(result)
                     
     async def query_role(self, user_id: UUID) -> Role:
         async with AsyncSession(self.engine) as session:
             await session.begin()
-            return await RolesRepository(IAMContext(session)).with_id(user_id)
+            return await RolesRepository(session).with_id(user_id)
         
     async def query_count_web_sessions(self, user_id: UUID) -> int:
         async with AsyncSession(self.engine) as session:
