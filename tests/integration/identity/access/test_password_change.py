@@ -45,7 +45,7 @@ class TestPasswordChangeHandler(IAMTestCase):
             .with_hashed_password('new_protected', password_hasher)
 
         count_web_sessions = await self.query_count_web_sessions(user_from_db.user_id)
-        assert not count_web_sessions
+        assert count_web_sessions == 0
 
     async def execute(
         self,

@@ -102,5 +102,9 @@ class IAMTestCase(IntegrationTest):
                 .where(web_session_table.c.user_id == user_id)
             )
             result = await session.execute(stmt)
+            count = result.scalar()
 
-            return result.scalar()
+            if count is None:
+                return 0
+
+            return count
