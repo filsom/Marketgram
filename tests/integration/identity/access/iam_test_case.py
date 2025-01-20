@@ -17,9 +17,6 @@ from marketgram.identity.access.port.adapter.argon2_password_hasher import (
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.mapping.table.web_sessions_table import (
     web_session_table
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.mapping.table.users_table import (
-    user_table
-)
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.roles_repository import (
     RolesRepository
 )
