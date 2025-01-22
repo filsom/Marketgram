@@ -35,7 +35,7 @@ class Seller:
         self._agreement: ServiceAgreement = None
 
     def make_card(
-        self, 
+        self,
         amount: Money, 
         description: Description,
         delivery: Delivery,

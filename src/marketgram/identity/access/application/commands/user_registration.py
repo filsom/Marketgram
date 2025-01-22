@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from marketgram.common.application.exceptions import ApplicationError
 from marketgram.identity.access.domain.model.password_hasher import PasswordHasher
 from marketgram.identity.access.domain.model.role import Role
@@ -66,3 +68,44 @@ class UserRegistrationHandler:
         await self._email_sender.send_message(message)
 
         return await self._context.save_changes()
+    
+
+class UserRegistrationHandler:
+    def __init__(
+        self,
+        session: AsyncSession,
+        jwt_manager: JwtTokenManager,
+        message_renderer: MessageRenderer[str],
+        email_sender: EmailSender,
+        password_hasher: PasswordHasher
+    ) -> None:
+        self._session = session
+        self._jwt_manager = jwt_manager
+        self._message_renderer = message_renderer
+        self._email_sender = email_sender
+        self._password_hasher = password_hasher
+        self._users_repository = UsersRepository(session)
+        self._roles_repository = RolesRepository(session)
+        
+    async def execute(self, command: UserRegistrationCommand) -> None:
+        async with self._session.begin():
+            user = await self._users_repository.with_email(command.email)
+            if user is not None:
+                raise ApplicationError()
+            
+            user = UserFactory(self._password_hasher) \
+                .create(command.email, command.password)
+            role = Role(user.user_id, Permission.USER)
+        
+            jwt_token = self._jwt_manager.encode(
+                datetime.now(UTC),
+                {'sub': user.to_string_id(), 'aud': 'user:activate'}
+            )
+            message = self._message_renderer.render(command.email, jwt_token)
+            
+            self._users_repository.add(user)
+            self._roles_repository.add(role)
+
+            await self._email_sender.send_message(message)
+            
+            return await self._session.commit()
