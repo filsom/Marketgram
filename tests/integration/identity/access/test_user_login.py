@@ -10,22 +10,13 @@ from marketgram.identity.access.domain.model.password_hasher import PasswordHash
 from marketgram.identity.access.port.adapter.argon2_password_hasher import (
     Argon2PasswordHasher
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.context import (
-    IAMContext
-)
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.users_repository import (
-    UsersRepository
-)
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.web_sessions_repository import (
-    WebSessionsRepository
-)
 from tests.integration.identity.access.iam_test_case import IAMTestCase
                 
 
 class TestUserLoginHandler(IAMTestCase):
     async def test_user_login(self) -> None:
         # Arrange
-        user = await self.create_user()
+        await self.create_user()
 
         # Act
         result = await self.execute(
@@ -50,11 +41,8 @@ class TestUserLoginHandler(IAMTestCase):
         password_hasher: PasswordHasher
     ) -> dict[str, str]:
         async with AsyncSession(self.engine) as session:
-            await session.begin()
             handler = UserLoginHandler(
-                IAMContext(session),
-                UsersRepository(session),
-                WebSessionsRepository(session),
+                session,
                 password_hasher
             )
             return await handler.execute(command)

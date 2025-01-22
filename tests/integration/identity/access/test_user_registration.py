@@ -16,15 +16,6 @@ from marketgram.identity.access.port.adapter.argon2_password_hasher import (
 from marketgram.identity.access.port.adapter.jwt_token_manager import (
     JwtTokenManager
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.context import (
-    IAMContext
-)
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.roles_repository import (
-    RolesRepository
-)
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.users_repository import (
-    UsersRepository
-)
 from tests.integration.identity.access.iam_test_case import IAMTestCase
 
 
@@ -69,11 +60,8 @@ class TestUserRegistrationHandler(IAMTestCase):
         password_hasher: PasswordHasher
     ) -> None:
         async with AsyncSession(self.engine) as session:
-            await session.begin()
             handler = UserRegistrationHandler(
-                IAMContext(session),
-                UsersRepository(session),
-                RolesRepository(session),
+                session,
                 jwt_token_manager,
                 message_renderer,
                 email_sender,

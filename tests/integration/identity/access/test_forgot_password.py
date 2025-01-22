@@ -11,12 +11,6 @@ from marketgram.identity.access.application.commands.forgot_password import (
 from marketgram.identity.access.port.adapter.jwt_token_manager import (
     JwtTokenManager
 )
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.context import (
-    IAMContext
-)
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.users_repository import (
-    UsersRepository
-)
 from tests.integration.identity.access.iam_test_case import IAMTestCase
 
 
@@ -71,10 +65,8 @@ class TestForgotPasswordHandler(IAMTestCase):
         email_sender: EmailSender
     ) -> None:
         async with AsyncSession(self.engine) as session:
-            await session.begin()
             handler = ForgotPasswordHandler(
-                IAMContext(session),
-                UsersRepository(session),
+                session,
                 token_manager,
                 message_renderer,
                 email_sender
