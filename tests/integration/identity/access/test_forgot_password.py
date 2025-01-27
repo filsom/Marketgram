@@ -21,7 +21,7 @@ class TestForgotPasswordHandler(IAMTestCase):
     ) -> None:
         # Arrange
         await self.delete_all()
-
+        
         await self.create_user()
 
         email_sender = AsyncMock()
@@ -68,7 +68,7 @@ class TestForgotPasswordHandler(IAMTestCase):
         message_renderer: MessageRenderer[str],
         email_sender: EmailSender
     ) -> None:
-        async with AsyncSession(self.engine) as session:
+        async with AsyncSession(self._engine) as session:
             handler = ForgotPasswordHandler(
                 session,
                 token_manager,

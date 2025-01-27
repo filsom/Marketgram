@@ -1,4 +1,4 @@
-from sqlalchemy import UUID, Column, DateTime, Integer, String, Table, text
+from sqlalchemy import UUID, Column, DateTime, ForeignKey, Integer, String, Table, text
 
 from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
 
@@ -14,7 +14,7 @@ web_session_table = Table(
         server_default=text("gen_random_uuid()")
     ),
     Column('session_id', UUID, nullable=False),
-    Column('user_id', UUID, nullable=False, unique=False),
+    Column('user_id', UUID, ForeignKey('users.user_id'), nullable=False),
     Column('created_at', DateTime(timezone=True), nullable=False),
     Column('expires_in', DateTime(timezone=True), nullable=False),
     Column('device', String, nullable=False),

@@ -25,16 +25,16 @@ class UserActivateHandler:
         self._users_repository = UsersRepository(session)
 
     async def execute(self, command: UserAcivateCommand) -> None:
-        async with self._session.begin():
-            user_id = self._jwt_manager.decode(
-                command.token, 'user:activate'
-            )
-            exists_user = await self._users_repository \
-                .with_id(user_id)
-            
-            if exists_user is None:
-                raise ApplicationError()
-            
-            exists_user.activate()
-            
-            return await self._session.commit()
+        await self._session.begin()
+        user_id = self._jwt_manager.decode(
+            command.token, 'user:activate'
+        )
+        exists_user = await self._users_repository \
+            .with_id(user_id)
+        
+        if exists_user is None:
+            raise ApplicationError()
+        
+        exists_user.activate()
+        
+        return await self._session.commit()

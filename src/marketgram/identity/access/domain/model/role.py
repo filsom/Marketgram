@@ -7,7 +7,7 @@ class Role:
     def __init__(
         self,
         user_id: UUID,
-        permission: Permission
+        permission: Permission,
     ) -> None:
         self._user_id = user_id
         self._permission = permission

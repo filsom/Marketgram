@@ -45,7 +45,7 @@ class TestPasswordChangeHandler(IAMTestCase):
         command: PasswordChangeCommand,
         password_hasher: PasswordHasher
     ) -> None:
-        async with AsyncSession(self.engine) as session:
+        async with AsyncSession(self._engine) as session:
             handler = PasswordChangeHandler(
                 session,
                 password_hasher

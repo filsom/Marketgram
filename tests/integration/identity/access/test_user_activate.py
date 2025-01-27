@@ -16,7 +16,7 @@ class TestUserActivateHandler(IAMTestCase):
         # Arrange
         await self.delete_all()
         
-        user = await self.create_user()
+        user = await self.create_user(is_active=False)
 
         token_manager = JwtTokenManager('secret')
         activation_token = token_manager.encode(
@@ -41,7 +41,7 @@ class TestUserActivateHandler(IAMTestCase):
         command: UserAcivateCommand,
         token_manager: JwtTokenManager
     ) -> None:
-        async with AsyncSession(self.engine) as session:
+        async with AsyncSession(self._engine) as session:
             handler = UserActivateHandler(
                 session,
                 token_manager

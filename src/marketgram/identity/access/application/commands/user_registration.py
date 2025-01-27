@@ -43,24 +43,24 @@ class UserRegistrationHandler:
         self._roles_repository = RolesRepository(session)
         
     async def execute(self, command: UserRegistrationCommand) -> None:
-        async with self._session.begin():
-            user = await self._users_repository.with_email(command.email)
-            if user is not None:
-                raise ApplicationError()
-            
-            user = UserFactory(self._password_hasher) \
-                .create(command.email, command.password)
-            role = Role(user.user_id, Permission.USER)
+        await self._session.begin()
+        user = await self._users_repository.with_email(command.email)
+        if user is not None:
+            raise ApplicationError()
         
-            jwt_token = self._jwt_manager.encode(
-                datetime.now(UTC),
-                {'sub': user.to_string_id(), 'aud': 'user:activate'}
-            )
-            message = self._message_renderer.render(command.email, jwt_token)
-            
-            self._users_repository.add(user)
-            self._roles_repository.add(role)
+        new_user = UserFactory(self._password_hasher) \
+            .create(command.email, command.password)
+        role = Role(new_user.user_id, Permission.USER)
 
-            await self._email_sender.send_message(message)
+        jwt_token = self._jwt_manager.encode(
+            datetime.now(UTC),
+            {'sub': new_user.to_string_id(), 'aud': 'user:activate'}
+        )
+        message = self._message_renderer.render(command.email, jwt_token)
+        
+        self._users_repository.add(new_user)
+        self._roles_repository.add(role)
 
-            return await self._session.commit()
+        await self._email_sender.send_message(message)
+
+        return await self._session.commit()

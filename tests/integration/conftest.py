@@ -32,19 +32,6 @@ from marketgram.identity.access.settings import (
 )
 
 
-class IntegrationTest:
-    @pytest.fixture(autouse=True)
-    def _set_async_engine(
-        self, 
-        engine: AsyncGenerator[AsyncEngine, None]
-    ) -> None:
-        self._engine = engine
-
-    @property
-    def engine(self) -> AsyncGenerator[AsyncEngine, None]:
-        return self._engine
-
-
 mapper = registry()
 users_registry_mapper(mapper)
 web_sessions_registry_mapper(mapper)

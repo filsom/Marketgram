@@ -38,23 +38,23 @@ class UserLoginHandler:
         self._web_sessions_repository = WebSessionsRepository(session)
         
     async def execute(self, command: UserLoginCommand) -> dict[str, str]:
-        async with self._session.begin():
-            user = await self._users_repository.with_email(command.email)
-            if user is None:
-                raise ApplicationError()
-            
-            AuthenticationService(self._password_hasher) \
-                .authenticate(user, command.password)
-            
-            await self._web_sessions_repository \
-                .delete_this_device(user.user_id, command.device)       
+        await self._session.begin()
+        user = await self._users_repository.with_email(command.email)
+        if user is None:
+            raise ApplicationError()
+        
+        AuthenticationService(self._password_hasher) \
+            .authenticate(user, command.password)
+        
+        await self._web_sessions_repository \
+            .delete_this_device(user.user_id, command.device)       
 
-            web_session = WebSessionFactory().create(
-                user.user_id, datetime.now(), command.device
-            )
-            web_session_details = web_session.for_browser()
+        web_session = WebSessionFactory().create(
+            user.user_id, datetime.now(), command.device
+        )
+        web_session_details = web_session.for_browser()
 
-            await self._web_sessions_repository.add(web_session)
-            await self._session.commit()
+        await self._web_sessions_repository.add(web_session)
+        await self._session.commit()
 
-            return web_session_details
+        return web_session_details

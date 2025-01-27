@@ -1,9 +1,12 @@
 from typing import Optional
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.mapping.table.users_table import (
+    user_table
+)
 from marketgram.identity.access.domain.model.user import User
 
 

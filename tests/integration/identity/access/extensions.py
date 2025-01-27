@@ -52,7 +52,7 @@ class UserExtensions:
         return self
     
     def activated(self) -> Self:
-        assert self._user.is_active
+        assert self._user.is_active == True
         return self
     
     def with_hashed_password(

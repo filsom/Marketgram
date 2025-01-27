@@ -61,7 +61,7 @@ class TestUserRegistrationHandler(IAMTestCase):
         email_sender: EmailSender, 
         password_hasher: PasswordHasher
     ) -> None:
-        async with AsyncSession(self.engine) as session:
+        async with AsyncSession(self._engine) as session:
             handler = UserRegistrationHandler(
                 session,
                 jwt_token_manager,
