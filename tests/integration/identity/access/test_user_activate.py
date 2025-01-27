@@ -17,7 +17,7 @@ class TestUserActivateHandler(IAMTestCase):
         await self.delete_all()
         
         user = await self.create_user(is_active=False)
-
+        
         token_manager = JwtTokenManager('secret')
         activation_token = token_manager.encode(
             datetime.now(UTC),
