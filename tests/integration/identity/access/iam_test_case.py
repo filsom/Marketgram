@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from sqlalchemy import func, insert, select
+from sqlalchemy import delete, func, insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from marketgram.identity.access.domain.model.role import Role
@@ -17,6 +17,12 @@ from marketgram.identity.access.port.adapter.argon2_password_hasher import (
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.mapping.table.web_sessions_table import (
     web_session_table
 )
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.mapping.table.users_table import (
+    user_table
+)
+from marketgram.identity.access.port.adapter.sqlalchemy_resources.mapping.table.roles_table import (
+    role_table
+)
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.roles_repository import (
     RolesRepository
 )
@@ -31,6 +37,15 @@ from tests.integration.identity.access.extensions import (
     
 
 class IAMTestCase(IntegrationTest):
+    async def delete_all(self) -> None:
+        async with AsyncSession(self.engine) as session:
+            await session.begin()
+            for table in [user_table, role_table, web_session_table]:
+                stmt = delete(table)
+                await session.execute(stmt)
+            
+            await session.commit()
+
     async def create_user(
         self, 
         email: str = 'test@mail.ru', 
@@ -45,10 +60,18 @@ class IAMTestCase(IntegrationTest):
             if is_active:
                 user.activate()
 
-            session.add(user)
-
+            stmt = (
+                insert(user_table)
+                .values(
+                    user_id=user.user_id,
+                    email=user.email,
+                    password=user.password,
+                    is_active=user.is_active,
+                    version_id=1
+                )
+            )
+            await session.execute(stmt)
             await session.commit()
-            await session.refresh(user)
 
             return user
         
@@ -58,10 +81,19 @@ class IAMTestCase(IntegrationTest):
             web_session = WebSessionFactory().create(
                 user_id, datetime.now(), 'Nokia 3210'
             )
-            session.add(web_session)
-
+            stmt = (
+                insert(web_session_table)
+                .values(
+                    user_id=web_session.user_id,
+                    session_id=web_session.session_id,
+                    created_at=web_session.created_at,
+                    expires_in=web_session.expires_in,
+                    device=web_session.device,
+                    version_id=1
+                )
+            )
+            await session.execute(stmt)
             await session.commit()
-            await session.refresh(web_session)
 
             return web_session
         
@@ -99,9 +131,6 @@ class IAMTestCase(IntegrationTest):
                 .where(web_session_table.c.user_id == user_id)
             )
             result = await session.execute(stmt)
-            count = result.scalar()
-
-            if count is None:
-                return 0
+            count = result.scalar() or 0
 
             return count

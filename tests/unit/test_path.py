@@ -1,4 +1,4 @@
-from marketgram.trade.domain.model.trade_item.category import Path
+from marketgram.trade.domain.model.trade_item1.category1 import Path
 
 
 class TestPath:

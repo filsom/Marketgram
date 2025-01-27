@@ -16,6 +16,8 @@ from tests.integration.identity.access.iam_test_case import IAMTestCase
 class TestUserLoginHandler(IAMTestCase):
     async def test_user_login(self) -> None:
         # Arrange
+        await self.delete_all()
+        
         await self.create_user()
 
         # Act

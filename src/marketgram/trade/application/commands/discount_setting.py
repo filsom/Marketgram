@@ -3,7 +3,7 @@ from uuid import UUID
 
 from marketgram.common.application.id_provider import IdProvider
 from marketgram.trade.application.exceptions import ApplicationError
-from marketgram.trade.domain.model.trade_item.cards_repository import CardsRepository
+from marketgram.trade.domain.model.trade_item1.cards_repository import CardsRepository
 from marketgram.trade.domain.model.rule.agreement.money import Money
 
 

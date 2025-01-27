@@ -20,6 +20,8 @@ class TestForgotPasswordHandler(IAMTestCase):
         forgot_password_msg_renderer: MessageRenderer[str]
     ) -> None:
         # Arrange
+        await self.delete_all()
+
         await self.create_user()
 
         email_sender = AsyncMock()
@@ -41,6 +43,8 @@ class TestForgotPasswordHandler(IAMTestCase):
         forgot_password_msg_renderer: MessageRenderer[str]
     ) -> None:
         # Arrange
+        await self.delete_all()
+        
         await self.create_user(is_active=False)
 
         email_sender = AsyncMock()

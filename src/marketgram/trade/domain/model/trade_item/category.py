@@ -1,96 +1,55 @@
 from __future__ import annotations
-from dataclasses import dataclass
-from uuid import uuid4
+from decimal import Decimal
 
 from marketgram.common.application.exceptions import DomainError
-from marketgram.trade.domain.model.trade_item.card import Card
-
-
-ACCOUNTS = 'Аккаунты'
-
-
-@dataclass
-class Path:
-    value: str
-
-    def __post_init__(self) -> None:
-        self.value = '/{}/'.format(self.value.lower())
-
-    def nesting(self) -> int:
-        return len(list(filter(None, self.value.split('/'))))
-    
-    def expand(self, value: str) -> Path:
-        return Path('{}/{}'.format(self.value.strip('/'), value.lower()))
-    
-
-class Subcategory:
-    def __init__(
-        self,
-        parent_id: int,
-        title: str,
-        alias: str,
-        path: Path,
-        min_price,
-        min_procent_discount,
-        subcategories: list[Subcategory],
-        subcategory_id: int = None,
-    ) -> None:
-        self._subcategory_id = subcategory_id
-        self._parent_id = parent_id
-        self._title = title
-        self._alias = alias
-        self._path = path
-        self._subcategories = subcategories
-
-    def make_card(self) -> Card:
-        raise NotImplementedError
-
-    @property
-    def title(self) -> str:
-        return self._title
-
-
-class TelegramTdataSessionJson(Subcategory):
-    pass
-
-
-class TelegramLoginCode(Subcategory):
-    pass
+from marketgram.trade.domain.model.rule.agreement.money import Money
 
 
 class Category:
     def __init__(
         self,
-        title: str,
+        name: str,
         alias: str,
-        path: Path,
-        subcategories: list[Subcategory],
+        subcategory: list[Category], 
         category_id: int = None,
+        parent_category_id: int = None,
+        category_type_id: int = None,
+        minimum_price: Money = None,
+        minimum_procent_discount: Decimal = None
     ) -> None:
-        self._category_id = category_id
-        self._title = title
+        self._name = name
         self._alias = alias
-        self._path = path
-        self._subcategories = subcategories
+        self._subcategory = subcategory
+        self._category_id = category_id
+        self._parent_category_id = parent_category_id
+        self._category_type_id = category_type_id
+        self._minimum_price = minimum_price
+        self._minimum_procent_discount = minimum_procent_discount
 
-    def add_subcategory(self, title: str, alias: str) -> None:
-        for subcategory in self._subcategories:
-            if subcategory.title == title:
-                raise DomainError()
-            
-        alias = '{}-{}'.format(alias, str(uuid4()).split('-')[-1])
+    def add_subcategory(
+        self,
+        name: str,
+        category_type_id: int,
+        minimum_price: Money,
+        minimum_procent_discount: Decimal
+    ) -> None:
+        if self._parent_category_id:
+            raise DomainError()
 
-        self._subcategories.append(
-            Subcategory(
-                self._category_id, 
-                title, 
-                alias, 
-                self._path.expand(alias), 
-                []
-            )
+        if min_price <= Money(0):
+            raise DomainError()
+        
+        if 0 >= min_procent_discount >= 1:
+            raise DomainError()
+
+        new_category_title = '{}.{}'.format(
+            self._title, category_types.title
         )
-
-    def make_card(self, title_category: str):
-        for subcategory in self._subcategories:
-            if subcategory == title_category:
-                return subcategory.make_card()
+        if self._categories:
+            for category in self._categories:
+                if category._title == new_category_title:
+                    raise DomainError()
+                
+        salt = str(uuid4()).split('-')[-1]
+        category_alias = '{}-{}'.format(category_types.title, salt)
+        category_path = Path(self._alias).expand(category_alias)        

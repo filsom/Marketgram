@@ -14,6 +14,8 @@ from tests.integration.identity.access.iam_test_case import IAMTestCase
 class TestUserActivateHandler(IAMTestCase):
     async def test_user_activation(self) -> None:
         # Arrange
+        await self.delete_all()
+        
         user = await self.create_user()
 
         token_manager = JwtTokenManager('secret')

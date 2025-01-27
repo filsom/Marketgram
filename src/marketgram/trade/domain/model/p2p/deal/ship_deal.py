@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from marketgram.trade.domain.model.p2p.members import Members
-from marketgram.trade.domain.model.trade_item.exceptions import (
+from marketgram.trade.domain.model.trade_item1.exceptions import (
     DomainError,
     InvalidOperationError,
 )

@@ -1,11 +1,12 @@
 from contextlib import asynccontextmanager
+from decimal import Decimal
 from enum import Enum, StrEnum, auto
-from typing import Annotated, Optional, Union
+from typing import Annotated, Any, List, Literal, Optional, Union
 
 from dishka import make_async_container
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 import uvicorn
-from fastapi import Depends, FastAPI, Path, Query, Request
+from fastapi import Body, Depends, FastAPI, Path, Query, Request
 from dishka.integrations.fastapi import setup_dishka
 
 from marketgram.common.ioc import DatabaseProvider
@@ -23,23 +24,31 @@ async def lifespan(app: FastAPI):
     
 app = FastAPI(lifespan=lifespan)
 
-class Type(str, Enum):
-    man = 'man'
-    women = 'women'
 
-class Req(BaseModel):
-    type: Type = Type.man
-    x: str | None
+class CreateCardRequest(BaseModel):
+    service_id: int
+    category_id: int
+    price: Decimal
+    title: str
+    body: str
+    transfer_format: str
 
 
-class Req2(BaseModel):
-    type: Type = Type.women
-    y: int
-    x: str | None
+class F(StrEnum):
+    Telegram = auto()
+    Instagram = auto()
 
-@app.post('/test/{type}/')
-async def test(type: Type, r: Optional[Req | Req2]):
-    return 'Ok'
+
+class X(BaseModel):
+    type: F
+
+
+@app.post("/create_card/")
+async def create_item(
+    fields: X,
+    metadata: Any = Body(...)
+):
+    return fields
 
 
 def create_app(app):

@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import get_type_hints
 from decimal import ROUND_HALF_EVEN, Decimal
 
-from marketgram.trade.domain.model.trade_item.exceptions import (
+from marketgram.trade.domain.model.trade_item1.exceptions import (
     INCORRECT_VALUES, 
     DomainError
 )

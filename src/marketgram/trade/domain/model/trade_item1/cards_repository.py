@@ -1,9 +1,9 @@
 from typing import Protocol
 from uuid import UUID
 
-from marketgram.trade.domain.model.trade_item.card import Card
+from marketgram.trade.domain.model.trade_item1.card import Card
 from marketgram.trade.domain.model.rule.agreement.money import Money
-from marketgram.trade.domain.model.trade_item.sell_card import SellCard
+from marketgram.trade.domain.model.trade_item1.sell_card import SellCard
 
 
 class CardsRepository(Protocol):

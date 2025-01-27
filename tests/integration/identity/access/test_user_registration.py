@@ -25,6 +25,8 @@ class TestUserRegistrationHandler(IAMTestCase):
         activate_msg_renderer: MessageRenderer[str]
     ) -> None:
         # Arrange
+        await self.delete_all()
+        
         password_hasher = Argon2PasswordHasher()
         email_sender = AsyncMock()
         email_sender.send_message = AsyncMock()

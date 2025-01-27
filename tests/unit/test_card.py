@@ -4,13 +4,13 @@ from uuid import uuid4
 
 import pytest
 
-from marketgram.trade.domain.model.trade_item.card import Card
-from marketgram.trade.domain.model.trade_item.description import (
+from marketgram.trade.domain.model.trade_item1.card import Card
+from marketgram.trade.domain.model.trade_item1.description import (
     AccountFormat, 
     Description, 
     Region
 )
-from marketgram.trade.domain.model.trade_item.exceptions import (
+from marketgram.trade.domain.model.trade_item1.exceptions import (
     DomainError
 )
 from marketgram.trade.domain.model.p2p.delivery import Delivery

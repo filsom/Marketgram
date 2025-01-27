@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from marketgram.trade.domain.model.p2p.format import TransferFormat
 from marketgram.trade.domain.model.p2p.transfer_method import TransferMethod
-from marketgram.trade.domain.model.trade_item.exceptions import DomainError
+from marketgram.trade.domain.model.trade_item1.exceptions import DomainError
 
 
 @dataclass(frozen=True)

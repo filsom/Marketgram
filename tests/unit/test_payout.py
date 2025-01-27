@@ -9,7 +9,7 @@ from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.p2p.deal.dispute_deal import DisputeDeal
 from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
 from marketgram.trade.domain.model.p2p.time_tags import TimeTags
-from marketgram.trade.domain.model.trade_item.exceptions import DomainError
+from marketgram.trade.domain.model.trade_item1.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.payout import Payout
 from marketgram.trade.domain.model.rule.agreement.entry_status import (
     EntryStatus

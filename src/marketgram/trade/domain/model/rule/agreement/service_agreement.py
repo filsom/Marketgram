@@ -2,7 +2,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from marketgram.trade.domain.model.trade_item.exceptions import (
+from marketgram.trade.domain.model.trade_item1.exceptions import (
     NO_RULE, 
     DomainError
 )

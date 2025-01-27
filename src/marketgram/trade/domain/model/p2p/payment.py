@@ -5,7 +5,7 @@ from marketgram.trade.domain.model.rule.agreement.entry import (
     EntryStatus, 
     PostingEntry
 )
-from marketgram.trade.domain.model.trade_item.exceptions import DomainError
+from marketgram.trade.domain.model.trade_item1.exceptions import DomainError
 from marketgram.trade.domain.model.rule.agreement.money import Money
 from marketgram.trade.domain.model.rule.agreement.types import (
     AccountType, 

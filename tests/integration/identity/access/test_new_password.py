@@ -18,6 +18,8 @@ from tests.integration.identity.access.iam_test_case import IAMTestCase
 class TestNewPasswordHandler(IAMTestCase):
     async def test_activated_user_changes_password_using_token(self) -> None:
         # Arrange
+        await self.delete_all()
+        
         user = await self.create_user()
         await self.create_web_session(user.user_id)
 

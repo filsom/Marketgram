@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import timedelta
 
-from marketgram.trade.domain.model.trade_item.exceptions import DomainError
+from marketgram.trade.domain.model.trade_item1.exceptions import DomainError
 
 
 @dataclass(frozen=True)
