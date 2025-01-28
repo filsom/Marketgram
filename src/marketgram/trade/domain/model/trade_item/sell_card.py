@@ -53,7 +53,7 @@ class SellCard:
     def price(self) -> Money:
         return self._price
 
-    def __eq__(self, other: 'SellCard') -> bool:
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, SellCard):
             return False
 
