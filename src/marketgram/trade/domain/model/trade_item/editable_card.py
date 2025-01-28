@@ -57,3 +57,12 @@ class EditableCard:
             raise DomainError()
         
         self._action_time = action_time
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, EditableCard):
+            return False
+
+        return self._card_id == other._card_id
+    
+    def __hash__(self) -> int:
+        return hash(self._card_id)
