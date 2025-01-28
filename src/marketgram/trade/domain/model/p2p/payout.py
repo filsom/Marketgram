@@ -37,10 +37,11 @@ class Payout:
         if self._is_processed or self._count_block:
             raise DomainError()
         
+        amount_payout = -self._tax_free + self._tax_free * Decimal('0.2')
         self._entries.append(
             PostingEntry(
                 self._user_id,
-                -self._tax_free + self._tax_free * Decimal('0.2'),
+                amount_payout,
                 current_time,
                 AccountType.SELLER,
                 Operation.PAYOUT,
@@ -53,14 +54,10 @@ class Payout:
                 self._tax_free * Decimal('0.2'),
                 current_time,
                 AccountType.TAX,
-                Operation.PAYMENT,
+                Operation.PAYOUT,
                 EntryStatus.ACCEPTED
             )
         )
-        for entry in self._entries:
-            if entry._account_type == AccountType.SELLER:
-                amount_payout = entry._amount
-
         self._is_processed = True
 
         return abs(amount_payout)

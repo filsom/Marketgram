@@ -46,6 +46,10 @@ class ModerationCard:
     def status(self) -> StatusCard:
         return self._status
     
+    @property
+    def action_time(self) -> ActionTime:
+        return self._action_time
+
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ModerationCard):
             return False

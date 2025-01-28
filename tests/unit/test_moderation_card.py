@@ -13,29 +13,21 @@ from marketgram.trade.domain.model.description import Description
 class TestModerationCard:
     def test_create_new_card(self) -> None:
         # Arrange
-        action_time = {
-            'shipping_hours': 1, 
-            'receipt_hours': 1, 
-            'inspection_hours': 1
-        }
         category = self.make_category()
 
         # Act
         result = category.new_card(
             1,
-            Description(
-                'New Telegram Accounts!',
-                'New account tg TDATA/SESSION+JSON'
-            ),
+            Description('Telegram Accounts!', 'TDATA/SESSION+JSON'),
             Money('200'),
             {'spam_block': False},
-            action_time,
+            {'shipping_hours': 1, 'receipt_hours': 1, 'inspection_hours': 1},
             datetime.now(UTC)
         )
 
         # Assert
         assert result.status == StatusCard.ON_MODERATION
-        assert result._action_time == ActionTime(1, 1, 1)
+        assert result.action_time == ActionTime(1, 1, 1)
 
     def test_create_new_card_with_default_action_time(self) -> None:
         # Arrange
@@ -44,10 +36,7 @@ class TestModerationCard:
         # Act
         result = category.new_card(
             1,
-            Description(
-                'New Telegram Accounts!',
-                'New account tg TDATA/SESSION+JSON'
-            ),
+            Description('Telegram Accounts!', 'TDATA/SESSION+JSON'),
             Money('200'),
             {'spam_block': False},
             None,
@@ -55,15 +44,18 @@ class TestModerationCard:
         )
 
         # Assert
-        assert result._action_time == category._action_time
+        assert result.status == StatusCard.ON_MODERATION
+        assert result.action_time == category.action_time
 
     def make_category(self) -> Category:
         return Category(
-            'Telegram',
+            1,
+            1,
             'telegram-123456',
             ActionTime(1, 1, 1),
             TypeDeal.PROVIDING_CODE,
             StatusDeal.NOT_SHIPPED,
+            Decimal('0.1'),
             Money(100),
             Decimal('0.1'),
             1
