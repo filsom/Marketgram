@@ -31,7 +31,7 @@ class Service:
         action_time: ActionTime,
         min_price: Money,
         min_procent_discount: Decimal,
-    ) -> Category:
+    ) -> None:
         if min_price <= Money(0):
             raise DomainError()
         
@@ -46,15 +46,17 @@ class Service:
         salt = str(uuid4()).split('-')[-1]
         category_alias = '{}-{}'.format(category_types.name, salt)
         
-        return Category(
-            self._service_id,
-            category_types.type_category_id,
-            category_alias,
-            action_time,
-            type_deal,
-            status_deal,
-            min_price,
-            min_procent_discount
+        self._categories.append(
+            Category(
+                self._service_id,
+                category_types.type_category_id,
+                category_alias,
+                action_time,
+                type_deal,
+                status_deal,
+                min_price,
+                min_procent_discount
+            )
         )
     
     @property
