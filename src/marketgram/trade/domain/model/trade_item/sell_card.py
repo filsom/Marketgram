@@ -51,6 +51,9 @@ class SellCard:
             
             case TypeDeal.PROVIDING_CODE:
                 return Deadlines(shipment, None, inspection)
+            
+    def edit(self) -> None:
+        self._status = StatusCard.EDITING
 
     @property
     def action_time(self) -> ActionTime:
