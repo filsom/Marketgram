@@ -39,7 +39,13 @@ class SellCard:
         shipment = current_date + timedelta(hours=self._action_time.shipping_hours)
         receipt = shipment + timedelta(hours=self._action_time.receipt_hours) 
         inspection = receipt + timedelta(hours=self._action_time.inspection_hours)
-        return Deadlines(shipment, receipt, inspection)
+
+        match self._type_deal:
+            case TypeDeal.PROVIDING_LINK:
+                return Deadlines(shipment, receipt, inspection)
+            
+            case TypeDeal.PROVIDING_CODE:
+                return Deadlines(shipment, None, inspection)
 
     @property
     def action_time(self) -> ActionTime:
@@ -78,3 +84,7 @@ class SellCard:
 class SellStockCard(SellCard):
     def buy(self, quantity: int) -> None:
         pass
+
+    def calculate_deadlines(self, current_date: datetime):
+        inspection = current_date + timedelta(hours=self.action_time.inspection_hours)
+        return Deadlines(None, None, inspection)
