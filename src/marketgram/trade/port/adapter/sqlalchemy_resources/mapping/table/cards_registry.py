@@ -1,10 +1,10 @@
 from sqlalchemy.orm import registry, composite
 
 from marketgram.trade.domain.model.trade_item1.card import Card
-from marketgram.trade.domain.model.trade_item1.description import Description
+from marketgram.trade.domain.model.description import Description
 from marketgram.trade.domain.model.p2p.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.delivery import Delivery
-from marketgram.trade.domain.model.rule.agreement.money import Money
+from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.trade_item1.sell_card import SellCard
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.cards_table import (
     cards_table

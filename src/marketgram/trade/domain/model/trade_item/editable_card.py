@@ -2,10 +2,10 @@ from decimal import Decimal
 
 from marketgram.common.application.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.type_deal import TypeDeal
-from marketgram.trade.domain.model.rule.agreement.money import Money
+from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.trade_item.category import ActionTime
 from marketgram.trade.domain.model.trade_item.status_card import StatusCard
-from marketgram.trade.domain.model.trade_item1.exceptions import (
+from marketgram.trade.domain.model.exceptions import (
     DISCOUNT_ERROR, 
     UNACCEPTABLE_DISCOUNT_RANGE
 )

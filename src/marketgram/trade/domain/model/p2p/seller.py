@@ -2,16 +2,13 @@ from datetime import datetime
 from uuid import UUID, uuid4
 
 from marketgram.trade.domain.model.p2p.paycard import Paycard
-from marketgram.trade.domain.model.rule.agreement.service_agreement import (
-    ServiceAgreement
-)
-from marketgram.trade.domain.model.trade_item1.exceptions import (
+from marketgram.trade.domain.model.exceptions import (
     BALANCE_BLOCKED,
     INSUFFICIENT_FUNDS, 
     MINIMUM_WITHDRAW,
     DomainError
 )
-from marketgram.trade.domain.model.rule.agreement.money import Money
+from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.payout import Payout
 
 
@@ -27,7 +24,6 @@ class Seller:
         self._paycard = paycard
         self._is_blocked = is_blocked
         self._balance = balance
-        self._agreement: ServiceAgreement = None
 
     def new_payout(
         self, 
@@ -39,10 +35,8 @@ class Seller:
         
         if self._paycard is None:
             raise DomainError()
-
-        limits = self._agreement.actual_limits()
         
-        if amount < limits.min_withdraw:
+        if amount < Money('500'):
             raise DomainError(MINIMUM_WITHDRAW)
 
         remainder = self._balance - amount
@@ -54,14 +48,12 @@ class Seller:
             self._user_id,
             self._paycard.synonym,
             amount,
-            current_time
+            current_time,
+            []
         )
         
     def change_paycard(self, paycard: Paycard) -> None:
         self._paycard = paycard
-
-    def accept_agreement(self, agreement: ServiceAgreement) -> None:
-        self._agreement = agreement
 
     def __eq__(self, other: 'Seller') -> bool:
         if not isinstance(other, Seller):

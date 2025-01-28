@@ -15,6 +15,7 @@ class Operation(StrEnum):
     REFUND = auto()
     SALE = auto()
     PAYOUT = auto()
+    PAYMENT = auto()
 
 
 class AccountType(StrEnum):

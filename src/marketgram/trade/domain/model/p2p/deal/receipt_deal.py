@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from marketgram.trade.domain.model.trade_item1.exceptions import DomainError
+from marketgram.trade.domain.model.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
 

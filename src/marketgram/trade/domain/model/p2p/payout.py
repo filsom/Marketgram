@@ -1,19 +1,13 @@
 from __future__ import annotations
 from datetime import datetime
+from decimal import Decimal
 from uuid import UUID
 
-from marketgram.trade.domain.model.rule.agreement.entry import (
-    PostingEntry
-)
-from marketgram.trade.domain.model.trade_item1.exceptions import DomainError
-from marketgram.trade.domain.model.rule.agreement.money import Money
-from marketgram.trade.domain.model.rule.agreement.service_agreement import (
-    ServiceAgreement
-)
-from marketgram.trade.domain.model.rule.agreement.types import (
-    AccountType, 
-    EventType
-)
+from marketgram.trade.domain.model.entry import PostingEntry
+from marketgram.trade.domain.model.entry_status import EntryStatus
+from marketgram.trade.domain.model.exceptions import DomainError
+from marketgram.trade.domain.model.money import Money
+from marketgram.trade.domain.model.types import AccountType, Operation
 
 
 class Payout:
@@ -24,6 +18,7 @@ class Payout:
         paycard_synonym: str,
         tax_free: Money,
         created_at: datetime,
+        entries: list[PostingEntry],
         count_block: int = 0,
         is_processed: bool = False,
         is_blocked: bool = False
@@ -36,40 +31,45 @@ class Payout:
         self._count_block = count_block
         self._is_processed = is_processed
         self._is_blocked = is_blocked
-        self._agreement: ServiceAgreement = None
-        self._entries: list[PostingEntry] = []
+        self._entries = entries
 
-    def undo(self) -> None:
-        if self._is_processed:
-            raise DomainError()
-        
-        self._is_processed = True
-
-    def calculate(self) -> Money:
+    def calculate(self, superuser_id: UUID, current_time: datetime) -> Money:
         if self._is_processed or self._count_block:
             raise DomainError()
         
-        rule = self._agreement.find_payout_rule(
-            EventType.USER_DEDUCED
+        self._entries.append(
+            PostingEntry(
+                self._user_id,
+                -self._tax_free + self._tax_free * Decimal('0.2'),
+                current_time,
+                AccountType.SELLER,
+                Operation.PAYOUT,
+                EntryStatus.ACCEPTED
+            )
         )
-        result = rule.process(
-            self._user_id, 
-            self._tax_free, 
-            [], 
-            self._agreement, 
-            self._created_at
+        self._entries.append(
+            PostingEntry(
+                superuser_id,
+                self._tax_free * Decimal('0.2'),
+                current_time,
+                AccountType.TAX,
+                Operation.PAYMENT,
+                EntryStatus.ACCEPTED
+            )
         )
-        for entry in result:
-            self._entries.append(entry)
+        for entry in self._entries:
             if entry._account_type == AccountType.SELLER:
                 amount_payout = entry._amount
 
         self._is_processed = True
 
         return abs(amount_payout)
-
-    def accept_agreement(self, agreement: ServiceAgreement) -> None:
-        self._agreement = agreement
+    
+    def undo(self) -> None:
+        if self._is_processed:
+            raise DomainError()
+        
+        self._is_processed = True
 
     def temporarily_block(self) -> None:
         if not self._is_blocked and not self._count_block:
@@ -86,10 +86,6 @@ class Payout:
     @property
     def entries(self) -> list[PostingEntry]:
         return self._entries
-    
-    @property
-    def agreement(self) -> ServiceAgreement:
-        return self._agreement
     
     @property
     def is_processed(self) -> bool:

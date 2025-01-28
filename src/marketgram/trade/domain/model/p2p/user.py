@@ -3,26 +3,18 @@ from uuid import UUID, uuid4
 
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.trade_item.sell_card import SellCard
-from marketgram.trade.domain.model.trade_item1.exceptions import (
+from marketgram.trade.domain.model.exceptions import (
     BALANCE_BLOCKED,
     INSUFFICIENT_FUNDS,
     MINIMUM_DEPOSIT, 
     DomainError
 )
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
-from marketgram.trade.domain.model.rule.agreement.entry import (
-    EntryStatus, 
-    PostingEntry
-)
-from marketgram.trade.domain.model.rule.agreement.money import Money
+from marketgram.trade.domain.model.entry import EntryStatus, PostingEntry
+from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.payment import Payment
-from marketgram.trade.domain.model.rule.agreement.service_agreement import (
-    ServiceAgreement
-)
-from marketgram.trade.domain.model.rule.agreement.types import (
-    AccountType, 
-    Operation
-)
+from marketgram.trade.domain.model.types import AccountType, Operation
+
 
 
 class User:
@@ -36,7 +28,6 @@ class User:
         self._is_blocked = is_blocked
         self._balance = balance
         self._entries: list[PostingEntry] = []
-        self._agreement: ServiceAgreement = None
 
     def make_deal(
         self, 
@@ -80,10 +71,8 @@ class User:
         self, 
         amount: Money,
         current_time: datetime
-    ) -> Payment:  
-        limits = self._agreement.actual_limits()
-        
-        if amount < limits.min_deposit:
+    ) -> Payment:          
+        if amount < Money('100'):
             raise DomainError(MINIMUM_DEPOSIT)
         
         if self._is_blocked:
@@ -95,9 +84,6 @@ class User:
             amount,
             current_time,
         )
-
-    def accept_agreement(self, agreement: ServiceAgreement) -> None:
-        self._agreement = agreement
 
     def __eq__(self, other: 'User') -> bool:
         if not isinstance(other, User):

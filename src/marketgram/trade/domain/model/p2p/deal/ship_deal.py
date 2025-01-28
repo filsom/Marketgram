@@ -1,14 +1,14 @@
 from datetime import datetime
 
 from marketgram.trade.domain.model.p2p.members import Members
-from marketgram.trade.domain.model.trade_item1.exceptions import (
+from marketgram.trade.domain.model.exceptions import (
     DomainError,
     InvalidOperationError,
 )
 from marketgram.trade.domain.model.p2p.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
 from marketgram.trade.domain.model.p2p.type_deal import TypeDeal
-from marketgram.trade.domain.model.rule.agreement.money import Money
+from marketgram.trade.domain.model.money import Money
 
 
 class ShipDeal:

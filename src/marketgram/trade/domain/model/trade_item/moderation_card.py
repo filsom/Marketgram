@@ -3,10 +3,10 @@ from uuid import UUID
 
 from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
 from marketgram.trade.domain.model.p2p.type_deal import TypeDeal
-from marketgram.trade.domain.model.rule.agreement.money import Money
+from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.trade_item.category import ActionTime
 from marketgram.trade.domain.model.trade_item.status_card import StatusCard
-from marketgram.trade.domain.model.trade_item1.description import Description
+from marketgram.trade.domain.model.description import Description
 
 
 class ModerationCard:

@@ -1,13 +1,13 @@
 from datetime import datetime
 from uuid import UUID
 
-from marketgram.trade.domain.model.rule.agreement.entry import (
+from marketgram.trade.domain.model.entry import (
     EntryStatus, 
     PostingEntry
 )
-from marketgram.trade.domain.model.trade_item1.exceptions import DomainError
-from marketgram.trade.domain.model.rule.agreement.money import Money
-from marketgram.trade.domain.model.rule.agreement.types import (
+from marketgram.trade.domain.model.exceptions import DomainError
+from marketgram.trade.domain.model.money import Money
+from marketgram.trade.domain.model.types import (
     AccountType, 
     Operation
 )

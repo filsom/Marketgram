@@ -2,7 +2,7 @@ from sqlalchemy.orm import registry, relationship, composite
 
 from marketgram.trade.domain.model.p2p.payment import Payment
 from marketgram.trade.domain.model.p2p.payout import Payout
-from marketgram.trade.domain.model.rule.agreement.money import Money
+from marketgram.trade.domain.model.money import Money
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.operations_table import (
     operations_table,
     operations_entries_table

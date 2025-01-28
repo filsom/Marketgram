@@ -13,7 +13,7 @@ from marketgram.trade.domain.model.p2p.deal.ship_deal import (
 )
 from marketgram.trade.domain.model.p2p.time_tags import TimeTags
 from marketgram.trade.domain.model.p2p.type_deal import TypeDeal
-from marketgram.trade.domain.model.rule.agreement.money import Money
+from marketgram.trade.domain.model.money import Money
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.deals_table import (
     deals_table, 
     deals_entries_table,

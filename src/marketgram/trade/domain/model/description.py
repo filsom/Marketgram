@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import StrEnum, auto
 
 from marketgram.common.application.exceptions import DomainError
-from marketgram.trade.domain.model.rule.agreement.money import Money
+from marketgram.trade.domain.model.money import Money
 
 
 class RegistrationMethod(StrEnum):

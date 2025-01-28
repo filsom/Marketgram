@@ -4,7 +4,7 @@ from sqlalchemy import event
 from marketgram.trade.domain.model.p2p.paycard import Paycard
 from marketgram.trade.domain.model.p2p.seller import Seller
 from marketgram.trade.domain.model.p2p.user import User
-from marketgram.trade.domain.model.rule.agreement.money import Money
+from marketgram.trade.domain.model.money import Money
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.members_table import (
     members_table
 )
