@@ -1,9 +1,6 @@
 from datetime import datetime
 from uuid import UUID, uuid4
 
-from marketgram.trade.domain.model.trade_item1.card import Card
-from marketgram.trade.domain.model.p2p.deadlines import Deadlines
-from marketgram.trade.domain.model.p2p.delivery import Delivery
 from marketgram.trade.domain.model.p2p.paycard import Paycard
 from marketgram.trade.domain.model.rule.agreement.service_agreement import (
     ServiceAgreement
@@ -11,12 +8,10 @@ from marketgram.trade.domain.model.rule.agreement.service_agreement import (
 from marketgram.trade.domain.model.trade_item1.exceptions import (
     BALANCE_BLOCKED,
     INSUFFICIENT_FUNDS, 
-    MINIMUM_PRICE, 
     MINIMUM_WITHDRAW,
     DomainError
 )
 from marketgram.trade.domain.model.rule.agreement.money import Money
-from marketgram.trade.domain.model.trade_item1.description import Description
 from marketgram.trade.domain.model.p2p.payout import Payout
 
 
@@ -33,36 +28,6 @@ class Seller:
         self._is_blocked = is_blocked
         self._balance = balance
         self._agreement: ServiceAgreement = None
-
-    def make_card(
-        self,
-        amount: Money, 
-        description: Description,
-        delivery: Delivery,
-        current_time: datetime,
-        deadlines: Deadlines | None
-    ) -> Card:
-        if self._is_blocked:
-            raise DomainError(BALANCE_BLOCKED)
-        
-        limits = self._agreement.actual_limits()
-
-        if amount < limits.min_price:
-            raise DomainError(MINIMUM_PRICE)
-
-        if deadlines is None:
-            deadlines = self._agreement.default_deadlines()
-
-        return Card(
-            self._user_id,
-            amount,
-            description,
-            delivery,
-            deadlines,
-            limits.min_price,
-            limits.min_discount,
-            current_time
-        )
 
     def new_payout(
         self, 

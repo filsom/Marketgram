@@ -5,7 +5,6 @@ from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.trade_item1.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
-from marketgram.trade.domain.model.p2p.time_tags import TimeTags
 from marketgram.trade.domain.model.rule.agreement.entry import PostingEntry
 from marketgram.trade.domain.model.rule.agreement.entry_status import EntryStatus
 from marketgram.trade.domain.model.rule.agreement.money import Money
@@ -20,7 +19,6 @@ class DisputeDeal:
         members: Members,
         price: Money,
         is_disputed: bool,
-        time_tags: TimeTags,
         deadlines: Deadlines,
         status: StatusDeal,
         deal_entries: list[PostingEntry] | None = None,
@@ -29,7 +27,6 @@ class DisputeDeal:
         self._deal_id = deal_id
         self._members = members
         self._price = price
-        self._time_tags = time_tags
         self._deadlines = deadlines
         self._deal_entries = deal_entries
         self._status = status
@@ -40,7 +37,7 @@ class DisputeDeal:
         if self._is_disputed:
             raise DomainError()
         
-        if self.dispute_deadline() < occurred_at:
+        if self._deadlines.inspection < occurred_at:
             raise DomainError()
         
         if self._deal_entries is not None:
@@ -51,13 +48,8 @@ class DisputeDeal:
             if self._payout.created_at < occurred_at:
                 self._payout.temporarily_block()
 
-        self._time_tags.closing_reset()
         self._is_disputed = True
         self._status = StatusDeal.DISPUTE
-
-    def dispute_deadline(self) -> datetime:
-        return (self._time_tags.received_at 
-                + self._deadlines.total_check_hours)
 
     def satisfy_seller(self, occurred_at: datetime) -> None:
         if self._deal_entries is not None:
@@ -68,7 +60,6 @@ class DisputeDeal:
             if self._payout.created_at < occurred_at:
                 self._payout.unlock()
 
-        self._time_tags.closed(occurred_at)
         self._status = StatusDeal.CLOSED
 
     def satisfy_buyer(self, occurred_at: datetime) -> None:
@@ -90,7 +81,6 @@ class DisputeDeal:
             if self._payout.created_at < occurred_at:
                 self._payout.unlock()
 
-        self._time_tags.closed(occurred_at)
         self._status = StatusDeal.CANCELLED  
 
     def add_payout(self, payout: Payout) -> None:
@@ -116,7 +106,7 @@ class DisputeDeal:
     def status(self) -> StatusDeal:
         return self._status
     
-    def __eq__(self, other: 'DisputeDeal') -> bool:
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, DisputeDeal):
             return False
 

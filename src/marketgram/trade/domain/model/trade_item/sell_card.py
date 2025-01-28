@@ -1,6 +1,8 @@
+from datetime import datetime, timedelta
 from uuid import UUID
 
 from marketgram.common.application.exceptions import DomainError
+from marketgram.trade.domain.model.p2p.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
 from marketgram.trade.domain.model.p2p.type_deal import TypeDeal
 from marketgram.trade.domain.model.rule.agreement.money import Money
@@ -32,6 +34,16 @@ class SellCard:
             raise DomainError()
         
         self._status = StatusCard.PURCHASED
+
+    def calculate_deadlines(self, current_date: datetime) -> Deadlines:
+        shipment = current_date + timedelta(hours=self._action_time.shipping_hours)
+        receipt = shipment + timedelta(hours=self._action_time.receipt_hours) 
+        inspection = receipt + timedelta(hours=self._action_time.inspection_hours)
+        return Deadlines(shipment, receipt, inspection)
+
+    @property
+    def action_time(self) -> ActionTime:
+        return self._action_time
     
     @property
     def status_deal(self) -> StatusDeal:

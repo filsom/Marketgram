@@ -13,7 +13,7 @@ class Operation(StrEnum):
     BUY = auto()
     DEPOSIT = auto()
     REFUND = auto()
-    PAYMENT = auto()
+    SALE = auto()
     PAYOUT = auto()
 
 

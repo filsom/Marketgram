@@ -2,7 +2,6 @@ from datetime import datetime
 from uuid import UUID
 
 from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
-from marketgram.trade.domain.model.p2p.time_tags import TimeTags
 from marketgram.trade.domain.model.rule.agreement.entry import PostingEntry
 from marketgram.trade.domain.model.rule.agreement.entry_status import EntryStatus
 from marketgram.trade.domain.model.rule.agreement.money import Money
@@ -15,14 +14,12 @@ class CancellationDeal:
         deal_id: int,
         buyer_id: UUID,
         price: Money,
-        time_tags: TimeTags,
         status: StatusDeal,
         entries: list[PostingEntry]
     ) -> None:
         self._deal_id = deal_id
         self._buyer_id = buyer_id
         self._price = price
-        self._time_tags = time_tags
         self._status = status
         self._entries = entries
 
@@ -41,10 +38,9 @@ class CancellationDeal:
                 EntryStatus.ACCEPTED
             )
         )
-        self._time_tags.closed(current_date)
         self._status = StatusDeal.CANCELLED
     
-    def __eq__(self, other: 'CancellationDeal') -> bool:
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, CancellationDeal):
             return False
 
