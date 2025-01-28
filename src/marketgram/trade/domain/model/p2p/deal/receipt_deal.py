@@ -20,6 +20,7 @@ class ReceiptDeal:
         if self._deadlines.receipt < occurred_at:
             raise DomainError()
         
+        self._deadlines = self._deadlines.received(occurred_at)
         self._status = StatusDeal.CHECK
 
     def __eq__(self, other: object) -> bool:

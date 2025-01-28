@@ -58,6 +58,7 @@ class ConfirmationDeal:
                 EntryStatus.FREEZ
             )
         )
+        self._deadlines = self._deadlines.inspected(occurred_at)
         self._status = StatusDeal.CLOSED
 
     def __eq__(self, other: object) -> bool:

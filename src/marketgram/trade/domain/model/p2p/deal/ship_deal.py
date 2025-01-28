@@ -52,12 +52,16 @@ class ShipLoginCodeDeal(ShipDeal):
         if self._deadlines.shipment < occurred_at:
             raise DomainError()
         
-        self._status = StatusDeal.CHECK
+        self._deadlines = self._deadlines \
+            .shipped(occurred_at) \
+            .received(occurred_at)
+        self._status = StatusDeal.CHECK     
 
 
 class ShipProvidingLinkDeal(ShipDeal):
     def confirm_shipment(self, occurred_at: datetime) -> None:
         if self._deadlines.shipment < occurred_at:
             raise DomainError()
-    
+
+        self._deadlines = self._deadlines.shipped(occurred_at)
         self._status = StatusDeal.AWAITING
