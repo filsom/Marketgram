@@ -21,6 +21,7 @@ class ShipDeal:
         price: Money,
         deadlines: Deadlines,
         status: StatusDeal,
+        created_at: datetime,
         deal_id: int = None,
         is_disputed: bool = False
     ) -> None:
@@ -32,6 +33,7 @@ class ShipDeal:
         self._price = price
         self._deadlines = deadlines
         self._status = status
+        self._created_at = created_at
         self._is_disputed = is_disputed
 
     def confirm_shipment(self, occurred_at: datetime) -> None:

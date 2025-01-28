@@ -65,6 +65,7 @@ class User:
             card.price * quantity,
             card.calculate_deadlines(current_time),
             card.status_deal,
+            current_time
         )  
 
     def new_payment(
