@@ -24,8 +24,21 @@ async def lifespan(app: FastAPI):
     
 app = FastAPI(lifespan=lifespan)
 
+class X(BaseModel):
+    g: int
+
 
 class CreateCardRequest(BaseModel):
+    service_id: int
+    category_id: int
+    price: Decimal
+    title: Optional[str] = None
+    body: str
+    transfer_format: str
+    x: list[X]
+
+
+class CreateCard2Request(BaseModel):
     service_id: int
     category_id: int
     price: Decimal
@@ -33,22 +46,21 @@ class CreateCardRequest(BaseModel):
     body: str
     transfer_format: str
 
-
-class F(StrEnum):
-    Telegram = auto()
-    Instagram = auto()
-
-
-class X(BaseModel):
-    type: F
+shemas = {
+    1: CreateCardRequest,
+    2: CreateCard2Request
+}
 
 
 @app.post("/create_card/")
 async def create_item(
-    fields: X,
+    # metadata: CreateCardRequest
     metadata: Any = Body(...)
 ):
-    return fields
+    shema = shemas.get(metadata.get('service_id'))
+    d = shema.model_validate(metadata).model_dump()
+    print(d.get('x'))
+    return d
 
 
 def create_app(app):

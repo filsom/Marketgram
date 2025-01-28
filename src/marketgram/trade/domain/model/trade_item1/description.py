@@ -1,84 +1,38 @@
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from enum import StrEnum, auto
 
-
-class RegistrationMethod(StrEnum):
-    Autoreg = auto()
-    Hand = auto()
-
-
-class AccountFormat(StrEnum):
-    Tdata = auto()
-    Tdata_and_session_json = auto()
-    Session_json = auto()
-    Code = auto()
-
-
-class Region(StrEnum):
-    Random = auto()
-    Sng = auto()
-    Europe = auto()
-    Asia = auto()
-    America = auto()
-    Other = auto()
-
-
-# @dataclass
-# class Description:
-#     title: str
-#     text_description: str
-#     account_format: RegistrationMethod
-#     region: Region
-#     spam_block: bool
+from marketgram.common.application.exceptions import DomainError
+from marketgram.trade.domain.model.rule.agreement.money import Money
 
 
 class RegistrationMethod(StrEnum):
-    Autoreg = auto()
-    Hand = auto()
+    AUTO = auto()
+    HAND = auto()
 
 
 class AccountFormat(StrEnum):
-    Tdata = auto()
-    Tdata_and_session_json = auto()
-    Session_json = auto()
-    Code = auto()
+    TDATA = auto()
+    TDATA_SESJ = auto()
+    SESJ = auto()
 
 
 class Region(StrEnum):
-    Random = auto()
-    Sng = auto()
-    Europe = auto()
-    Asia = auto()
-    America = auto()
-    Other = auto()
-    
-
-@dataclass
-class Characteristics:
-    pass
-
-
-@dataclass
-class TelegramAccCharacteristics(Characteristics):
-    region: Region
-    account_format: AccountFormat
-    registration_method: RegistrationMethod | None = None
-    avatar: bool | None = None
-    two_fa: bool | None = None
-    premium_activated: bool | None = None
-    spam_block: bool | None = None
-
-
-class TelegramAcc:
-    pass
+    RANDOM = auto()
+    SNG = auto()
+    EUROPE = auto()
+    ASIA = auto()
+    AMERICA = auto()
+    OTHER = auto()
 
 
 @dataclass
 class Description:
     title: str
     body: str
-    characteristics: Characteristics
-    transfer_format: str
-    
+
     def __post_init__(self) -> None:
-        self.characteristics = asdict(self.characteristics)
+        if len(self.title) < 10:
+            raise DomainError()
+        
+        if len(self.body) < 10:
+            raise DomainError()
