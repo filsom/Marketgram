@@ -6,7 +6,7 @@ from marketgram.common.application.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
 from marketgram.trade.domain.model.rule.agreement.money import Money
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
-from marketgram.trade.domain.model.trade_item.card import ModerationCard, StatusCard
+from marketgram.trade.domain.model.trade_item.moderation_card import ModerationCard, StatusCard
 from marketgram.trade.domain.model.trade_item1.description import Description
 
 

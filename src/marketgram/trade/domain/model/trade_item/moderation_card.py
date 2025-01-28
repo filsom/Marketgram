@@ -1,5 +1,4 @@
 from datetime import datetime
-from enum import StrEnum, auto
 from uuid import UUID
 
 from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
