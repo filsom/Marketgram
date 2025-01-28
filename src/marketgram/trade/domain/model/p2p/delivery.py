@@ -22,7 +22,7 @@ class Delivery:
         
     def what_type(self) -> TypeDeal:
         if self.is_auto_link():
-            return TypeDeal.AUTO_LINK
+            return TypeDeal.AUTO
 
         if self.is_providing_link():
             return TypeDeal.PROVIDING_LINK

@@ -2,12 +2,13 @@ from datetime import datetime
 from uuid import UUID
 
 from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
+from marketgram.trade.domain.model.p2p.type_deal import TypeDeal
 from marketgram.trade.domain.model.rule.agreement.money import Money
 from marketgram.trade.domain.model.trade_item.category import ActionTime
 from marketgram.trade.domain.model.trade_item.status_card import StatusCard
 from marketgram.trade.domain.model.trade_item1.description import Description
 
-    
+
 class ModerationCard:
     def __init__(
         self,
@@ -18,6 +19,7 @@ class ModerationCard:
         features: dict,
         action_time: ActionTime,
         init_status_deal: StatusDeal,
+        type_deal: TypeDeal,
         created_at: datetime,
         status: StatusCard,
         card_id: int = None,
@@ -30,6 +32,7 @@ class ModerationCard:
         self._features = features
         self._action_time = action_time
         self._init_status_deal = init_status_deal
+        self._type_deal = type_deal
         self._created_at = created_at
         self._status = status
 

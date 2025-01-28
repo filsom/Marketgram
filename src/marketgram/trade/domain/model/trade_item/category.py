@@ -4,6 +4,7 @@ from decimal import Decimal
 
 from marketgram.common.application.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
+from marketgram.trade.domain.model.p2p.type_deal import TypeDeal
 from marketgram.trade.domain.model.rule.agreement.money import Money
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
 from marketgram.trade.domain.model.trade_item.moderation_card import ModerationCard, StatusCard
@@ -16,8 +17,7 @@ class Category:
         name: str,
         alias: str,
         action_time: ActionTime,
-        is_auto: bool,
-        is_time_fixe: bool,
+        type_deal: TypeDeal,
         init_status_deal: StatusDeal,
         minimum_price: Money,
         minimum_procent_discount: Decimal,
@@ -27,8 +27,7 @@ class Category:
         self._name = name
         self._alias = alias
         self._action_time = action_time
-        self._is_auto = is_auto
-        self._is_time_fixe = is_time_fixe
+        self._type_deal = type_deal
         self._init_status_deal = init_status_deal
         self._minimum_price = minimum_price
         self._minimum_procent_discount = minimum_procent_discount
@@ -59,6 +58,8 @@ class Category:
             description,
             features,
             action_time,
+            self._init_status_deal,
+            self._type_deal,
             current_date,
             StatusCard.ON_MODERATION
         )

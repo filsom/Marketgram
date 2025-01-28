@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from marketgram.common.application.exceptions import DomainError
+from marketgram.trade.domain.model.p2p.type_deal import TypeDeal
 from marketgram.trade.domain.model.rule.agreement.money import Money
 from marketgram.trade.domain.model.trade_item.category import ActionTime
 from marketgram.trade.domain.model.trade_item.status_card import StatusCard
@@ -17,8 +18,7 @@ class EditableCard:
         price: Money,
         init_price: Money,
         action_time: ActionTime,
-        is_auto: bool,
-        is_time_fixe: bool,
+        type_deal: TypeDeal,
         minimum_price: Money,
         minimum_procent_discount: Decimal,
         status: StatusCard
@@ -27,8 +27,7 @@ class EditableCard:
         self._price = price
         self._init_price = init_price
         self._action_time = action_time
-        self._is_auto = is_auto
-        self._is_time_fixe = is_time_fixe
+        self._type_deal = type_deal
         self._minimum_price = minimum_price
         self._minimum_procent_discount = minimum_procent_discount
         self._status = status
@@ -54,7 +53,7 @@ class EditableCard:
         self._status = StatusCard.ON_SALE
 
     def change_action_time(self, action_time: ActionTime) -> None:
-        if not self._is_time_fixe:
+        if self._type_deal == TypeDeal.PROVIDING_CODE:
             raise DomainError()
         
         self._action_time = action_time

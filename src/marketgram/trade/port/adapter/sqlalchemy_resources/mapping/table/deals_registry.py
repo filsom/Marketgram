@@ -34,7 +34,7 @@ def deals_registry_mapper(mapper: registry) -> None:
         ShipDeal,
         deals_table,
         polymorphic_on=deals_table.c.type,
-        polymorphic_identity=TypeDeal.AUTO_LINK,
+        polymorphic_identity=TypeDeal.AUTO,
         properties={
             '_deal_id': deals_table.c.deal_id,
             '_members': relationship(
