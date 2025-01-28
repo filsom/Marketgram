@@ -41,6 +41,10 @@ class ModerationCard:
 
     def reject(self) -> None:
         self._status = StatusCard.REJECTED
+
+    @property
+    def status(self) -> StatusCard:
+        return self._status
     
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ModerationCard):
