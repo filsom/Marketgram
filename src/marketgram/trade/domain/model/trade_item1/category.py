@@ -10,18 +10,6 @@ from marketgram.trade.domain.model.trade_item1.category1 import Path
 from marketgram.trade.domain.model.trade_item1.description import Description
 
 
-@dataclass
-class TypeCategory:
-    title: str
-    type_category_id: int = None
-
-    def __post_init__(self) -> None:
-        if not len(self.title):
-            raise DomainError()
-        
-        self.title = self.title.lower()
-
-
 class Category:
     def __init__(
         self,

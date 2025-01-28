@@ -16,7 +16,8 @@ from marketgram.trade.domain.model.trade_item1.description import Description
 class Category:
     def __init__(
         self,
-        name: str,
+        service_id: int, 
+        category_type_id: int,
         alias: str,
         action_time: ActionTime,
         type_deal: TypeDeal,
@@ -25,7 +26,8 @@ class Category:
         minimum_procent_discount: Decimal,
         category_id: int = None
     ) -> None:
-        self._name = name
+        self._service_id = service_id
+        self._category_type_id = category_type_id
         self._alias = alias
         self._action_time = action_time
         self._type_deal = type_deal
@@ -63,3 +65,44 @@ class Category:
             current_date,
             StatusCard.ON_MODERATION
         )
+    
+    @property
+    def category_id(self) -> int:
+        return self._category_id
+    
+    @property
+    def service_id(self) -> int:
+        return self._service_id
+    
+    @property
+    def category_type_id(self) -> int:
+        return self._category_type_id
+    
+    @property
+    def action_time(self) -> ActionTime:
+        return self._action_time
+    
+    @property
+    def type_deal(self) -> TypeDeal:
+        return self._type_deal
+    
+    @property
+    def init_status_deal(self) -> StatusDeal:
+        return self._init_status_deal
+    
+    @property
+    def minimum_price(self) -> Money:
+        return self._minimum_price
+    
+    @property
+    def minimum_procent_discount(self) -> Decimal:
+        return self._minimum_procent_discount 
+    
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Category):
+            return False
+
+        return self.category_id == other.category_id
+    
+    def __hash__(self) -> int:
+        return hash(self.category_id)
