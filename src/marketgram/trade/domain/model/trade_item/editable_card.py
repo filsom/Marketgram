@@ -34,8 +34,8 @@ class EditableCard:
 
     def set_discounted_price(self, new_price: Money) -> None:
         if self._init_price < (self._minimum_price 
-                          + self._minimum_price 
-                          * self._minimum_procent_discount):
+                                + self._minimum_price 
+                                * self._minimum_procent_discount):
             raise DomainError(DISCOUNT_ERROR)
         
         max_limit = self._init_price - self._init_price * self._minimum_procent_discount
