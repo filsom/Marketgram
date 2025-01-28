@@ -21,13 +21,14 @@ class User:
     def __init__(
         self, 
         user_id: UUID,
-        is_blocked: bool = False,
-        balance: Money = Money(0)
+        balance: Money,
+        entries: list[PostingEntry],
+        is_blocked: bool = False
     ) -> None:
         self._user_id = user_id
         self._is_blocked = is_blocked
         self._balance = balance
-        self._entries: list[PostingEntry] = []
+        self._entries = entries
 
     def make_deal(
         self, 
