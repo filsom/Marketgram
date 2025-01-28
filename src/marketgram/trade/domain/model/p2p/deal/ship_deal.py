@@ -18,7 +18,6 @@ class ShipDeal:
         card_id: int,
         qty_purchased: int,
         type_deal: TypeDeal,
-        card_created_at: datetime,
         price: Money,
         deadlines: Deadlines,
         status: StatusDeal,
@@ -31,7 +30,6 @@ class ShipDeal:
         self._qty_purchased = qty_purchased
         self._type_deal = type_deal
         self._price = price
-        self._card_created_at = card_created_at
         self._deadlines = deadlines
         self._status = status
         self._is_disputed = is_disputed

@@ -18,7 +18,6 @@ class ConfirmationDeal:
         seller_id: UUID,
         price: Money,
         sales_tax: Decimal,
-        card_created_at: datetime,
         deadlines: Deadlines,
         status: StatusDeal,
         entries: list[PostingEntry]
@@ -27,7 +26,6 @@ class ConfirmationDeal:
         self._seller_id = seller_id
         self._price = price
         self._sales_tax = sales_tax
-        self._card_created_at = card_created_at
         self._deadlines = deadlines
         self._status = status
         self._entries = entries
