@@ -10,6 +10,9 @@ from marketgram.trade.domain.model.exceptions import (
 )
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.payout import Payout
+from marketgram.trade.domain.model.p2p.sales_manager import (
+    ServiceAgreement
+)
 
 
 class Seller:
@@ -28,6 +31,7 @@ class Seller:
     def new_payout(
         self, 
         amount: Money,
+        agreement: ServiceAgreement,
         current_time: datetime
     ) -> Payout:
         if self._is_blocked:
@@ -36,8 +40,8 @@ class Seller:
         if self._paycard is None:
             raise DomainError()
         
-        if amount < Money('500'):
-            raise DomainError(MINIMUM_WITHDRAW)
+        if not agreement.check_amount_payout(amount):
+            raise DomainError()
 
         remainder = self._balance - amount
         if remainder < Money(0):
@@ -55,7 +59,7 @@ class Seller:
     def change_paycard(self, paycard: Paycard) -> None:
         self._paycard = paycard
 
-    def __eq__(self, other: 'Seller') -> bool:
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, Seller):
             return False
 

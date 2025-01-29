@@ -6,6 +6,7 @@ from marketgram.trade.domain.model.entry_status import EntryStatus
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.deadlines import Deadlines
+from marketgram.trade.domain.model.p2p.sales_manager import ServiceAgreement
 from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
 from marketgram.trade.domain.model.entry import PostingEntry
 from marketgram.trade.domain.model.types import AccountType, Operation
@@ -32,7 +33,7 @@ class ConfirmationDeal:
 
     def confirm_quality(
         self, 
-        superuser_id: UUID, 
+        agreement: ServiceAgreement,
         occurred_at: datetime
     ) -> None:
         if self._deadlines.inspection < occurred_at:
@@ -41,7 +42,7 @@ class ConfirmationDeal:
         self._entries.append(
             PostingEntry(
                 self._seller_id,
-                self._price - self._price * self._sales_tax,
+                agreement.calculate_payment_to_seller(self._price),
                 occurred_at,
                 AccountType.SELLER,
                 Operation.SALE,
@@ -50,8 +51,8 @@ class ConfirmationDeal:
         )
         self._entries.append(
             PostingEntry(
-                superuser_id,
-                self._price * self._sales_tax,
+                agreement._manager_id,
+                agreement.calculate_sales_profit(self._price),
                 occurred_at,
                 AccountType.TAX,
                 Operation.SALE,

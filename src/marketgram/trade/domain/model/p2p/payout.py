@@ -1,12 +1,12 @@
 from __future__ import annotations
 from datetime import datetime
-from decimal import Decimal
 from uuid import UUID
 
 from marketgram.trade.domain.model.entry import PostingEntry
 from marketgram.trade.domain.model.entry_status import EntryStatus
 from marketgram.trade.domain.model.exceptions import DomainError
 from marketgram.trade.domain.model.money import Money
+from marketgram.trade.domain.model.p2p.sales_manager import ServiceAgreement
 from marketgram.trade.domain.model.types import AccountType, Operation
 
 
@@ -33,11 +33,15 @@ class Payout:
         self._is_blocked = is_blocked
         self._entries = entries
 
-    def calculate(self, superuser_id: UUID, current_time: datetime) -> Money:
+    def calculate(
+        self, 
+        agreement: ServiceAgreement,
+        current_time: datetime
+    ) -> Money:
         if self._is_processed or self._count_block:
             raise DomainError()
         
-        amount_payout = -self._tax_free + self._tax_free * Decimal('0.2')
+        amount_payout = agreement.calculate_amount_payout(self._tax_free)
         self._entries.append(
             PostingEntry(
                 self._user_id,
@@ -50,8 +54,8 @@ class Payout:
         )
         self._entries.append(
             PostingEntry(
-                superuser_id,
-                self._tax_free * Decimal('0.2'),
+                agreement._manager_id,
+                agreement.calculate_payout_profit(self._tax_free),
                 current_time,
                 AccountType.TAX,
                 Operation.PAYOUT,

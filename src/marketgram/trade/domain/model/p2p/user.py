@@ -2,6 +2,7 @@ from datetime import datetime
 from uuid import UUID, uuid4
 
 from marketgram.trade.domain.model.p2p.members import Members
+from marketgram.trade.domain.model.p2p.sales_manager import ServiceAgreement
 from marketgram.trade.domain.model.trade_item.sell_card import SellCard
 from marketgram.trade.domain.model.exceptions import (
     BALANCE_BLOCKED,
@@ -40,7 +41,7 @@ class User:
             raise DomainError(BALANCE_BLOCKED)
 
         remainder = self._balance - card.price * quantity
-        if remainder < Money(0):
+        if remainder < Money('0'):
             raise DomainError(INSUFFICIENT_FUNDS)
 
         card.buy(quantity)
@@ -72,13 +73,14 @@ class User:
     def new_payment(
         self, 
         amount: Money,
+        agreement: ServiceAgreement,
         current_time: datetime
-    ) -> Payment:          
-        if amount < Money('100'):
-            raise DomainError(MINIMUM_DEPOSIT)
-        
+    ) -> Payment:  
         if self._is_blocked:
             raise DomainError(BALANCE_BLOCKED)
+        
+        if not amount < agreement.check_amount_payment(amount):
+            raise DomainError(MINIMUM_DEPOSIT)
 
         return Payment(
             uuid4(),
