@@ -62,9 +62,6 @@ class ShipDeal:
         if self._shipment.is_message():
             raise DomainError()
         
-        if self._download_link is not None:
-            raise DomainError()
-        
         self._download_link = link
 
     def __eq__(self, other: object) -> bool:
