@@ -6,8 +6,11 @@ class Shipment(StrEnum):
     HAND = auto()
     CHAT = auto()
 
+    def is_auto_link(self) -> bool:
+        return self == Shipment.AUTO
+
     def is_link(self) -> bool:
-        return self in [Shipment.AUTO, Shipment.HAND]
+        return self == Shipment.HAND
 
     def is_message(self) -> bool:
-        return self in Shipment.CHAT
+        return self == Shipment.CHAT

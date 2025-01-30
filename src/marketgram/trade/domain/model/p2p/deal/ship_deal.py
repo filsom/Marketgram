@@ -59,6 +59,13 @@ class ShipDeal:
         if not self._deadlines.check_shipment(occurred_at):
             raise DomainError()
         
+        if self._shipment.is_auto_link():
+            if self._download_link is None:
+                self._download_link = link
+                return 
+            else:
+                raise DomainError()
+                    
         if self._shipment.is_message():
             raise DomainError()
         
