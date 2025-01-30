@@ -21,7 +21,6 @@ class ShipDeal:
         created_at: datetime,
         deal_id: int = None,
         download_link: str = None,
-        is_disputed: bool = False,
         shipped_at: datetime = None
     ) -> None:
         self._deal_id = deal_id
@@ -33,7 +32,6 @@ class ShipDeal:
         self._deadlines = deadlines
         self._status = status
         self._created_at = created_at
-        self._is_disputed = is_disputed
         self._download_link = download_link
         self._shipped_at = shipped_at
 
