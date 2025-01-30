@@ -1,6 +1,10 @@
 from datetime import datetime
 from uuid import UUID
 
+from marketgram.trade.domain.model.p2p.deal.events import (
+    DisputeClosedEvent, 
+    DisputeOpenedEvent
+)
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.deadlines import Deadlines
@@ -8,7 +12,6 @@ from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
 from marketgram.trade.domain.model.entry import PostingEntry
 from marketgram.trade.domain.model.entry_status import EntryStatus
 from marketgram.trade.domain.model.money import Money
-from marketgram.trade.domain.model.p2p.payout import Payout
 from marketgram.trade.domain.model.types import AccountType, Operation
 
 
@@ -18,11 +21,10 @@ class DisputeDeal:
         deal_id: int,
         members: Members,
         price: Money,
-        is_disputed: bool,
         deadlines: Deadlines,
         status: StatusDeal,
+        is_disputed: bool,
         deal_entries: list[PostingEntry] | None = None,
-        payout: Payout | None = None
     ) -> None:
         self._deal_id = deal_id
         self._members = members
@@ -31,42 +33,46 @@ class DisputeDeal:
         self._deal_entries = deal_entries
         self._status = status
         self._is_disputed = is_disputed
-        self._payout = payout
+        self.events = []
 
     def open_dispute(self, occurred_at: datetime) -> None:   
         if self._is_disputed:
             raise DomainError()
         
-        if self._deadlines.inspection < occurred_at:
+        if self._deadlines.check_inspection(occurred_at):
             raise DomainError()
         
         if self._deal_entries is not None:
-            self._edit_entries_statuses(
-                EntryStatus.TIME_BLOCK
-            )
-        if self._payout is not None: 
-            if self._payout.created_at < occurred_at:
-                self._payout.temporarily_block()
+             for entry in self._deal_entries:
+                 entry.update_status(EntryStatus.TIME_BLOCK)
 
+        self.events.append(
+            DisputeOpenedEvent(
+                self._members.seller_id, 
+                occurred_at
+            )
+        )
         self._is_disputed = True
         self._status = StatusDeal.DISPUTE
 
     def satisfy_seller(self, occurred_at: datetime) -> None:
         if self._deal_entries is not None:
-            self._edit_entries_statuses(
-                EntryStatus.FREEZ
-            )
-        if self._payout is not None:
-            if self._payout.created_at < occurred_at:
-                self._payout.unlock()
+             for entry in self._deal_entries:
+                 entry.update_status(EntryStatus.FREEZ)
 
+        self.events.append(
+            DisputeClosedEvent(
+                self._members.seller_id, 
+                occurred_at
+            )
+        )
         self._status = StatusDeal.CLOSED
 
     def satisfy_buyer(self, occurred_at: datetime) -> None:
         if self._deal_entries is not None:
-            self._edit_entries_statuses(
-                EntryStatus.CANCELLED
-            )
+             for entry in self._deal_entries:
+                 entry.update_status(EntryStatus.CANCELLED)
+
         self._deal_entries.append(
             PostingEntry(
                 self.buyer_id,
@@ -77,18 +83,13 @@ class DisputeDeal:
                 EntryStatus.ACCEPTED
             )
         )
-        if self._payout is not None: 
-            if self._payout.created_at < occurred_at:
-                self._payout.unlock()
-
+        self.events.append(
+            DisputeClosedEvent(
+                self._members.seller_id, 
+                occurred_at
+            )
+        )
         self._status = StatusDeal.CANCELLED  
-
-    def add_payout(self, payout: Payout) -> None:
-        self._payout = payout
-
-    def _edit_entries_statuses(self, status: EntryStatus) -> None:
-        for entry in self._deal_entries:
-            entry.update_status(status)
 
     @property
     def seller_id(self) -> UUID:

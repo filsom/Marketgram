@@ -1,5 +1,4 @@
 from datetime import datetime
-from decimal import Decimal
 from uuid import UUID
 
 from marketgram.trade.domain.model.entry_status import EntryStatus
@@ -18,25 +17,25 @@ class ConfirmationDeal:
         deal_id: int,
         seller_id: UUID,
         price: Money,
-        sales_tax: Decimal,
         deadlines: Deadlines,
         status: StatusDeal,
+        inspected_at: datetime | None,
         entries: list[PostingEntry]
     ) -> None:
         self._deal_id = deal_id
         self._seller_id = seller_id
         self._price = price
-        self._sales_tax = sales_tax
         self._deadlines = deadlines
         self._status = status
+        self._inspected_at = inspected_at
         self._entries = entries
 
     def confirm_quality(
         self, 
-        agreement: ServiceAgreement,
-        occurred_at: datetime
+        occurred_at: datetime,
+        agreement: ServiceAgreement
     ) -> None:
-        if self._deadlines.inspection < occurred_at:
+        if not self._deadlines.check_inspection(occurred_at):
             raise DomainError()
 
         self._entries.append(
@@ -59,7 +58,7 @@ class ConfirmationDeal:
                 EntryStatus.FREEZ
             )
         )
-        self._deadlines = self._deadlines.inspected(occurred_at)
+        self._inspected_at = occurred_at
         self._status = StatusDeal.CLOSED
 
     def __eq__(self, other: object) -> bool:
