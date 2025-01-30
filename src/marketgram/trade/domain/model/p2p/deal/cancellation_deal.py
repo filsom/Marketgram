@@ -15,7 +15,7 @@ class CancellationDeal:
         buyer_id: UUID,
         price: Money,
         status: StatusDeal,
-        entries: list[PostingEntry]
+        entries: list[PostingEntry] | None
     ) -> None:
         self._deal_id = deal_id
         self._buyer_id = buyer_id

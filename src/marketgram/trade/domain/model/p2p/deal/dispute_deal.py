@@ -24,7 +24,7 @@ class DisputeDeal:
         deadlines: Deadlines,
         status: StatusDeal,
         is_disputed: bool,
-        deal_entries: list[PostingEntry] | None = None,
+        deal_entries: list[PostingEntry] | None,
     ) -> None:
         self._deal_id = deal_id
         self._members = members
