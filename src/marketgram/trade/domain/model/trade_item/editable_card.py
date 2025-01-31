@@ -4,7 +4,7 @@ from marketgram.common.application.exceptions import DomainError
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.trade_item.category import ActionTime
-from marketgram.trade.domain.model.trade_item.description import Description
+from marketgram.trade.domain.model.trade_item.description import Description, StatusDescription
 from marketgram.trade.domain.model.trade_item.status_card import StatusCard
 from marketgram.trade.domain.model.exceptions import (
     DISCOUNT_ERROR, 
@@ -55,16 +55,26 @@ class EditableCard:
     def put_on_sale(self) -> None:
         self._status = StatusCard.ON_SALE
 
-    def change_description(self, new_description: Description) -> None:
+    def change_description(self, name: str, body: str) -> None:
         filtred_list = list(filter(
-            lambda description: description.set_in is None,
+            lambda description: description.status == StatusDescription.NEW,
             self._descriptions
         ))
         if len(filtred_list):
             raise DomainError()
         
-        self._descriptions.append(new_description)
+        self._descriptions.append(
+            Description(self._card_id, name, body, StatusDescription.NEW)
+        )
         self._status = StatusCard.ON_MODERATION
+
+    def add_description(self, name: str, body: str) -> None:
+        if len(self._descriptions):
+            raise DomainError()
+        
+        self._descriptions.append(
+            Description(self._card_id, name, body, StatusDescription.NEW)
+        )
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, EditableCard):

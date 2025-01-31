@@ -4,7 +4,7 @@ from uuid import UUID
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.trade_item.category import ActionTime
-from marketgram.trade.domain.model.trade_item.description import Description
+from marketgram.trade.domain.model.trade_item.description import Description, StatusDescription
 from marketgram.trade.domain.model.trade_item.status_card import StatusCard
 
 
@@ -40,12 +40,17 @@ class ModerationCard:
 
             case StatusCard.ON_MODERATION:
                 filtred_list = list(filter(
-                    lambda description: description.set_in is not None, 
+                    lambda description: description.status in [
+                        StatusDescription.NEW, StatusDescription.CURRENT
+                    ], 
                     self._descriptions
                 ))
-                sorted_description = sorted(filtred_list)
-                sorted_description[-1].set(current_time)
-                sorted_description[-2].archive(current_time)
+                for description in filtred_list:
+                    if description.status == StatusDescription.NEW:
+                        description.set(current_time)
+                    
+                    if description.status == StatusDescription.CURRENT:
+                        description.archive(current_time)
 
         self._status = StatusCard.ON_SALE
 
