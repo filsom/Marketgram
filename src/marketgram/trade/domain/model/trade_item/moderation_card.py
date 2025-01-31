@@ -39,13 +39,7 @@ class ModerationCard:
                 self._descriptions[0].set(current_time)
 
             case StatusCard.ON_MODERATION:
-                filtred_list = list(filter(
-                    lambda description: description.status in [
-                        StatusDescription.NEW, StatusDescription.CURRENT
-                    ], 
-                    self._descriptions
-                ))
-                for description in filtred_list:
+                for description in self._descriptions:
                     if description.status == StatusDescription.NEW:
                         description.set(current_time)
                     
@@ -61,6 +55,9 @@ class ModerationCard:
             
             case StatusCard.ON_MODERATION:
                 self._status = StatusCard.ON_SALE
+                for description in self._descriptions:
+                    if description.status == StatusDescription.NEW:
+                        description.cancel()
 
     @property
     def status(self) -> StatusCard:
