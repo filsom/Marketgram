@@ -2,6 +2,7 @@ from datetime import datetime
 from uuid import UUID
 
 from marketgram.common.application.exceptions import DomainError
+from marketgram.trade.domain.model.events import PurchasedCardWithHandProvidingNotification
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.members import Members
@@ -38,9 +39,7 @@ class SellCard:
         if quantity <= 0:
             raise DomainError()
 
-        self._status = StatusCard.PURCHASED
-
-        return ShipDeal(
+        deal = ShipDeal(
             self._card_id,
             Members(self._owner_id, buyer_id),
             quantity,
@@ -49,7 +48,18 @@ class SellCard:
             self._action_time.create_deadlines(occurred_at),
             StatusDeal.NOT_SHIPPED,
             occurred_at
-        )  
+        )
+        if self._shipment.is_hand():
+            self.events.append(
+                PurchasedCardWithHandProvidingNotification(
+                    self._owner_id,
+                    # deal._deal_id, 
+                    occurred_at
+                )
+            )
+        self._status = StatusCard.PURCHASED
+
+        return deal
             
     def edit(self) -> None:
         self._status = StatusCard.EDITING
