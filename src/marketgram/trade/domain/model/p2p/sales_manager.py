@@ -63,20 +63,20 @@ class SalesManager:
 
     def calculate_payout(
         self,
-        amount_payout: Money,
+        amount: Money,
         current_time: datetime
     ) -> None:
         if not self._paycard: 
             raise DomainError()
         
-        remaider = self._balance - amount_payout
+        remaider = self._balance - amount
         if remaider < Money('0'):
             raise DomainError()
         
         self._entries.append(
             PostingEntry(
                 self._user_id,
-                -amount_payout,
+                -amount,
                 current_time,
                 AccountType.MANAGER,
                 Operation.PAYOUT,
