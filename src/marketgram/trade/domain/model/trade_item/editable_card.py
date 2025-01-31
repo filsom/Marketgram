@@ -58,23 +58,18 @@ class EditableCard:
     def put_on_sale(self) -> None:
         self._status = StatusCard.ON_SALE
 
-    def change_description(self, name: str, body: str) -> None:
+    def add_new_description(self, name: str, body: str) -> None:
+        new_description = Description(self._card_id, name, body, StatusDescription.NEW)
+        if not self._descriptions:
+            self._descriptions.append(new_description)
+            return 
+        
         for description in self._descriptions:
             if description.status == StatusDescription.NEW:
                 raise DomainError()
         
-        self._descriptions.append(
-            Description(self._card_id, name, body, StatusDescription.NEW)
-        )
+        self._descriptions.append(new_description)
         self._status = StatusCard.ON_MODERATION
-
-    def add_description(self, name: str, body: str) -> None:
-        if len(self._descriptions):
-            raise DomainError()
-        
-        self._descriptions.append(
-            Description(self._card_id, name, body, StatusDescription.NEW)
-        )
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, EditableCard):
