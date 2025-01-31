@@ -57,7 +57,7 @@ class Payout:
                 agreement._manager_id,
                 agreement.calculate_payout_profit(self._tax_free),
                 current_time,
-                AccountType.TAX,
+                AccountType.MANAGER,
                 Operation.PAYOUT,
                 EntryStatus.ACCEPTED
             )

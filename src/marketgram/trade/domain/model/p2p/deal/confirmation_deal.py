@@ -53,7 +53,7 @@ class ConfirmationDeal:
                 agreement._manager_id,
                 agreement.calculate_sales_profit(self._price),
                 occurred_at,
-                AccountType.TAX,
+                AccountType.MANAGER,
                 Operation.SALE,
                 EntryStatus.FREEZ
             )

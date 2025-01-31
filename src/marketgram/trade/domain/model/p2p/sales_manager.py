@@ -2,11 +2,13 @@ from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
 
+from marketgram.trade.domain.model.entry_status import EntryStatus
 from marketgram.trade.domain.model.p2p.service_agreement import ServiceAgreement
 from marketgram.trade.domain.model.posting_entry import PostingEntry
 from marketgram.trade.domain.model.exceptions import DomainError
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.paycard import Paycard
+from marketgram.trade.domain.model.types import AccountType, Operation
     
 
 class SalesManager:
@@ -56,6 +58,29 @@ class SalesManager:
                 minimum_payout,
                 minimum_payment,
                 current_time,
+            )
+        )
+
+    def calculate_payout(
+        self,
+        amount_payout: Money,
+        current_time: datetime
+    ) -> None:
+        if not self._paycard: 
+            raise DomainError()
+        
+        remaider = self._balance - amount_payout
+        if remaider < Money('0'):
+            raise DomainError()
+        
+        self._entries.append(
+            PostingEntry(
+                self._user_id,
+                -amount_payout,
+                current_time,
+                AccountType.MANAGER,
+                Operation.PAYOUT,
+                EntryStatus.ACCEPTED
             )
         )
     

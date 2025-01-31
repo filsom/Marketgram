@@ -24,4 +24,4 @@ class Operation(StrEnum):
 class AccountType(StrEnum):
     USER = auto()
     SELLER = auto()
-    TAX = auto()
+    MANAGER = auto()
