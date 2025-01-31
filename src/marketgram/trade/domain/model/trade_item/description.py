@@ -1,7 +1,5 @@
 from datetime import datetime
 
-from marketgram.common.application.exceptions import DomainError
-
 
 INFINITY = 'infinity'
 
@@ -11,10 +9,10 @@ class Description:
         self,
         name: str,
         body: str,
-        set_in: datetime,
-        archived_in: datetime | str,
-        is_verify: bool,
-        description_id: int = None
+        description_id: int = None,
+        is_verify: bool = False,
+        set_in: datetime = None,
+        archived_in: datetime | str = INFINITY
     ) -> None:
         self._description_id = description_id
         self._name = name
@@ -23,7 +21,8 @@ class Description:
         self._archived_in = archived_in
         self._is_verify = is_verify
 
-    def set(self) -> None:
+    def set(self, current_time: datetime) -> None:
+        self._set_in = current_time
         self._is_verify = True
 
     def archive(self, current_time: datetime) -> None:
@@ -38,7 +37,7 @@ class Description:
 
     def __lt__(self, other: object) -> None:
         if not isinstance(other, Description):
-            raise DomainError()
+            raise TypeError
 
         return self.archiving_time < other.archiving_time
     

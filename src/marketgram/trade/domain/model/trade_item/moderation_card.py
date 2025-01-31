@@ -2,11 +2,10 @@ from datetime import datetime
 from uuid import UUID
 
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
-from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.trade_item.category import ActionTime
+from marketgram.trade.domain.model.trade_item.description import Description
 from marketgram.trade.domain.model.trade_item.status_card import StatusCard
-from marketgram.trade.domain.model.description import Description
 
 
 class ModerationCard:
@@ -15,7 +14,7 @@ class ModerationCard:
         owner_id: UUID,
         category_id: int,
         price: Money,
-        description: Description,
+        descriptions: list[Description],
         features: dict,
         action_time: ActionTime,
         shipment: Shipment,
@@ -27,18 +26,32 @@ class ModerationCard:
         self._owner_id = owner_id
         self._category_id = category_id
         self._price = price
-        self._description = description
+        self._descriptions = descriptions
         self._features = features
         self._action_time = action_time
         self._shipment = shipment
         self._created_at = created_at
         self._status = status
 
-    def accept(self) -> None:
+    def accept(self, current_time: datetime) -> None:
+        match self._status:
+            case StatusCard.ON_FIRST_MODERATION:
+                self._descriptions[0].set(current_time)
+
+            case StatusCard.ON_MODERATION:
+                sorted_description = sorted(self._descriptions)
+                sorted_description[-1].set(current_time)
+                sorted_description[-2].archive(current_time)
+
         self._status = StatusCard.ON_SALE
 
     def reject(self) -> None:
-        self._status = StatusCard.REJECTED
+        match self._status:
+            case StatusCard.ON_FIRST_MODERATION:
+                self._status = StatusCard.REJECTED
+            
+            case StatusCard.ON_MODERATION:
+                self._status = StatusCard.ON_SALE
 
     @property
     def status(self) -> StatusCard:

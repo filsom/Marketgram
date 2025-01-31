@@ -5,11 +5,11 @@ from marketgram.common.application.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
+from marketgram.trade.domain.model.trade_item.description import Description
 from marketgram.trade.domain.model.trade_item.moderation_card import (
     ModerationCard, 
     StatusCard
 )
-from marketgram.trade.domain.model.description import Description
 
 
 class Category:
@@ -52,12 +52,12 @@ class Category:
             user_id,
             self._category_id,
             price,
-            description,
+            [description],
             features,
             action_time,
             self._shipment,
             current_date,
-            StatusCard.ON_MODERATION
+            StatusCard.ON_FIRST_MODERATION
         )
     
     @property
