@@ -35,7 +35,7 @@ class ConfirmationDeal:
         occurred_at: datetime,
         agreement: ServiceAgreement
     ) -> None:
-        if not self._deadlines.check_inspection(occurred_at):
+        if not self._deadlines.check(self._status, occurred_at):
             raise DomainError()
 
         self._entries.append(

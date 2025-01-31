@@ -39,7 +39,7 @@ class DisputeDeal:
         if self._is_disputed:
             raise DomainError()
         
-        if self._deadlines.check_inspection(occurred_at):
+        if self._deadlines.check(self._status, occurred_at):
             raise DomainError()
         
         if self._deal_entries is not None:
@@ -75,7 +75,7 @@ class DisputeDeal:
 
         self._deal_entries.append(
             PostingEntry(
-                self.buyer_id,
+                self._members.buyer_id,
                 self._price,
                 datetime.now(),
                 AccountType.USER,
@@ -90,22 +90,6 @@ class DisputeDeal:
             )
         )
         self._status = StatusDeal.CANCELLED  
-
-    @property
-    def seller_id(self) -> UUID:
-        return self._members.seller_id
-    
-    @property
-    def buyer_id(self) -> UUID:
-        return self._members.buyer_id
-    
-    @property
-    def is_disputed(self) -> bool:
-        return self._is_disputed
-    
-    @property
-    def status(self) -> StatusDeal:
-        return self._status
     
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, DisputeDeal):

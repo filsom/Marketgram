@@ -39,7 +39,7 @@ class ShipDeal:
         self, 
         occurred_at: datetime
     ) -> None:
-        if not self._deadlines.check_shipment(occurred_at):
+        if not self._deadlines.check(self._status, occurred_at):
             raise DomainError()
         
         if self._shipment.is_link():
@@ -54,7 +54,7 @@ class ShipDeal:
         link: str,  
         occurred_at: datetime
     ) -> None:
-        if not self._deadlines.check_shipment(occurred_at):
+        if not self._deadlines.check(self._status, occurred_at):
             raise DomainError()
         
         if self._shipment.is_auto_link():

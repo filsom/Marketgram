@@ -26,10 +26,10 @@ class ServiceAgreement:
         self._created_at = created_at
     
     def calculate_payment_to_seller(self, price: Money) -> Money:
-        return price + price * self._sales_tax
+        return price - price * self._sales_tax
     
     def calculate_sales_profit(self, price: Money) -> Money:
-        return price + price * self._sales_tax
+        return price * self._sales_tax
 
     def calculate_amount_payout(self, tax_free: Money) -> Money:
         return -tax_free + tax_free * self._payout_tax
