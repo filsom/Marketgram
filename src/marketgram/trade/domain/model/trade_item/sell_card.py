@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from datetime import datetime
 from uuid import UUID
 
@@ -10,12 +9,6 @@ from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
 from marketgram.trade.domain.model.trade_item.status_card import StatusCard
-
-
-@dataclass
-class PurchasedCardWithAutoShipmentEvent:
-    deal: ShipDeal
-    occurred_at: datetime
 
 
 class SellCard:
@@ -73,31 +66,3 @@ class SellCard:
     
     def __hash__(self) -> int:
         return hash(self._card_id)
-    
-
-class SellStockCard(SellCard):
-    def purchase(
-        self, 
-        buyer_id: UUID, 
-        quantity: int, 
-        occurred_at: datetime
-    ) -> ShipDeal:
-        # Добавить работу с товарными остатками!
-        if quantity <= 0:
-            raise DomainError()
-        
-        deal = ShipDeal(
-            self._card_id,
-            Members(self._owner_id, buyer_id),
-            quantity,
-            self._shipment,
-            self._price * quantity,
-            self._action_time.create_deadlines(occurred_at),
-            StatusDeal.NOT_SHIPPED,
-            occurred_at
-        )  
-        self._status = StatusCard.PURCHASED
-        self.events.append(
-            PurchasedCardWithAutoShipmentEvent(deal, occurred_at)
-        )
-        return deal

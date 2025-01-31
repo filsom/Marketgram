@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from marketgram.trade.domain.model.p2p.deal.events import (
+from marketgram.trade.domain.model.events import (
     DisputeClosedEvent, 
     DisputeOpenedEvent
 )

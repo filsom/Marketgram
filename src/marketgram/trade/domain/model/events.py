@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from uuid import UUID
 
+from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
+
 
 @dataclass(frozen=True)
 class DisputeOpenedEvent:
@@ -12,4 +14,10 @@ class DisputeOpenedEvent:
 @dataclass(frozen=True)
 class DisputeClosedEvent:
     seller_id: UUID
+    occurred_at: datetime
+
+
+@dataclass
+class PurchasedCardWithAutoShipmentEvent:
+    deal: ShipDeal
     occurred_at: datetime
