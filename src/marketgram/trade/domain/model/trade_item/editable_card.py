@@ -1,8 +1,8 @@
 from decimal import Decimal
 
 from marketgram.common.application.exceptions import DomainError
-from marketgram.trade.domain.model.p2p.type_deal import TypeDeal
 from marketgram.trade.domain.model.money import Money
+from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.trade_item.category import ActionTime
 from marketgram.trade.domain.model.trade_item.status_card import StatusCard
 from marketgram.trade.domain.model.exceptions import (
@@ -18,7 +18,7 @@ class EditableCard:
         price: Money,
         init_price: Money,
         action_time: ActionTime,
-        type_deal: TypeDeal,
+        shipment: Shipment,
         minimum_price: Money,
         minimum_procent_discount: Decimal,
         status: StatusCard
@@ -27,7 +27,7 @@ class EditableCard:
         self._price = price
         self._init_price = init_price
         self._action_time = action_time
-        self._type_deal = type_deal
+        self._shipment = shipment
         self._minimum_price = minimum_price
         self._minimum_procent_discount = minimum_procent_discount
         self._status = status
@@ -51,12 +51,6 @@ class EditableCard:
 
     def put_on_sale(self) -> None:
         self._status = StatusCard.ON_SALE
-
-    def change_action_time(self, action_time: ActionTime) -> None:
-        if self._type_deal == TypeDeal.PROVIDING_CODE:
-            raise DomainError()
-        
-        self._action_time = action_time
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, EditableCard):
