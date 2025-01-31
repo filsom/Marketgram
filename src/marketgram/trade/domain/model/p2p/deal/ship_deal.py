@@ -72,6 +72,10 @@ class ShipDeal:
         
         self._download_link = link
 
+    @property
+    def buyers_debt(self) -> Money:
+        return -self._price
+
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ShipDeal):
             return False

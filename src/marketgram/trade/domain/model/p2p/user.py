@@ -48,7 +48,7 @@ class User:
         self._entries.append(
             PostingEntry(
                 self._user_id,
-                -card.price * quantity,
+                deal.buyers_debt,
                 current_time,
                 AccountType.USER,
                 Operation.BUY,
