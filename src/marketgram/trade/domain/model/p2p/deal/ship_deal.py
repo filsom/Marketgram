@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from marketgram.trade.domain.model.events import ShippedByDealNotify
+from marketgram.trade.domain.model.events import ShippedByDealNotification
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.exceptions import DomainError
@@ -49,7 +49,7 @@ class ShipDeal:
                 raise DomainError()
 
         self.events.append(
-            ShippedByDealNotify(
+            ShippedByDealNotification(
                 self._members.buyer_id,
                 occurred_at
             )
