@@ -7,7 +7,7 @@ from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
 from marketgram.trade.domain.model.trade_item.category import Category
 from marketgram.trade.domain.model.trade_item.status_card import StatusCard
-from marketgram.trade.domain.model.description import Description
+from marketgram.trade.domain.model.trade_item.items_features.telegram import Description
 
 
 class TestModerationCard:

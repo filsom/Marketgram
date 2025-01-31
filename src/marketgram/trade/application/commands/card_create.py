@@ -3,7 +3,7 @@ from datetime import UTC, datetime
 
 from marketgram.common.application.id_provider import IdProvider
 from marketgram.trade.domain.model.trade_item1.cards_repository import CardsRepository
-from marketgram.trade.domain.model.description import AccountFormat, Description, Region
+from marketgram.trade.domain.model.trade_item.items_features.telegram import AccountFormat, Description, Region
 from marketgram.trade.domain.model.p2p.delivery import Delivery
 from marketgram.trade.domain.model.p2p.format import TransferFormat
 from marketgram.trade.domain.model.p2p.members_repository import MembersRepository
