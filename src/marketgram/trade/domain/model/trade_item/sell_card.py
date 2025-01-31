@@ -1,13 +1,21 @@
-from datetime import datetime, timedelta
+from dataclasses import dataclass
+from datetime import datetime
 from uuid import UUID
 
 from marketgram.common.application.exceptions import DomainError
-from marketgram.trade.domain.model.p2p.deadlines import Deadlines
+from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
+from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
+from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
-from marketgram.trade.domain.model.p2p.type_deal import TypeDeal
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
 from marketgram.trade.domain.model.trade_item.status_card import StatusCard
+
+
+@dataclass
+class PurchasedCardWithAutoShipmentEvent:
+    deal: ShipDeal
+    occurred_at: datetime
 
 
 class SellCard:
@@ -16,69 +24,47 @@ class SellCard:
         card_id: int,
         owner_id: UUID,
         price: Money,
-        init_status_deal: StatusDeal,
-        type_deal: TypeDeal,
+        shipment: Shipment,
         action_time: ActionTime,
         status: StatusCard
     ) -> None:
         self._card_id = card_id
         self._owner_id = owner_id
         self._price = price
-        self._init_status_deal = init_status_deal
-        self._type_deal = type_deal
+        self._shipment = shipment
         self._action_time = action_time
         self._status = status
+        self.events = []
 
-    def buy(self, quantity: int) -> None:
+    def purchase(
+        self, 
+        buyer_id: UUID, 
+        quantity: int, 
+        occurred_at: datetime
+    ) -> ShipDeal:
         if quantity <= 0:
             raise DomainError()
-        
+
         self._status = StatusCard.PURCHASED
 
-    def calculate_deadlines(self, current_date: datetime) -> Deadlines:
-        shipment = current_date + timedelta(
-            hours=self._action_time.shipping_hours
-        )
-        receipt = shipment + timedelta(
-            hours=self._action_time.receipt_hours
-        ) 
-        inspection = receipt + timedelta(
-            hours=self._action_time.inspection_hours
-        )
-        match self._type_deal:
-            case TypeDeal.PROVIDING_LINK:
-                return Deadlines(shipment, receipt, inspection)
-            
-            case TypeDeal.PROVIDING_CODE:
-                return Deadlines(shipment, None, inspection)
+        return ShipDeal(
+            self._card_id,
+            Members(self._owner_id, buyer_id),
+            quantity,
+            self._shipment,
+            self._price * quantity,
+            self._action_time.create_deadlines(occurred_at),
+            StatusDeal.NOT_SHIPPED,
+            occurred_at
+        )  
             
     def edit(self) -> None:
         self._status = StatusCard.EDITING
 
     @property
-    def action_time(self) -> ActionTime:
-        return self._action_time
-    
-    @property
-    def status_deal(self) -> StatusDeal:
-        return self._init_status_deal
-
-    @property
-    def type_deal(self) -> TypeDeal:
-        return self._type_deal
-
-    @property
-    def card_id(self) -> UUID:
-        return self._card_id
-    
-    @property
-    def owner_id(self) -> UUID:
-        return self._owner_id
-    
-    @property
     def price(self) -> Money:
         return self._price
-
+    
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, SellCard):
             return False
@@ -90,11 +76,28 @@ class SellCard:
     
 
 class SellStockCard(SellCard):
-    def buy(self, quantity: int) -> None:
-        pass
-
-    def calculate_deadlines(self, current_date: datetime):
-        inspection = current_date + timedelta(
-            hours=self.action_time.inspection_hours
+    def purchase(
+        self, 
+        buyer_id: UUID, 
+        quantity: int, 
+        occurred_at: datetime
+    ) -> ShipDeal:
+        # Добавить работу с товарными остатками!
+        if quantity <= 0:
+            raise DomainError()
+        
+        deal = ShipDeal(
+            self._card_id,
+            Members(self._owner_id, buyer_id),
+            quantity,
+            self._shipment,
+            self._price * quantity,
+            self._action_time.create_deadlines(occurred_at),
+            StatusDeal.NOT_SHIPPED,
+            occurred_at
+        )  
+        self._status = StatusCard.PURCHASED
+        self.events.append(
+            PurchasedCardWithAutoShipmentEvent(deal, occurred_at)
         )
-        return Deadlines(None, None, inspection)
+        return deal

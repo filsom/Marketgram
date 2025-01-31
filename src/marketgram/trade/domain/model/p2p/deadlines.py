@@ -6,8 +6,8 @@ from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
 
 @dataclass(frozen=True)
 class Deadlines:
-    shipment: datetime
-    inspection: datetime
+    ship_to: datetime
+    inspect_to: datetime
     
     def check(
         self, 
@@ -16,7 +16,7 @@ class Deadlines:
     ) -> bool:
         match status:
             case StatusDeal.NOT_SHIPPED:
-                return occurred_at < self.shipment
+                return occurred_at < self.ship_to
             
             case StatusDeal.INSPECTION:
-                return occurred_at < self.inspection
+                return occurred_at < self.inspect_to

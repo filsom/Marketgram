@@ -104,7 +104,7 @@ class Payout:
     def created_at(self) -> datetime:
         return self._created_at
 
-    def __eq__(self, other: 'Payout') -> bool:
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, Payout):
             return False
 

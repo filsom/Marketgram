@@ -2,8 +2,7 @@ from datetime import datetime
 from decimal import Decimal
 
 from marketgram.common.application.exceptions import DomainError
-from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
-from marketgram.trade.domain.model.p2p.type_deal import TypeDeal
+from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
 from marketgram.trade.domain.model.trade_item.moderation_card import (
@@ -20,9 +19,7 @@ class Category:
         category_type_id: int,
         alias: str,
         action_time: ActionTime,
-        type_deal: TypeDeal,
-        init_status_deal: StatusDeal,
-        sales_tax: Decimal,
+        shipment: Shipment,
         minimum_price: Money,
         minimum_procent_discount: Decimal,
         category_id: int = None
@@ -31,9 +28,7 @@ class Category:
         self._category_type_id = category_type_id
         self._alias = alias
         self._action_time = action_time
-        self._type_deal = type_deal
-        self._init_status_deal = init_status_deal
-        self._sales_tax = sales_tax
+        self._shipment = shipment
         self._minimum_price = minimum_price
         self._minimum_procent_discount = minimum_procent_discount
         self._category_id = category_id    
@@ -44,15 +39,13 @@ class Category:
         description: Description,
         price: Money,
         features: dict, 
-        action_time: dict[str, int] | None,
+        action_time: ActionTime | None,
         current_date: datetime
     ) -> ModerationCard:
         if price < self._minimum_price: 
             raise DomainError()
 
-        if action_time:  
-            action_time = ActionTime(**action_time)
-        else:
+        if action_time is None:  
             action_time = self._action_time
         
         return ModerationCard(
@@ -62,8 +55,7 @@ class Category:
             description,
             features,
             action_time,
-            self._init_status_deal,
-            self._type_deal,
+            self._shipment,
             current_date,
             StatusCard.ON_MODERATION
         )
@@ -83,14 +75,6 @@ class Category:
     @property
     def action_time(self) -> ActionTime:
         return self._action_time
-    
-    @property
-    def type_deal(self) -> TypeDeal:
-        return self._type_deal
-    
-    @property
-    def init_status_deal(self) -> StatusDeal:
-        return self._init_status_deal
     
     @property
     def minimum_price(self) -> Money:
