@@ -59,12 +59,9 @@ class EditableCard:
         self._status = StatusCard.ON_SALE
 
     def change_description(self, name: str, body: str) -> None:
-        filtred_list = list(filter(
-            lambda description: description.status == StatusDescription.NEW,
-            self._descriptions
-        ))
-        if len(filtred_list):
-            raise DomainError()
+        for description in self._descriptions:
+            if description.status == StatusDescription.NEW:
+                raise DomainError()
         
         self._descriptions.append(
             Description(self._card_id, name, body, StatusDescription.NEW)
