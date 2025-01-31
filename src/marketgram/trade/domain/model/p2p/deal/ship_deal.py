@@ -47,13 +47,15 @@ class ShipDeal:
         if self._shipment.is_link():
             if self._download_link is None:
                 raise DomainError()
-
-        self.events.append(
-            ShippedByDealNotification(
-                self._members.buyer_id,
-                occurred_at
+        
+        if not self._shipment.is_message():
+            self.events.append(
+                ShippedByDealNotification(
+                    self._members.buyer_id,
+                    self._download_link,
+                    occurred_at
+                )
             )
-        )
         self._shipped_at = occurred_at
         self._status = StatusDeal.INSPECTION
 

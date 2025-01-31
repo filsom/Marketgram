@@ -26,4 +26,5 @@ class PurchasedCardWithAutoShipmentEvent:
 @dataclass(frozen=True)
 class ShippedByDealNotification:
     buyer_id: UUID
+    download_link: str
     occurred_at: datetime
