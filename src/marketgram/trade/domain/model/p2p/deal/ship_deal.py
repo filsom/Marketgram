@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from marketgram.trade.domain.model.events import ShippedByDealNotify
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.exceptions import DomainError
@@ -34,6 +35,7 @@ class ShipDeal:
         self._created_at = created_at
         self._download_link = download_link
         self._shipped_at = shipped_at
+        self.events = []
 
     def confirm_shipment(
         self, 
@@ -46,6 +48,12 @@ class ShipDeal:
             if self._download_link is None:
                 raise DomainError()
 
+        self.events.append(
+            ShippedByDealNotify(
+                self._members.buyer_id,
+                occurred_at
+            )
+        )
         self._shipped_at = occurred_at
         self._status = StatusDeal.INSPECTION
 

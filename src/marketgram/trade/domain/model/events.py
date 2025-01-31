@@ -17,7 +17,13 @@ class DisputeClosedEvent:
     occurred_at: datetime
 
 
-@dataclass
+@dataclass(frozen=True)
 class PurchasedCardWithAutoShipmentEvent:
     deal: ShipDeal
+    occurred_at: datetime
+
+
+@dataclass(frozen=True)
+class ShippedByDealNotify:
+    buyer_id: UUID
     occurred_at: datetime
