@@ -61,7 +61,7 @@ class SalesManager:
             )
         )
 
-    def calculate_payout(
+    def withdraw(
         self,
         amount: Money,
         current_time: datetime
