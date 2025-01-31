@@ -2,7 +2,7 @@ from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
 
-from marketgram.trade.domain.model.entry import PostingEntry
+from marketgram.trade.domain.model.posting_entry import PostingEntry
 from marketgram.trade.domain.model.exceptions import DomainError
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.paycard import Paycard
