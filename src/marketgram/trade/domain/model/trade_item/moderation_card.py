@@ -54,10 +54,11 @@ class ModerationCard:
                 self._status = StatusCard.REJECTED
             
             case StatusCard.ON_MODERATION:
-                self._status = StatusCard.ON_SALE
                 for description in self._descriptions:
                     if description.status == StatusDescription.NEW:
                         description.cancel()
+                
+                self._status = StatusCard.ON_SALE
 
     @property
     def status(self) -> StatusCard:
