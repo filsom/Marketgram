@@ -39,7 +39,11 @@ class ModerationCard:
                 self._descriptions[0].set(current_time)
 
             case StatusCard.ON_MODERATION:
-                sorted_description = sorted(self._descriptions)
+                filtred_list = list(filter(
+                    lambda description: description.set_in is not None, 
+                    self._descriptions
+                ))
+                sorted_description = sorted(filtred_list)
                 sorted_description[-1].set(current_time)
                 sorted_description[-2].archive(current_time)
 
