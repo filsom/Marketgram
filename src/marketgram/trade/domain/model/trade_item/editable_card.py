@@ -49,7 +49,7 @@ class EditableCard:
         if new_price < self._minimum_price or new_price > max_limit.round_up():
             raise DomainError(
                 UNACCEPTABLE_DISCOUNT_RANGE.format(self._minimum_price, max_limit)
-            )   
+            )
         self._price = new_price
 
     def remove_discount(self) -> None:
