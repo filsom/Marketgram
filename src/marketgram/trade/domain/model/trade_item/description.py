@@ -2,8 +2,7 @@ from datetime import datetime
 from enum import StrEnum, auto
 from uuid import UUID
 
-
-INFINITY = 'infinity'
+from marketgram.trade.domain.model.types import INFINITY
 
 
 class StatusDescription(StrEnum):
