@@ -1,12 +1,13 @@
 from datetime import datetime
 
+from marketgram.common.domain.model.errors import DomainError
 from marketgram.trade.domain.model.events import (
     PurchasedCardWithHandProvidingNotification, 
     ShippedByDealNotification
 )
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
+from marketgram.trade.domain.model.p2p.errors import AUTO_LINK, IN_THE_CHAT, MISSING_DOWNLOAD_LINK, OVERDUE_SHIPMENT, RE_ADD, AddLinkError, CheckDeadlineError
 from marketgram.trade.domain.model.p2p.members import Members
-from marketgram.trade.domain.model.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
 from marketgram.trade.domain.model.money import Money
@@ -45,11 +46,11 @@ class ShipDeal:
         occurred_at: datetime
     ) -> None:
         if not self._deadlines.check(self._status, occurred_at):
-            raise DomainError()
+            raise CheckDeadlineError(OVERDUE_SHIPMENT)
         
         if self._shipment.is_link():
             if self._download_link is None:
-                raise DomainError()
+                raise AddLinkError(MISSING_DOWNLOAD_LINK)
         
         if not self._shipment.is_message():
             self.events.append(
@@ -69,20 +70,20 @@ class ShipDeal:
         occurred_at: datetime
     ) -> None:
         if not self._deadlines.check(self._status, occurred_at):
-            raise DomainError()
+            raise CheckDeadlineError(OVERDUE_SHIPMENT)
         
         if self._shipment.is_auto_link():
             if self._download_link is None:
                 self._download_link = link
                 return 
             else:
-                raise DomainError()
+                raise AddLinkError(AUTO_LINK)
                     
         if self._shipment.is_message():
-            raise DomainError()
+            raise AddLinkError(IN_THE_CHAT)
         
         if self._download_link is not None:
-            raise DomainError()
+            raise AddLinkError(RE_ADD)
         
         self._download_link = link
 
@@ -101,6 +102,10 @@ class ShipDeal:
     @property
     def buyers_debt(self) -> Money:
         return -self._price
+    
+    @property
+    def download_link(self) -> str:
+        return self._download_link
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ShipDeal):

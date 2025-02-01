@@ -1,8 +1,11 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
+from typing import TYPE_CHECKING
 from uuid import UUID
 
-from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
+if TYPE_CHECKING:
+    from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 
 
 @dataclass(frozen=True)

@@ -1,4 +1,4 @@
-from marketgram.common.application.exceptions import DomainError
+from marketgram.common.domain.model.errors import DomainError
 
 
 class PersonalDataError(DomainError):

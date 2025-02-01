@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from uuid import UUID
 
-from marketgram.identity.access.domain.model.errors import DomainError
+from marketgram.common.domain.model.errors import DomainError
 from marketgram.trade.domain.model.exceptions import BUY_FROM_YOURSELF
 
 
