@@ -1,4 +1,5 @@
 from datetime import UTC, datetime, timedelta
+from decimal import Decimal
 from uuid import uuid4
 
 import pytest
@@ -10,6 +11,7 @@ from marketgram.trade.domain.model.p2p.errors import (
     CheckDeadlineError
 )
 from marketgram.trade.domain.model.p2p.members import Members
+from marketgram.trade.domain.model.p2p.service_agreement import ServiceAgreement
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
 
 
@@ -25,18 +27,30 @@ class TestDisputeDeal:
         assert deal.status == StatusDeal.DISPUTE
         assert len(deal.events) == 1
 
-    def test_reopening_a_dispute(self) -> None:
+    def test_dispute_closed_in_favor_of_the_buyer(self) -> None:
         # Arrange
-        deal = self.make_deal(StatusDeal.INSPECTION)
+        deal = self.make_deal(StatusDeal.DISPUTE)
 
         # Act
-        with pytest.raises(CheckDeadlineError) as excinfo:
-            deal.open_dispute(datetime.now(UTC) + timedelta(hours=2))
+        deal.satisfy_buyer(datetime.now(UTC))
 
         # Assert
-        assert str(excinfo.value) == DO_NOT_OPEN_DISPUTE
-        assert deal.status == StatusDeal.INSPECTION
-        assert len(deal.events) == 0
+        assert deal.status == StatusDeal.CANCELLED
+        assert len(deal.events) == 1
+        assert len(deal.entries) == 1
+
+    def test_dispute_closed_in_favor_of_the_seller(self) -> None:
+        # Arrange
+        deal = self.make_deal(StatusDeal.DISPUTE)
+        service_agreement = self.make_service_agreement()
+
+        # Act
+        deal.satisfy_seller(datetime.now(UTC), service_agreement)
+
+        # Assert
+        assert deal.status == StatusDeal.CLOSED
+        assert len(deal.events) == 1
+        assert len(deal.entries) == 2
 
     def make_deal(self, status: StatusDeal) -> DisputeDeal:
         deadlines = ActionTime(1, 1).create_deadlines(datetime.now(UTC))
@@ -47,4 +61,15 @@ class TestDisputeDeal:
             deadlines,
             status,
             []
+        )
+    
+    def make_service_agreement(self) -> ServiceAgreement:
+        return ServiceAgreement(
+            uuid4(),
+            Decimal('0.1'),
+            Decimal('0.1'),
+            Money(100),
+            Money(100),
+            datetime.now(UTC),
+            agreement_id=1
         )

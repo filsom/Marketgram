@@ -104,6 +104,10 @@ class DisputeDeal:
     def status(self) -> StatusDeal:
         return self._status
     
+    @property
+    def entries(self) -> list[PostingEntry]:
+        return self._entries
+    
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, DisputeDeal):
             return False
