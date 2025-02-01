@@ -113,6 +113,14 @@ class ShipDeal:
     @property
     def download_link(self) -> str:
         return self._download_link
+    
+    @property
+    def status(self) -> StatusDeal:
+        return self._status
+    
+    @property
+    def shipped_at(self) -> datetime | None:
+        return self._shipped_at
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ShipDeal):
