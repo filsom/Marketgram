@@ -2,6 +2,7 @@ from datetime import datetime
 
 from marketgram.trade.domain.model.entry_status import EntryStatus
 from marketgram.trade.domain.model.money import Money
+from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.p2p.service_agreement import ServiceAgreement
@@ -15,6 +16,7 @@ class OverdueDeal:
         deal_id: int,
         members: Members,
         price: Money,
+        shipment: Shipment,
         qty_purchased: int,
         status: StatusDeal,
         entries: list[PostingEntry]
@@ -22,9 +24,11 @@ class OverdueDeal:
         self._deal_id = deal_id
         self._members = members
         self._price = price
+        self._shipment = shipment
         self._qty_purchased = qty_purchased
         self._status = status
         self._entries = entries
+        self.events = []
 
     def cancel(
         self, 
@@ -63,7 +67,7 @@ class OverdueDeal:
                         Operation.SALE,
                         EntryStatus.ACCEPTED
                     )
-                )
+                )        
         self._status = StatusDeal.ADMIN_CLOSED
 
     def __eq__(self, other: object) -> bool:

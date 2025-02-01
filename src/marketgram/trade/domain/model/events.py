@@ -56,3 +56,8 @@ class SellerCancelledDealNotification:
     buyer_id: UUID
     deal_id: int
     occurred_at: datetime
+
+
+@dataclass(frozen=True)
+class DefectiveItemShipped:
+    pass
