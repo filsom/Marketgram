@@ -2,7 +2,10 @@ from datetime import datetime
 from uuid import UUID
 
 from marketgram.common.application.exceptions import DomainError
-from marketgram.trade.domain.model.events import PurchasedCardWithAutoShipmentEvent, ZeroInventoryBalanceNotification
+from marketgram.trade.domain.model.events import (
+    PurchasedCardWithAutoShipmentEvent, 
+    ZeroInventoryBalanceNotification
+)
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
