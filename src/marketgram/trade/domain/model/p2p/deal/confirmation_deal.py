@@ -56,7 +56,7 @@ class ConfirmationDeal:
                 occurred_at,
                 AccountType.MANAGER,
                 Operation.SALE,
-                EntryStatus.FREEZ
+                EntryStatus.ACCEPTED
             )
         )
         self._inspected_at = occurred_at
