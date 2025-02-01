@@ -7,3 +7,4 @@ class StatusDeal(StrEnum):
     CLOSED = auto()
     CANCELLED = auto()
     DISPUTE = auto()
+    ADMIN_CLOSED = auto()
