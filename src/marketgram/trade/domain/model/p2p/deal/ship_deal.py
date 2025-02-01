@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from marketgram.trade.domain.model.events import ShippedByDealNotification
+from marketgram.trade.domain.model.events import PurchasedCardWithHandProvidingNotification, ShippedByDealNotification
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.exceptions import DomainError
@@ -52,6 +52,7 @@ class ShipDeal:
             self.events.append(
                 ShippedByDealNotification(
                     self._members.buyer_id,
+                    self._deal_id,
                     self._download_link,
                     occurred_at
                 )
@@ -81,6 +82,18 @@ class ShipDeal:
             raise DomainError()
         
         self._download_link = link
+
+    def can_notify_seller(self) -> None:
+        if self._shipment.is_hand():
+            self.events.append(
+                PurchasedCardWithHandProvidingNotification(
+                    self._members.seller_id,
+                    self._deal_id,
+                    self._qty_purchased,
+                    self._shipped_at,
+                    self._created_at
+                )
+            )
 
     @property
     def buyers_debt(self) -> Money:

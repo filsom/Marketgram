@@ -27,11 +27,14 @@ class PurchasedCardWithAutoShipmentEvent:
 class PurchasedCardWithHandProvidingNotification:
     seller_id: UUID
     deal_id: int
+    qty: int
+    shipped_at: datetime
     occurred_at: datetime
 
 
 @dataclass(frozen=True)
 class ShippedByDealNotification:
     buyer_id: UUID
+    deal_id: int
     download_link: str
     occurred_at: datetime

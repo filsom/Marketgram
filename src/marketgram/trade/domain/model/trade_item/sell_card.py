@@ -39,7 +39,9 @@ class SellCard:
         if quantity <= 0:
             raise DomainError()
 
-        deal = ShipDeal(
+        self._status = StatusCard.PURCHASED
+
+        return ShipDeal(
             self._card_id,
             Members(self._owner_id, buyer_id),
             quantity,
@@ -49,17 +51,6 @@ class SellCard:
             StatusDeal.NOT_SHIPPED,
             occurred_at
         )
-        if self._shipment.is_hand():
-            self.events.append(
-                PurchasedCardWithHandProvidingNotification(
-                    self._owner_id,
-                    # deal._deal_id, 
-                    occurred_at
-                )
-            )
-        self._status = StatusCard.PURCHASED
-
-        return deal
             
     def edit(self) -> None:
         self._status = StatusCard.EDITING
