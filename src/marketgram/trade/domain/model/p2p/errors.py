@@ -26,4 +26,4 @@ class DisputeError(DomainError):
 
 
 DO_NOT_OPEN_DISPUTE = 'Спор не отркыть! Привышено время.'
-REIPENING = 'Невозможно открыть спор повторно!'
+REOPENING = 'Невозможно открыть спор повторно!'

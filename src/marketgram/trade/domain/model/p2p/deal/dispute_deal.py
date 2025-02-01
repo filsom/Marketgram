@@ -6,7 +6,7 @@ from marketgram.trade.domain.model.events import (
 )
 from marketgram.trade.domain.model.p2p.errors import (
     DO_NOT_OPEN_DISPUTE, 
-    REIPENING,
+    REOPENING,
     DisputeError
 )
 from marketgram.trade.domain.model.p2p.members import Members
@@ -41,7 +41,7 @@ class DisputeDeal:
 
     def open_dispute(self, occurred_at: datetime) -> None:   
         if self._is_disputed:
-            raise DisputeError(REIPENING)
+            raise DisputeError(REOPENING)
         
         if not self._deadlines.check(self._status, occurred_at):
             raise DisputeError(DO_NOT_OPEN_DISPUTE)
