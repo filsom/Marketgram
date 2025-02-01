@@ -43,7 +43,7 @@ class DisputeDeal:
         if self._is_disputed:
             raise DisputeError(REIPENING)
         
-        if self._deadlines.check(self._status, occurred_at):
+        if not self._deadlines.check(self._status, occurred_at):
             raise DisputeError(DO_NOT_OPEN_DISPUTE)
 
         self.events.append(
