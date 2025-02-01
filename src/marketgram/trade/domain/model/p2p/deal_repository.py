@@ -4,7 +4,6 @@ from uuid import UUID
 from marketgram.trade.domain.model.p2p.deal.cancellation_deal import CancellationDeal
 from marketgram.trade.domain.model.p2p.deal.confirmation_deal import ConfirmationDeal
 from marketgram.trade.domain.model.p2p.deal.dispute_deal import DisputeDeal
-from marketgram.trade.domain.model.p2p.deal.receipt_deal import ReceiptDeal
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 
 
@@ -17,13 +16,6 @@ class DealsRepository(Protocol):
         seller_id: UUID,
         deal_id: int
     ) -> ShipDeal | None:
-        raise NotImplementedError
-    
-    async def unreceived_with_id(
-        self,
-        buyer_id: UUID,
-        deal_id: int
-    ) -> ReceiptDeal | None:
         raise NotImplementedError
 
     async def unconfirmed_with_id(

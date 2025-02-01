@@ -40,7 +40,7 @@ class User:
             raise DomainError(BALANCE_BLOCKED)
 
         remainder = self._balance - card.price * quantity
-        if remainder < Money('0'):
+        if remainder < Money(0):
             raise DomainError(INSUFFICIENT_FUNDS)
 
         deal = card.purchase(self._user_id, quantity, current_time)

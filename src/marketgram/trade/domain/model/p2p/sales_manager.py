@@ -40,10 +40,10 @@ class SalesManager:
         if sales_tax <= Decimal('0'):
             raise DomainError()
         
-        if minimum_payout <= Money('0'):
+        if minimum_payout <= Money(0):
             raise DomainError()
         
-        if minimum_payment <= Money('0'):
+        if minimum_payment <= Money(0):
             raise DomainError()
         
         if self._service_agreements:

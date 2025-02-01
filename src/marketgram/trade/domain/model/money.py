@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import InitVar, dataclass, field
 from decimal import ROUND_HALF_EVEN, ROUND_HALF_UP, Decimal
 from enum import StrEnum, auto
 
@@ -14,28 +14,30 @@ class Currency(StrEnum):
 
 @dataclass(frozen=True, order=True)
 class Money:
-    number: str
+    number: InitVar[str | int]
+
+    value: Decimal | None = None
     currency: Currency = field(default=Currency.RUB)
 
-    def __post_init__(self) -> None:
+    def __post_init__(self, number: str | int) -> None:
         object.__setattr__(
             self, 
-            'number', 
-            Decimal(str(self.number))
+            'value', 
+            Decimal(str(number))
             .quantize(Decimal('1.00'), ROUND_HALF_EVEN)
         )
 
     def round_up(self) -> Money:
-        value = self.number.quantize(Decimal('1'), ROUND_HALF_UP)
+        value = self.value.quantize(Decimal('1'), ROUND_HALF_UP)
         return Money(value)
 
     def __repr__(self) -> str:
-        return f'{self.number}{self.currency.mark()}'
+        return f'{self.value}{self.currency.mark()}'
 
     def __abs__(self) -> Money:
-        return Money(abs(self.number))
+        return Money(abs(self.value))
 
-    def __mul__(self, value: int | Decimal) -> Money:
+    def __mul__(self, value: Decimal) -> Money:
         if not isinstance(value, (int, Decimal)):
             raise TypeError
 
@@ -43,29 +45,29 @@ class Money:
             raise ArithmeticError
 
         return Money(
-            self.number 
-            * Decimal(str(value))
+            self.value 
+            * value
             .quantize(Decimal('1.00'), ROUND_HALF_EVEN)
         )
 
     def __sub__(self, value: Money) -> Money:
         self._isinstance(value)
-        return Money(self.number - value.number)
+        return Money(self.value - value.value)
     
     def __isub__(self, value: Money) -> Money:
         self._isinstance(value)
-        return Money(self.number - value.number)
+        return Money(self.value - value.value)
 
     def __iadd__(self, value: Money) -> Money:
         self._isinstance(value)
-        return Money(self.number + value.number)
+        return Money(self.value + value.value)
 
     def __add__(self, value: Money) -> Money:
         self._isinstance(value)
-        return Money(self.number + value.number)
+        return Money(self.value + value.value)
 
     def __neg__(self) -> Money:
-        return Money(-self.number)
+        return Money(-self.value)
     
     def _isinstance(self, value: Money) -> None:
         if not isinstance(value, Money):
