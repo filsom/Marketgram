@@ -2,7 +2,7 @@ from datetime import datetime
 from uuid import UUID
 
 from marketgram.common.application.exceptions import DomainError
-from marketgram.trade.domain.model.events import PurchasedCardWithAutoShipmentEvent
+from marketgram.trade.domain.model.events import PurchasedCardWithAutoShipmentEvent, ZeroInventoryBalanceNotification
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
@@ -49,9 +49,18 @@ class SellStockCard(SellCard):
         if quantity <= 0:
             raise DomainError()
         
-        if self._stock_balance - quantity < 0:
+        remainder = self._stock_balance - quantity
+        if remainder < 0:
             raise DomainError()
         
+        if remainder == 0:
+            self.events.append(
+                ZeroInventoryBalanceNotification(
+                    self._owner_id,
+                    self._card_id,
+                    occurred_at
+                )
+            )
         self._inventory_entries.append(
             InventoryEntry(
                 -quantity, 
