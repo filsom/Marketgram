@@ -1,7 +1,7 @@
 from decimal import Decimal
 from uuid import uuid4
 
-from marketgram.common.application.exceptions import DomainError
+from marketgram.common.domain.model.errors import DomainError
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
 from marketgram.trade.domain.model.money import Money

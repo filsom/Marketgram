@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
-from marketgram.common.application.exceptions import DomainError
+from marketgram.common.domain.model.errors import DomainError
+
 
 
 @dataclass
