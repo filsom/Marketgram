@@ -2,7 +2,7 @@ from datetime import datetime
 from uuid import UUID
 
 from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
-from marketgram.trade.domain.model.entry import PostingEntry
+from marketgram.trade.domain.model.posting_entry import PostingEntry
 from marketgram.trade.domain.model.entry_status import EntryStatus
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.types import AccountType, Operation
@@ -15,7 +15,7 @@ class CancellationDeal:
         buyer_id: UUID,
         price: Money,
         status: StatusDeal,
-        entries: list[PostingEntry]
+        entries: list[PostingEntry] | None
     ) -> None:
         self._deal_id = deal_id
         self._buyer_id = buyer_id

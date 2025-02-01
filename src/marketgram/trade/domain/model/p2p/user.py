@@ -1,7 +1,6 @@
 from datetime import datetime
 from uuid import UUID, uuid4
 
-from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.p2p.sales_manager import ServiceAgreement
 from marketgram.trade.domain.model.trade_item.sell_card import SellCard
 from marketgram.trade.domain.model.exceptions import (
@@ -11,7 +10,7 @@ from marketgram.trade.domain.model.exceptions import (
     DomainError
 )
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
-from marketgram.trade.domain.model.entry import EntryStatus, PostingEntry
+from marketgram.trade.domain.model.posting_entry import EntryStatus, PostingEntry
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.payment import Payment
 from marketgram.trade.domain.model.types import AccountType, Operation
@@ -44,31 +43,19 @@ class User:
         if remainder < Money('0'):
             raise DomainError(INSUFFICIENT_FUNDS)
 
-        card.buy(quantity)
+        deal = card.purchase(self._user_id, quantity, current_time)
 
         self._entries.append(
             PostingEntry(
                 self._user_id,
-                -card.price * quantity,
+                deal.buyers_debt,
                 current_time,
                 AccountType.USER,
                 Operation.BUY,
                 EntryStatus.ACCEPTED
             )
         )
-        return ShipDeal(
-            Members(
-                card.owner_id,
-                self._user_id
-            ),
-            card.card_id,
-            quantity,
-            card.type_deal,
-            card.price * quantity,
-            card.calculate_deadlines(current_time),
-            card.status_deal,
-            current_time
-        )  
+        return deal
 
     def new_payment(
         self, 

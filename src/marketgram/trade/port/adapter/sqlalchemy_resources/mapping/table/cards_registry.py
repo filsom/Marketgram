@@ -1,7 +1,7 @@
 from sqlalchemy.orm import registry, composite
 
 from marketgram.trade.domain.model.trade_item1.card import Card
-from marketgram.trade.domain.model.description import Description
+from marketgram.trade.domain.model.trade_item.items_features.telegram import Description
 from marketgram.trade.domain.model.p2p.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.delivery import Delivery
 from marketgram.trade.domain.model.money import Money

@@ -2,7 +2,7 @@ from __future__ import annotations
 from datetime import datetime
 from uuid import UUID
 
-from marketgram.trade.domain.model.entry import PostingEntry
+from marketgram.trade.domain.model.posting_entry import PostingEntry
 from marketgram.trade.domain.model.entry_status import EntryStatus
 from marketgram.trade.domain.model.exceptions import DomainError
 from marketgram.trade.domain.model.money import Money
@@ -57,7 +57,7 @@ class Payout:
                 agreement._manager_id,
                 agreement.calculate_payout_profit(self._tax_free),
                 current_time,
-                AccountType.TAX,
+                AccountType.MANAGER,
                 Operation.PAYOUT,
                 EntryStatus.ACCEPTED
             )
@@ -104,7 +104,7 @@ class Payout:
     def created_at(self) -> datetime:
         return self._created_at
 
-    def __eq__(self, other: 'Payout') -> bool:
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, Payout):
             return False
 

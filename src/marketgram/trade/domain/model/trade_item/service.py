@@ -2,8 +2,8 @@ from decimal import Decimal
 from uuid import uuid4
 
 from marketgram.common.application.exceptions import DomainError
+from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
-from marketgram.trade.domain.model.p2p.type_deal import TypeDeal
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
 from marketgram.trade.domain.model.trade_item.category import Category
@@ -27,7 +27,7 @@ class Service:
         self,
         category_types: TypeCategory,
         status_deal: StatusDeal,
-        type_deal: TypeDeal,
+        shipment: Shipment,
         action_time: ActionTime,
         min_price: Money,
         min_procent_discount: Decimal,
@@ -38,6 +38,9 @@ class Service:
         if 0 >= min_procent_discount >= 1:
             raise DomainError()
 
+        if shipment.is_auto_link():
+            raise DomainError()
+        
         if self._categories:
             for category in self._categories:
                 if category_types.type_category_id == category.category_type_id:
@@ -52,7 +55,7 @@ class Service:
                 category_types.type_category_id,
                 category_alias,
                 action_time,
-                type_deal,
+                shipment,
                 status_deal,
                 min_price,
                 min_procent_discount

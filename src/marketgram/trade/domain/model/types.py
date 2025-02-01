@@ -1,6 +1,9 @@
 from enum import StrEnum, auto
 
 
+INFINITY = 'infinity'
+
+
 class EventType(StrEnum):
     PRODUCT_CONFIRMED = auto()
     USER_DEDUCED = auto()
@@ -21,4 +24,4 @@ class Operation(StrEnum):
 class AccountType(StrEnum):
     USER = auto()
     SELLER = auto()
-    TAX = auto()
+    MANAGER = auto()

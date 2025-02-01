@@ -1,40 +1,22 @@
 from dataclasses import dataclass
 from datetime import datetime
 
+from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
+
 
 @dataclass(frozen=True)
 class Deadlines:
-    shipment: datetime | None
-    receipt: datetime | None
-    inspection: datetime
-    shipped_to: datetime | None = None
-    received_in: datetime | None = None
-    inspected_in: datetime | None = None
-
-    def shipped(self, occurred_at: datetime) -> 'Deadlines':
-        return Deadlines(
-            self.shipment,
-            self.receipt,
-            self.inspection,
-            occurred_at
-        )
+    ship_to: datetime
+    inspect_to: datetime
     
-    def received(self, occurred_at: datetime) -> 'Deadlines':
-        return Deadlines(
-            self.shipment,
-            self.receipt,
-            self.inspection,
-            self.shipped_to,
-            occurred_at
-        )
-    
-    def inspected(self, occurred_at: datetime) -> 'Deadlines':
-        return Deadlines(
-            self.shipment,
-            self.receipt,
-            self.inspection,
-            self.shipped_to,
-            self.received_in,
-            self.received_in,
-            occurred_at
-        )
+    def check(
+        self, 
+        status: StatusDeal,
+        occurred_at: datetime
+    ) -> bool:
+        match status:
+            case StatusDeal.NOT_SHIPPED:
+                return occurred_at < self.ship_to
+            
+            case StatusDeal.INSPECTION:
+                return occurred_at < self.inspect_to

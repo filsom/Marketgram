@@ -3,8 +3,7 @@ from enum import StrEnum, auto
 
 class StatusDeal(StrEnum):
     NOT_SHIPPED = auto()
-    AWAITING = auto()
-    CHECK = auto()
+    INSPECTION = auto()
     CLOSED = auto()
     CANCELLED = auto()
     DISPUTE = auto()

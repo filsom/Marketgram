@@ -76,7 +76,7 @@ class SQLAlchemyDealsRepository:
             .join(Members, Members.buyer_id == buyer_id)
             .where(and_(
                 deals_table.c.deal_id == deal_id,
-                deals_table.c.status == StatusDeal.CHECK,
+                deals_table.c.status == StatusDeal.INSPECTION,
             ))
         )
         result = await self._async_session.execute(stmt)

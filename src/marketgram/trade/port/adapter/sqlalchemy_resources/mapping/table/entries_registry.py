@@ -1,6 +1,6 @@
 from sqlalchemy.orm import registry, composite
 
-from marketgram.trade.domain.model.entry import PostingEntry
+from marketgram.trade.domain.model.posting_entry import PostingEntry
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.entries_table import (
     entries_table

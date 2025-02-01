@@ -23,16 +23,3 @@ class Region(StrEnum):
     ASIA = auto()
     AMERICA = auto()
     OTHER = auto()
-
-
-@dataclass
-class Description:
-    title: str
-    body: str
-
-    def __post_init__(self) -> None:
-        if len(self.title) < 10:
-            raise DomainError()
-        
-        if len(self.body) < 10:
-            raise DomainError()
