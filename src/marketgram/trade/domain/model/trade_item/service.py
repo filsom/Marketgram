@@ -3,7 +3,7 @@ from uuid import uuid4
 
 from marketgram.common.application.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
-from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
+from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
 from marketgram.trade.domain.model.trade_item.category import Category

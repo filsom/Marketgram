@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
+from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
 
 
 @dataclass(frozen=True)

@@ -10,7 +10,7 @@ from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.members import Members
-from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
+from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
 from marketgram.trade.domain.model.trade_item.inventory_entry import (
     InventoryEntry, 

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 
 from marketgram.common.application.exceptions import DomainError
-from marketgram.trade.domain.model.p2p.deadlines import Deadlines
+from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
 
 
 @dataclass(frozen=True)

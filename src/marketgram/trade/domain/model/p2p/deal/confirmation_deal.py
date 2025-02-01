@@ -4,9 +4,9 @@ from uuid import UUID
 from marketgram.trade.domain.model.entry_status import EntryStatus
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.exceptions import DomainError
-from marketgram.trade.domain.model.p2p.deadlines import Deadlines
+from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.sales_manager import ServiceAgreement
-from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
+from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
 from marketgram.trade.domain.model.posting_entry import PostingEntry
 from marketgram.trade.domain.model.types import AccountType, Operation
     

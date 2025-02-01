@@ -1,7 +1,7 @@
 from datetime import UTC, datetime
 from decimal import Decimal
 
-from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
+from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
 from marketgram.trade.domain.model.p2p.type_deal import TypeDeal
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime

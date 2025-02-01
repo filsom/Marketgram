@@ -10,7 +10,7 @@ from marketgram.trade.domain.model.p2p.deal.confirmation_deal import Confirmatio
 from marketgram.trade.domain.model.p2p.deal.dispute_deal import DisputeDeal
 from marketgram.trade.domain.model.p2p.deal.receipt_deal import ReceiptDeal
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
-from marketgram.trade.domain.model.p2p.status_deal import StatusDeal
+from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.deals_table import (
     deals_table
 )
