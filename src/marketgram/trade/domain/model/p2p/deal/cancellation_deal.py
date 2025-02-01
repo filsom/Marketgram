@@ -30,14 +30,15 @@ class CancellationDeal:
         self.events = []
 
     def cancel(self, occurred_at: datetime) -> None:
-        if not self._deadlines.check(self._status, occurred_at):
-            match self._status:
-                case StatusDeal.NOT_SHIPPED:
-                    raise CheckDeadlineError(RETURN_TO_BUYER)
-                
-                case StatusDeal.INSPECTION:
-                    raise CheckDeadlineError(PAYMENT_TO_SELLER)
-                
+        if self._status != StatusDeal.DISPUTE:
+            if not self._deadlines.check(self._status, occurred_at):
+                match self._status:
+                    case StatusDeal.NOT_SHIPPED:
+                        raise CheckDeadlineError(RETURN_TO_BUYER)
+                    
+                    case StatusDeal.INSPECTION:
+                        raise CheckDeadlineError(PAYMENT_TO_SELLER)
+     
         self.events.append(
             SellerCancelledDealNotification(
                 self._buyer_id,
