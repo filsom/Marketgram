@@ -27,7 +27,7 @@ class PurchasedCardWithAutoShipmentEvent:
 
 
 @dataclass(frozen=True)
-class PurchasedCardWithNotification:
+class PurchasedCardNotification:
     seller_id: UUID
     deal_id: int
     card_id: int
