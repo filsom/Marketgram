@@ -6,8 +6,7 @@ from marketgram.trade.domain.model.events import (
 )
 from marketgram.trade.domain.model.p2p.errors import (
     DO_NOT_OPEN_DISPUTE, 
-    REOPENING,
-    DisputeError
+    CheckDeadlineError,
 )
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
@@ -27,8 +26,7 @@ class DisputeDeal:
         price: Money,
         deadlines: Deadlines,
         status: StatusDeal,
-        is_disputed: bool,
-        entries: list[PostingEntry] | None,
+        entries: list[PostingEntry],
     ) -> None:
         self._deal_id = deal_id
         self._members = members
@@ -36,15 +34,11 @@ class DisputeDeal:
         self._deadlines = deadlines
         self._entries = entries
         self._status = status
-        self._is_disputed = is_disputed
         self.events = []
 
     def open_dispute(self, occurred_at: datetime) -> None:   
-        if self._is_disputed:
-            raise DisputeError(REOPENING)
-        
         if not self._deadlines.check(self._status, occurred_at):
-            raise DisputeError(DO_NOT_OPEN_DISPUTE)
+            raise CheckDeadlineError(DO_NOT_OPEN_DISPUTE)
 
         self.events.append(
             DisputeOpenedEvent(
@@ -52,7 +46,6 @@ class DisputeDeal:
                 occurred_at
             )
         )
-        self._is_disputed = True
         self._status = StatusDeal.DISPUTE
 
     def satisfy_seller(
@@ -106,6 +99,10 @@ class DisputeDeal:
             )
         )
         self._status = StatusDeal.CANCELLED  
+    
+    @property
+    def status(self) -> StatusDeal:
+        return self._status
     
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, DisputeDeal):
