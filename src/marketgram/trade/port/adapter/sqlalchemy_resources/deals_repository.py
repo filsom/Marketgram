@@ -98,7 +98,8 @@ class SQLAlchemyDealsRepository:
                 deals_table.c.status.not_in([
                     StatusDeal.DISPUTE,
                     StatusDeal.CLOSED,
-                    StatusDeal.CANCELLED
+                    StatusDeal.CANCELLED,
+                    StatusDeal.NOT_SHIPPED
                 ]),
             ))
         )
