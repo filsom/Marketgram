@@ -1,10 +1,13 @@
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from uuid import uuid4
+
+import pytest
 
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.deal.confirmation_deal import ConfirmationDeal
 from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
+from marketgram.trade.domain.model.p2p.errors import LATE_CONFIRMATION, CheckDeadlineError
 from marketgram.trade.domain.model.p2p.service_agreement import ServiceAgreement
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
 
@@ -23,6 +26,24 @@ class TestConfirmationDeal:
         assert deal.status == StatusDeal.CLOSED
         assert deal.inspected_at == occurred_at
         assert len(deal.entries) == 2
+
+    def test_buyer_confirms_the_quality_of_the_item_late(self) -> None:
+        # Arrange
+        service_agreement = self.make_service_agreement()
+        deal = self.make_deal(datetime.now(UTC) )
+
+        # Act
+        with pytest.raises(CheckDeadlineError) as excinfo:
+            deal.confirm_quality(
+                datetime.now(UTC) + timedelta(hours=2), 
+                service_agreement
+            )
+
+        # Assert
+        assert str(excinfo.value) == LATE_CONFIRMATION
+        assert deal.status == StatusDeal.INSPECTION
+        assert deal.inspected_at is None
+        assert len(deal.entries) == 0
 
     def make_deal(self, created_at: datetime) -> ConfirmationDeal:
         deadlines = ActionTime(1, 1).create_deadlines(created_at)
