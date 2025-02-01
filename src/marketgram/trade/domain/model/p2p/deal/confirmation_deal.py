@@ -5,6 +5,7 @@ from marketgram.trade.domain.model.entry_status import EntryStatus
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
+from marketgram.trade.domain.model.p2p.errors import LATE_CONFIRMATION, CheckDeadlineError
 from marketgram.trade.domain.model.p2p.sales_manager import ServiceAgreement
 from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
 from marketgram.trade.domain.model.posting_entry import PostingEntry
@@ -36,7 +37,7 @@ class ConfirmationDeal:
         agreement: ServiceAgreement
     ) -> None:
         if not self._deadlines.check(self._status, occurred_at):
-            raise DomainError()
+            raise CheckDeadlineError(LATE_CONFIRMATION)
 
         self._entries.append(
             PostingEntry(
@@ -60,6 +61,18 @@ class ConfirmationDeal:
         )
         self._inspected_at = occurred_at
         self._status = StatusDeal.CLOSED
+
+    @property
+    def status(self) -> StatusDeal:
+        return self._status
+    
+    @property
+    def inspected_at(self) -> datetime:
+        return self._inspected_at
+    
+    @property
+    def entries(self) -> list[PostingEntry]:
+        return self._entries
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ConfirmationDeal):
