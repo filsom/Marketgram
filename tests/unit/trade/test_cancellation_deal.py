@@ -3,40 +3,29 @@ from uuid import uuid4
 
 import pytest
 from marketgram.trade.domain.model.money import Money
-from marketgram.trade.domain.model.p2p.deal.cancellation_deal import CancellationDeal
+from marketgram.trade.domain.model.p2p.deal.cancellation_deal import (
+    CancellationDeal
+)
 from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
-from marketgram.trade.domain.model.p2p.errors import PAYMENT_TO_SELLER, RETURN_TO_BUYER, CheckDeadlineError
+from marketgram.trade.domain.model.p2p.errors import (
+    PAYMENT_TO_SELLER, 
+    RETURN_TO_BUYER, 
+    CheckDeadlineError
+)
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
 
 
 class TestCancellationDeal:
-    def test_seller_cancelled_the_disputed_deal(self) -> None:
+    @pytest.mark.parametrize(
+        'status', [
+            StatusDeal.NOT_SHIPPED,
+            StatusDeal.INSPECTION,
+            StatusDeal.DISPUTE,
+        ]
+    )
+    def test_seller_cancels_the_deal(self, status) -> None:
         # Arrange
-        deal = self.make_deal(status=StatusDeal.DISPUTE)
-
-        # Act
-        deal.cancel(datetime.now(UTC))
-
-        # Assert
-        assert deal.status == StatusDeal.CANCELLED
-        assert len(deal.entries) == 1
-        assert len(deal.events) == 1
-
-    def test_seller_cancelled_the_deal_on_time_with_the_unshipped_item(self) -> None:
-        # Arrange
-        deal = self.make_deal(status=StatusDeal.NOT_SHIPPED)
-
-        # Act
-        deal.cancel(datetime.now(UTC))
-
-        # Assert
-        assert deal.status == StatusDeal.CANCELLED
-        assert len(deal.entries) == 1
-        assert len(deal.events) == 1
-
-    def test_seller_cancelled_the_deal_due_to_poor_quality_item(self) -> None:
-        # Arrange
-        deal = self.make_deal(status=StatusDeal.INSPECTION)
+        deal = self.make_deal(status=status)
 
         # Act
         deal.cancel(datetime.now(UTC))
