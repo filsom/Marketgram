@@ -4,7 +4,11 @@ from uuid import UUID
 from marketgram.trade.domain.model.events import SellerCancelledDealNotification
 from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
-from marketgram.trade.domain.model.p2p.errors import PAYMENT_TO_SELLER, RETURN_TO_BUYER, CheckDeadlineError
+from marketgram.trade.domain.model.p2p.errors import (
+    PAYMENT_TO_SELLER, 
+    RETURN_TO_BUYER, 
+    CheckDeadlineError
+)
 from marketgram.trade.domain.model.posting_entry import PostingEntry
 from marketgram.trade.domain.model.entry_status import EntryStatus
 from marketgram.trade.domain.model.money import Money
@@ -37,8 +41,8 @@ class CancellationDeal:
                         raise CheckDeadlineError(RETURN_TO_BUYER)
                     
                     case StatusDeal.INSPECTION:
-                        raise CheckDeadlineError(PAYMENT_TO_SELLER)
-     
+                        raise CheckDeadlineError(PAYMENT_TO_SELLER)            
+
         self.events.append(
             SellerCancelledDealNotification(
                 self._buyer_id,
