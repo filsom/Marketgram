@@ -1,6 +1,9 @@
 from datetime import datetime
 
-from marketgram.trade.domain.model.events import PurchasedCardWithHandProvidingNotification, ShippedByDealNotification
+from marketgram.trade.domain.model.events import (
+    PurchasedCardWithHandProvidingNotification, 
+    ShippedByDealNotification
+)
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.exceptions import DomainError
