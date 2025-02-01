@@ -21,7 +21,7 @@ from marketgram.trade.domain.model.trade_item.action_time import ActionTime
 
 
 class TestShipDeal:
-    def test_confirmation_of_shipment_without_links_with_delivery_in_chat(self) -> None:
+    def test_confirmation_of_shipment_without_download_link_with_delivery_in_chat(self) -> None:
         # Arrange
         occurred_at = datetime.now(UTC)
         deal = self.make_deal(Shipment.CHAT, download_link=None)
