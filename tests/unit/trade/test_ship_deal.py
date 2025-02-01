@@ -33,10 +33,11 @@ class TestShipDeal:
         assert len(deal.events) == 0
         assert deal.status == StatusDeal.INSPECTION
         assert deal.shipped_at == occurred_at
-        
-    def test_confirmation_of_shipping_without_download_link(self) -> None:
+
+    @pytest.mark.parametrize('shipment', [Shipment.HAND, Shipment.AUTO]) 
+    def test_confirmation_of_shipping_without_download_link(self, shipment) -> None:
         # Arrange
-        deal = self.make_deal(Shipment.HAND, download_link=None)
+        deal = self.make_deal(shipment, download_link=None)
 
         # Act
         with pytest.raises(AddLinkError) as excinfo:
@@ -48,11 +49,12 @@ class TestShipDeal:
         assert deal.status == StatusDeal.NOT_SHIPPED
         assert deal.shipped_at is None
 
-    def test_the_seller_has_shipped_the_item_and_confirmed_the_shipment(self) -> None:
+    @pytest.mark.parametrize('shipment', [Shipment.HAND, Shipment.AUTO]) 
+    def test_the_seller_has_shipped_the_item_and_confirmed_the_shipment(self, shipment) -> None:
         # Arrange
         occurred_at = datetime.now(UTC)
         deal = self.make_deal(
-            Shipment.HAND,
+            shipment,
             download_link='https://download_link/test'
         )
 
@@ -81,9 +83,10 @@ class TestShipDeal:
         assert deal.shipped_at is None
         assert deal.status == StatusDeal.NOT_SHIPPED
 
-    def test_adding_download_link_to_hand_shipping_deal(self) -> None:
+    @pytest.mark.parametrize('shipment', [Shipment.HAND, Shipment.AUTO]) 
+    def test_adding_download_link_to_deal(self, shipment) -> None:
         # Arrange
-        deal = self.make_deal(Shipment.HAND)
+        deal = self.make_deal(shipment)
 
         # Act
         deal.add_download_link(
@@ -94,23 +97,13 @@ class TestShipDeal:
         # Assert
         assert deal.download_link is not None
 
-    def test_adding_download_link_to_auto_shipping_deal(self) -> None:
-        # Arrange
-        deal = self.make_deal(Shipment.AUTO)
-
-        # Act
-        deal.add_download_link(
-            'https://download_link/test', 
-            datetime.now(UTC)
-        )
-
-        # Assert
-        assert deal.download_link is not None
-
-    def test_re_adding_download_link_to_hand_shipping_deal(self) -> None:
+    @pytest.mark.parametrize(
+        'shipment, excvalue', [(Shipment.HAND, RE_ADD), (Shipment.AUTO, AUTO_LINK)]
+    )
+    def test_re_adding_download_link_to_hand_shipping_deal(self, shipment, excvalue) -> None:
         # Arrange
         deal = self.make_deal(
-            Shipment.HAND, 
+            shipment, 
             download_link='https://download_link/test'
         )
 
@@ -122,24 +115,7 @@ class TestShipDeal:
             )
         
         # Assert
-        assert str(excinfo.value) == RE_ADD
-
-    def test_re_adding_download_link_to_auto_shipping_deal(self) -> None:
-        # Arrange
-        deal = self.make_deal(
-            Shipment.AUTO, 
-            download_link='https://download_link/test'
-        )
-
-        # Act
-        with pytest.raises(AddLinkError) as excinfo:
-            deal.add_download_link(
-                'https://download_link/test',
-                datetime.now(UTC)
-            )
-        
-        # Assert
-        assert str(excinfo.value) == AUTO_LINK
+        assert str(excinfo.value) == excvalue
 
     def test_adding_download_link_for_deal_with_shipment_in_chat(self) -> None:
         # Arrange
