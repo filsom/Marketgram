@@ -95,7 +95,7 @@ class ShipDeal:
         self._download_link = link
 
     def notify_seller(self) -> None:
-        if self._shipment.is_hand():
+        if self._shipment.can_notify():
             self.events.append(
                 PurchasedCardWithHandProvidingNotification(
                     self._members.seller_id,

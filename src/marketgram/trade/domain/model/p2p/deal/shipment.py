@@ -17,3 +17,6 @@ class Shipment(StrEnum):
 
     def is_message(self) -> bool:
         return self == Shipment.CHAT
+    
+    def can_notify(self) -> bool:
+        return self in [Shipment.CHAT, Shipment.HAND]

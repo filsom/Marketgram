@@ -21,6 +21,21 @@ from marketgram.trade.domain.model.trade_item.action_time import ActionTime
 
 
 class TestShipDeal:
+    @pytest.mark.parametrize(
+        'shipment, count_notification', [(Shipment.AUTO, 0), (Shipment.HAND, 1), (Shipment.CHAT, 1)]
+    )
+    def test_sending_notification_to_the_seller_about_the_creation_deal_for_the_purchased_card(
+        self, shipment, count_notification
+    ) -> None:
+        # Arrange
+        deal = self.make_deal(shipment)
+
+        # Act
+        deal.notify_seller()
+
+        # Assert
+        assert len(deal.events) == count_notification
+
     def test_confirmation_of_shipment_without_download_link_with_delivery_in_chat(self) -> None:
         # Arrange
         occurred_at = datetime.now(UTC)
