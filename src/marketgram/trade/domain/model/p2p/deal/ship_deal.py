@@ -1,12 +1,19 @@
 from datetime import datetime
 
-from marketgram.common.domain.model.errors import DomainError
 from marketgram.trade.domain.model.events import (
     PurchasedCardWithHandProvidingNotification, 
     ShippedByDealNotification
 )
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
-from marketgram.trade.domain.model.p2p.errors import AUTO_LINK, IN_THE_CHAT, MISSING_DOWNLOAD_LINK, OVERDUE_SHIPMENT, RE_ADD, AddLinkError, CheckDeadlineError
+from marketgram.trade.domain.model.p2p.errors import (
+    AUTO_LINK, 
+    IN_THE_CHAT, 
+    MISSING_DOWNLOAD_LINK, 
+    OVERDUE_SHIPMENT, 
+    RE_ADD, 
+    AddLinkError, 
+    CheckDeadlineError
+)
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
