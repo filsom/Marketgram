@@ -8,7 +8,6 @@ from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.p2p.deal.cancellation_deal import CancellationDeal
 from marketgram.trade.domain.model.p2p.deal.confirmation_deal import ConfirmationDeal
 from marketgram.trade.domain.model.p2p.deal.dispute_deal import DisputeDeal
-from marketgram.trade.domain.model.p2p.deal.receipt_deal import ReceiptDeal
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.deals_table import (
@@ -43,23 +42,6 @@ class SQLAlchemyDealsRepository:
             .where(and_(
                 ship_deal._deal_id == deal_id,
                 ship_deal._status == StatusDeal.NOT_SHIPPED,
-            ))
-        )
-        result = await self._async_session.execute(stmt)
-        
-        return result.scalar()
-    
-    async def unreceived_with_id(
-        self,
-        buyer_id: UUID,
-        deal_id: int
-    ) -> ReceiptDeal | None:
-        stmt = (
-            select(ReceiptDeal)
-            .join(Members, Members.buyer_id == buyer_id)
-            .where(and_(
-                deals_table.c.deal_id == deal_id,
-                deals_table.c.status == StatusDeal.AWAITING,
             ))
         )
         result = await self._async_session.execute(stmt)
@@ -122,16 +104,7 @@ class SQLAlchemyDealsRepository:
         )
         result = await self._async_session.execute(stmt)
 
-        deal = result.scalar()
-        if deal is None:
-            return None
-        
-        payout = await self._operations_mapper \
-            .payout_with_seller_id(deal.seller_id)
-        
-        deal.add_payout(payout)
-
-        return deal
+        return result.scalar()
 
     async def disputed_with_id(
         self,
@@ -147,13 +120,4 @@ class SQLAlchemyDealsRepository:
         )
         result = await self._async_session.execute(stmt)
 
-        deal = result.scalar()
-        if deal is None:
-            return None
-        
-        payout = await self._operations_mapper \
-            .payout_with_seller_id(deal.seller_id)
-        
-        deal.add_payout(payout)
-
-        return deal
+        return result.scalar()

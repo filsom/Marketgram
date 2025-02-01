@@ -1,6 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 
+from marketgram.trade.domain.model.events import SellerCancelledDealNotification
 from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
 from marketgram.trade.domain.model.posting_entry import PostingEntry
 from marketgram.trade.domain.model.entry_status import EntryStatus
@@ -15,24 +16,28 @@ class CancellationDeal:
         buyer_id: UUID,
         price: Money,
         status: StatusDeal,
-        entries: list[PostingEntry] | None
+        entries: list[PostingEntry]
     ) -> None:
         self._deal_id = deal_id
         self._buyer_id = buyer_id
         self._price = price
         self._status = status
         self._entries = entries
+        self.events = []
 
-    def cancel(self, current_date: datetime) -> None:
-        if self._entries:
-            for entry in self._entries:
-                entry.update_status(EntryStatus.CANCELLED)
-
+    def cancel(self, occurred_at: datetime) -> None:
+        self.events.append(
+            SellerCancelledDealNotification(
+                self._buyer_id,
+                self._deal_id,
+                occurred_at
+            )
+        )
         self._entries.append(
             PostingEntry(
                 self._buyer_id,
                 self._price,
-                current_date,
+                occurred_at,
                 AccountType.USER,
                 Operation.REFUND,
                 EntryStatus.ACCEPTED
