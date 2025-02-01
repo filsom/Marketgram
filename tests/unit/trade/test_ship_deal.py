@@ -100,7 +100,7 @@ class TestShipDeal:
     @pytest.mark.parametrize(
         'shipment, excvalue', [(Shipment.HAND, RE_ADD), (Shipment.AUTO, AUTO_LINK)]
     )
-    def test_re_adding_download_link_to_hand_shipping_deal(self, shipment, excvalue) -> None:
+    def test_re_adding_download_link_to_deal(self, shipment, excvalue) -> None:
         # Arrange
         deal = self.make_deal(
             shipment, 
