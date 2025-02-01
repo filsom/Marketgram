@@ -27,6 +27,19 @@ class TestDisputeDeal:
         assert deal.status == StatusDeal.DISPUTE
         assert len(deal.events) == 1
 
+    def test_buyer_did_not_have_time_to_open_a_dispute(self) -> None:
+        # Arrange
+        deal = self.make_deal(StatusDeal.INSPECTION)
+
+        # Act
+        with pytest.raises(CheckDeadlineError) as excinfo:
+            deal.open_dispute(datetime.now(UTC) + timedelta(hours=2))
+
+        # Assert
+        assert str(excinfo.value) == DO_NOT_OPEN_DISPUTE
+        assert deal.status == StatusDeal.INSPECTION
+        assert len(deal.events) == 0
+
     def test_dispute_closed_in_favor_of_the_buyer(self) -> None:
         # Arrange
         deal = self.make_deal(StatusDeal.DISPUTE)
