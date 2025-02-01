@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from marketgram.trade.domain.model.events import (
-    PurchasedCardWithHandProvidingNotification, 
+    PurchasedCardWithNotification, 
     ShippedByDealNotification
 )
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
@@ -97,9 +97,10 @@ class ShipDeal:
     def notify_seller(self) -> None:
         if self._shipment.can_notify():
             self.events.append(
-                PurchasedCardWithHandProvidingNotification(
+                PurchasedCardWithNotification(
                     self._members.seller_id,
                     self._deal_id,
+                    self._card_id,
                     self._qty_purchased,
                     self._shipped_at,
                     self._created_at
