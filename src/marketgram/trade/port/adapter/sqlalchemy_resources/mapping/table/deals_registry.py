@@ -33,7 +33,7 @@ def deals_registry_mapper(mapper: registry) -> None:
             '_card_id': deals_table.c.card_id,
             '_members': relationship(
                 'Members',
-                lazy='joined',
+                lazy='selectin',
                 uselist=False,
             ),
             '_qty_purchased': deals_table.c.qty_purchased,
@@ -104,7 +104,7 @@ def deals_registry_mapper(mapper: registry) -> None:
             '_deal_id': deals_table.c.deal_id,
             '_members': relationship(
                 'Members',
-                lazy='joined',
+                lazy='selectin',
                 uselist=False,
                 overlaps='_members'
             ),
@@ -132,7 +132,7 @@ def deals_registry_mapper(mapper: registry) -> None:
             '_deal_id': deals_table.c.deal_id,
             '_members': relationship(
                 'Members',
-                lazy='joined',
+                lazy='selectin',
                 uselist=False,
                 overlaps='_members'
             ),

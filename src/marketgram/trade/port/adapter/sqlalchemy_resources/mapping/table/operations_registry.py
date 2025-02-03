@@ -29,7 +29,7 @@ def operations_registry_mapper(mapper: registry) -> None:
                 'PostingEntry',
                 secondary=operations_entries_table,
                 default_factory=list,
-                lazy='selectin',
+                lazy='noload',
                 overlaps='_entries'
             )
         }

@@ -16,7 +16,7 @@ def services_registry_mapper(mapper: registry) -> None:
             '_alias': services_table.c.alias,
             '_categories': relationship(
                 'Category',
-                lazy='joined',
+                lazy='selectin',
                 default_factory=list
             )
         }
