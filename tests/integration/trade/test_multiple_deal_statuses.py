@@ -17,7 +17,7 @@ class TestMultipleDealStatuses(TradeTestCase):
             card = await CardsRepository(session).sell_card_with_id(CARD_ID)
 
         # Act
-            deal = card.purchase(BUYER[0], 1, datetime.now(UTC))
+            deal = card.purchase(BUYER[1], 1, datetime.now(UTC))
             session.add(deal)
             await session.commit()
 
@@ -36,7 +36,7 @@ class TestMultipleDealStatuses(TradeTestCase):
             await session.begin()
             current_time = datetime.now(UTC)
             deal_id = await self.query_deal_id()
-            deal = await DealsRepository(session).unshipped_with_id(SELLER[0], deal_id)
+            deal = await DealsRepository(session).unshipped_with_id(SELLER[1], deal_id)
             deal.add_download_link('https://github.com/', current_time)
 
         # Act
@@ -56,7 +56,7 @@ class TestMultipleDealStatuses(TradeTestCase):
         async with AsyncSession(self._engine) as session:
             await session.begin()
             deal_id = await self.query_deal_id()
-            deal = await DealsRepository(session).unconfirmed_with_id(BUYER[0], deal_id)
+            deal = await DealsRepository(session).unconfirmed_with_id(BUYER[1], deal_id)
 
         # Act
             deal.confirm_quality(
@@ -73,4 +73,3 @@ class TestMultipleDealStatuses(TradeTestCase):
         assert deal.unclosed is None
         assert deal.not_disputed is None
         assert deal.disputed is None
-

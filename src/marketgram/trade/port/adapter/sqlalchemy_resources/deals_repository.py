@@ -48,7 +48,7 @@ class DealsRepository:
     
     async def unconfirmed_with_id(
         self,
-        buyer_id: UUID,
+        buyer_id: int,
         deal_id: int
     ) -> ConfirmationDeal | None:
         stmt = (

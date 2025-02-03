@@ -22,7 +22,7 @@ cards_table = Table(
     'cards',
     metadata,
     Column('card_id', BigInteger, primary_key=True, nullable=False, autoincrement=True),
-    Column('owner_id', UUID, ForeignKey('members.user_id'), index=True, nullable=False),
+    Column('owner_id', BigInteger, ForeignKey('members.member_id'), index=True, nullable=False),
     Column('category_id', BigInteger, ForeignKey('categories.category_id'), index=True, nullable=False),
     Column('price', DECIMAL(20, 2), nullable=False),
     Column('init_price', DECIMAL(20, 2), nullable=False),

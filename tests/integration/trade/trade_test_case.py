@@ -53,10 +53,10 @@ class TradeTestCase:
             deal_id = await self.query_deal_id()
             deals_repository = DealsRepository(session)
 
-            unshipped_deal  = await deals_repository.unshipped_with_id(SELLER[0], deal_id)
-            unconfirmed_deal = await deals_repository.unconfirmed_with_id(BUYER[0], deal_id)
-            unclosed_deal = await deals_repository.unclosed_with_id(SELLER[0], deal_id)
-            not_disputed_deal = await deals_repository.not_disputed_with_id(BUYER[0], deal_id)
+            unshipped_deal  = await deals_repository.unshipped_with_id(SELLER[1], deal_id)
+            unconfirmed_deal = await deals_repository.unconfirmed_with_id(BUYER[1], deal_id)
+            unclosed_deal = await deals_repository.unclosed_with_id(SELLER[1], deal_id)
+            not_disputed_deal = await deals_repository.not_disputed_with_id(BUYER[1], deal_id)
             disputed_deal = await deals_repository.disputed_with_id(deal_id)
 
             return Deal(
@@ -77,7 +77,7 @@ class TradeTestCase:
 
     def make_service_agreement(self) -> ServiceAgreement:
         return ServiceAgreement(
-            MANAGER[0],
+            MANAGER[1],
             Decimal('0.1'),
             Decimal('0.1'),
             Money(100),

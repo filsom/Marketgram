@@ -12,7 +12,7 @@ def entries_registry_mapper(mapper: registry) -> None:
         PostingEntry,
         entries_table,
         properties={
-            '_user_id': entries_table.c.member_id,
+            '_member_id': entries_table.c.member_id,
             '_amount': composite(Money, entries_table.c.amount),
             '_account_type': entries_table.c.account_type,
             '_operation': entries_table.c.operation,

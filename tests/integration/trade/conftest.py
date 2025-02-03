@@ -53,7 +53,7 @@ async def create_card(engine: AsyncGenerator[AsyncEngine, None]) -> AsyncGenerat
         await session.flush()
 
         card = ModerationCard(
-            SELLER[0],
+            SELLER[1],
             category.category_id,
             Money(200),
             Money(200),
