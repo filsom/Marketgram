@@ -1,13 +1,11 @@
 from sqlalchemy import UUID, Boolean, Integer, String, Table, Column
 
-from marketgram.trade.port.adapter.sqlalchemy_resources.metadata import (
-    sqlalchemy_metadata
-)
+from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
 
 
 members_table = Table(
     'members',
-    sqlalchemy_metadata,
+    metadata,
     Column('member_id', Integer, primary_key=True, autoincrement=True, nullable=False),
     Column('user_id', UUID, unique=True, nullable=False),
     Column('synonym', String, nullable=True),
