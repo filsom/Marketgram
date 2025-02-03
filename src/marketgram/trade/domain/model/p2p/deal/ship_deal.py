@@ -122,6 +122,10 @@ class ShipDeal:
     @property
     def shipped_at(self) -> datetime | None:
         return self._shipped_at
+    
+    @property
+    def deal_id(self) -> int:
+        return self._deal_id
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ShipDeal):

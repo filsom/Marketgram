@@ -47,7 +47,7 @@ def deals_registry_mapper(mapper: registry) -> None:
             '_status': deals_table.c.status,
             '_created_at': deals_table.c.created_at,
             '_download_link': deals_table.c.download_link,
-            '_shipped_at': deals_table.c.shipped_at
+            '_shipped_at': deals_table.c.shipped_at,
         }
     )
     mapper.map_imperatively(
@@ -70,7 +70,7 @@ def deals_registry_mapper(mapper: registry) -> None:
                 uselist=True,
                 default_factory=list,
                 lazy='noload',
-                overlaps='_entries'
+                overlaps='_entries',
             )
         }
     )
@@ -93,7 +93,7 @@ def deals_registry_mapper(mapper: registry) -> None:
                 uselist=True,
                 default_factory=list,
                 lazy='noload',
-                overlaps='_entries'
+                overlaps='_entries',
             )
         }
     )
@@ -106,7 +106,7 @@ def deals_registry_mapper(mapper: registry) -> None:
                 'Members',
                 lazy='selectin',
                 uselist=False,
-                overlaps='_members'
+                overlaps='_members',
             ),
             '_price': composite(Money, deals_table.c.price),
             '_deadlines': composite(
@@ -120,7 +120,7 @@ def deals_registry_mapper(mapper: registry) -> None:
                 uselist=True,
                 default_factory=list,
                 lazy='noload',
-                overlaps='_entries,_entries'
+                overlaps='_entries,_entries',
             ),
             '_status': deals_table.c.status,
         }
@@ -134,7 +134,7 @@ def deals_registry_mapper(mapper: registry) -> None:
                 'Members',
                 lazy='selectin',
                 uselist=False,
-                overlaps='_members'
+                overlaps='_members',
             ),
             '_price': composite(Money, deals_table.c.price),
             '_status': deals_table.c.status,
@@ -144,7 +144,7 @@ def deals_registry_mapper(mapper: registry) -> None:
                 uselist=True,
                 default_factory=list,
                 lazy='noload',
-                overlaps='_entries'
+                overlaps='_entries',
             )
         }
     )

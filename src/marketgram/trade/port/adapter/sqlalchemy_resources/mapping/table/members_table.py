@@ -1,4 +1,4 @@
-from sqlalchemy import UUID, Boolean, Integer, String, Table, Column, BigInteger
+from sqlalchemy import UUID, Boolean, String, Table, Column, BigInteger
 
 from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
 
