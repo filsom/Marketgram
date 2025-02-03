@@ -8,7 +8,7 @@ service_agreements_table = Table(
     'service_agreements',
     metadata,
     Column('agreement_id', BigInteger, primary_key=True, nullable=False, autoincrement=True),
-    Column('manager_id', BigInteger, ForeignKey('members.user_id'), index=True, nullable=False),
+    Column('member_id', BigInteger, ForeignKey('members.member_id'), index=True, nullable=False),
     Column('payout_tax', DECIMAL(20, 2), nullable=False),
     Column('sales_tax', DECIMAL(20, 2), nullable=False),
     Column('minimum_payout', DECIMAL(20, 2), nullable=False),

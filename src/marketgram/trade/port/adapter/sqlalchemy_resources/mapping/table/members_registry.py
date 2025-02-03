@@ -6,6 +6,9 @@ from marketgram.trade.domain.model.p2p.sales_manager import SalesManager
 from marketgram.trade.domain.model.p2p.seller import Seller
 from marketgram.trade.domain.model.p2p.user import User
 from marketgram.trade.domain.model.money import Money
+from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.service_agreements_table import (
+    service_agreements_table
+)
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.members_table import (
     members_table
 )
@@ -60,6 +63,7 @@ def members_registry_mapper(mapper: registry) -> None:
             '_balance': query_expression(),
             '_service_agreements': relationship(
                 'ServiceAgreement',
+                secondary=service_agreements_table,
                 default_factory=list,
                 lazy='joined'
             ),

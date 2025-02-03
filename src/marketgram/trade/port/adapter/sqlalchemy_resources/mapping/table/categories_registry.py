@@ -15,7 +15,7 @@ def categories_registry_mapper(mapper: registry) -> None:
         category_types_table,
         properties={
             'type_category_id': category_types_table.c.type_category_id,
-            'name': category_types_table.c.category_types
+            'name': category_types_table.c.name
         }
     )
     mapper.map_imperatively(

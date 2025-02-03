@@ -50,7 +50,7 @@ def cards_registry_mapper(mapper: registry) -> None:
         polymorphic_identity=Shipment.AUTO,
         properties={
             '_stock_balance': column_property(
-                select(func.sum(inventory_entries_table))
+                select(func.sum(inventory_entries_table.c.qty))
                 .where(inventory_entries_table.c.card_id == cards_table.c.card_id)
                 .scalar_subquery()
             ),
