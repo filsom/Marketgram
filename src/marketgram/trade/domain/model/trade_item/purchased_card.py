@@ -42,6 +42,7 @@ class PurchasedCard:
                     self._owner_id,
                     self._category_id,
                     self._price,
+                    self._price,
                     description,
                     self._features,
                     self._action_time,

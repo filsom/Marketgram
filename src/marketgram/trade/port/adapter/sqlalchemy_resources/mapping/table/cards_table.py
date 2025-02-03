@@ -31,6 +31,14 @@ cards_table = Table(
 )
 
 
+cards_descriptions_table = Table(
+    'cards_descriptions',
+    metadata,
+    Column('card_id', BigInteger, ForeignKey('cards.card_id'), primary_key=True, nullable=False),
+    Column('description_id', BigInteger, ForeignKey('descriptions.description_id'), primary_key=True, nullable=False),
+)
+
+
 descriptions_table = Table(
     'descriptions',
     metadata,
