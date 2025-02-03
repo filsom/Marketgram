@@ -83,7 +83,6 @@ class SellStockCard(SellCard):
             StatusDeal.NOT_SHIPPED,
             occurred_at
         )  
-        self._status = StatusCard.PURCHASED
         self.events.append(
             PurchasedCardWithAutoShipmentEvent(deal, occurred_at)
         )
