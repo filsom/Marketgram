@@ -1,7 +1,7 @@
 from datetime import datetime
-from uuid import UUID
 
 from marketgram.common.domain.model.errors import DomainError
+from marketgram.trade.domain.model.events import ReissuePurchasedCardNotification
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.members import Members
@@ -39,7 +39,13 @@ class SellCard:
             raise DomainError()
 
         self._status = StatusCard.PURCHASED
-
+        self.events.append(
+            ReissuePurchasedCardNotification(
+                self._owner_id,
+                self._card_id,
+                occurred_at
+            )
+        )
         return ShipDeal(
             self._card_id,
             Members(self._owner_id, buyer_id),

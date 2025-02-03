@@ -61,3 +61,10 @@ class SellerCancelledDealNotification:
 @dataclass(frozen=True)
 class DefectiveItemShipped:
     pass
+
+
+@dataclass(frozen=True)
+class ReissuePurchasedCardNotification:
+    seller_id: int
+    card_id: int
+    occurred_at: datetime
