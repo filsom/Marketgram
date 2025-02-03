@@ -1,4 +1,5 @@
 from typing import Self
+
 from marketgram.trade.domain.model.p2p.deal.cancellation_deal import CancellationDeal
 from marketgram.trade.domain.model.p2p.deal.confirmation_deal import ConfirmationDeal
 from marketgram.trade.domain.model.p2p.deal.dispute_deal import DisputeDeal
@@ -24,7 +25,7 @@ class DealExtensions:
         assert self._unshipped is not None
         return self
 
-    def cant_ship(self) -> Self:
+    def cannot_shipped(self) -> Self:
         assert self._unshipped is None
         return self
     
@@ -40,7 +41,7 @@ class DealExtensions:
         assert self._unclosed is not None
         return self
     
-    def cant_be_closed(self) -> Self:
+    def cannot_be_closed(self) -> Self:
         assert self._unclosed is None
         return self
     

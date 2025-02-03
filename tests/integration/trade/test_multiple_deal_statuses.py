@@ -44,7 +44,7 @@ class TestMultipleDealStatuses(TradeTestCase):
 
         # Assert
         deal = await self.query_multiple_deal_statuses()
-        deal.cant_ship() \
+        deal.cannot_shipped() \
             .can_be_сonfirmed() \
             .can_be_closed() \
             .can_open_dispute() \
@@ -65,8 +65,8 @@ class TestMultipleDealStatuses(TradeTestCase):
 
         # Assert
         deal = await self.query_multiple_deal_statuses()
-        deal.cant_ship() \
+        deal.cannot_shipped() \
             .cannot_be_confirmed() \
-            .cant_be_closed() \
+            .cannot_be_closed() \
             .cannot_open_duspute() \
             .there_was_no_dispute()
