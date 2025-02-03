@@ -22,8 +22,9 @@ class Category:
         shipment: Shipment,
         minimum_price: Money,
         minimum_procent_discount: Decimal,
-        category_id: int = None
+        category_id: int | None = None
     ) -> None:
+        self._category_id = category_id    
         self._service_id = service_id
         self._category_type_id = category_type_id
         self._alias = alias
@@ -31,7 +32,6 @@ class Category:
         self._shipment = shipment
         self._minimum_price = minimum_price
         self._minimum_procent_discount = minimum_procent_discount
-        self._category_id = category_id    
     
     def new_card(
         self, 

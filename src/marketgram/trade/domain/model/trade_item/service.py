@@ -16,7 +16,7 @@ class Service:
         name: str,
         alias: str,
         categories: list[Category],
-        service_id: int = None,
+        service_id: int | None = None,
     ) -> None:
         self._service_id = service_id
         self._name = name
