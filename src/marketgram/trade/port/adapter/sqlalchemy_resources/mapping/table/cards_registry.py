@@ -1,20 +1,28 @@
-from sqlalchemy.orm import registry, composite
+from sqlalchemy.orm import registry, composite, column_property, relationship
+from sqlalchemy import case, event, func, select
 
-from marketgram.trade.domain.model.trade_item1.card import Card
-from marketgram.trade.domain.model.trade_item.items_features.telegram import Description
-from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
-from marketgram.trade.domain.model.p2p.delivery import Delivery
 from marketgram.trade.domain.model.money import Money
-from marketgram.trade.domain.model.trade_item1.sell_card import SellCard
+from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
+from marketgram.trade.domain.model.trade_item.action_time import ActionTime
+from marketgram.trade.domain.model.trade_item.sell_card import SellCard
+from marketgram.trade.domain.model.trade_item.sell_stock_card import SellStockCard
+from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.inventory_entries_table import (
+    inventory_entries_table
+)
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.cards_table import (
     cards_table
 )
 
 
 def cards_registry_mapper(mapper: registry) -> None:
-    mapper.map_imperatively(
-        Card,
+    sell_card_mapper = mapper.map_imperatively(
+        SellCard,
         cards_table,
+        polymorphic_on=case(
+            (cards_table.c.shipment == Shipment.CHAT, Shipment.HAND),
+            else_=Shipment.HAND
+        ),
+        polymorphic_identity=Shipment.HAND,
         properties={
             '_card_id': cards_table.c.card_id,
             '_owner_id': cards_table.c.owner_id,
@@ -22,58 +30,45 @@ def cards_registry_mapper(mapper: registry) -> None:
                 Money,
                 cards_table.c.price
             ),
-            '_description': composite(
-                Description,
-                cards_table.c.title,
-                cards_table.c.text_description,
-                cards_table.c.account_format,
-                cards_table.c.region,
-                cards_table.c.spam_block
-            ),
-            '_delivery': composite(
-                Delivery,
-                cards_table.c.format,
-                cards_table.c.method,
-            ),
-            '_deadlines': composite(
-                Deadlines,
+            '_shipment': cards_table.c.shipment,
+            '_action_time': composite(
+                ActionTime,
                 cards_table.c.shipping_hours,
-                cards_table.c.receipt_hours,
-                cards_table.c.check_hours,
+                cards_table.c.inspection_hours
             ),
-            '_min_price': composite(
-                Money,
-                cards_table.c.min_price
-            ),
-            '_min_discount': cards_table.c.min_discount,
-            '_created_at': cards_table.c.created_at,
-            '_dirty_price': cards_table.c.dirty_price,
-            '_is_archived': cards_table.c.is_archived,
-            '_is_purchased': cards_table.c.is_purchased
+            '_status': cards_table.c.status
         }
     )
     mapper.map_imperatively(
-        SellCard,
-        cards_table,
+        SellStockCard,
+        None,
+        inherits=sell_card_mapper,
+        polymorphic_identity=Shipment.AUTO,
         properties={
-            '_card_id': cards_table.c.card_id,
-            '_owner_id': cards_table.c.owner_id,
-            '_price': composite(
-                Money,
-                cards_table.c.price
+            '_stock_balance': column_property(
+                select(func.sum(inventory_entries_table))
+                .where(inventory_entries_table.c.card_id == cards_table.c.card_id)
+                .scalar_subquery()
             ),
-            '_is_purchased': cards_table.c.is_purchased,
-            '_created_at': cards_table.c.created_at,
-            '_delivery': composite(
-                Delivery,
-                cards_table.c.format,
-                cards_table.c.method,
-            ),
-            '_deadlines': composite(
-                Deadlines,
-                cards_table.c.shipping_hours,
-                cards_table.c.receipt_hours,
-                cards_table.c.check_hours,
+            '_inventory_entries': relationship(
+                'InventoryEntry',
+                secondary=inventory_entries_table,
+                lazy='noload',
+                default_factory=list
             )
         }
     )
+
+
+
+@event.listens_for(SellCard, 'load')
+def load_user(card, value):
+    card.events = []
+
+
+@event.listens_for(SellStockCard, 'load')
+def load_user(card, value):
+    if card._stock_balance is None:
+        card._stock_balance = 0
+        
+    card.events = []

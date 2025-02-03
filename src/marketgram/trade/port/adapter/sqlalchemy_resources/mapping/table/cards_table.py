@@ -1,6 +1,5 @@
 from sqlalchemy import (
     DECIMAL, 
-    UUID,
     DateTime,
     Integer,
     String, 
