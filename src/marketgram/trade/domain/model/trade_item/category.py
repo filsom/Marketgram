@@ -52,6 +52,7 @@ class Category:
             user_id,
             self._category_id,
             price,
+            price,
             [description],
             features,
             action_time,

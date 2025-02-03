@@ -11,14 +11,13 @@ from sqlalchemy import (
     Column, 
 )
 
-from marketgram.trade.port.adapter.sqlalchemy_resources.metadata import (
-    sqlalchemy_metadata
-)
+from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
+
 
 
 entries_table = Table(
     'entries',
-    sqlalchemy_metadata,
+    metadata,
     Column('entry_id', UUID, primary_key=True, default=uuid4, nullable=False),
     Column('member_id', Integer, ForeignKey('members.member_id'), nullable=False),
     Column('amount', DECIMAL(20, 2), nullable=False),

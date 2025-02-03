@@ -13,6 +13,7 @@ from marketgram.trade.domain.model.trade_item.status_card import StatusCard
 class PurchasedCard:
     def __init__(
         self,
+        card_id: int,
         owner_id: int,
         category_id: int,
         price: Money,
@@ -21,8 +22,7 @@ class PurchasedCard:
         action_time: ActionTime,
         shipment: Shipment,
         created_at: datetime,
-        status: StatusCard,
-        card_id: int = None,
+        status: StatusCard
     ) -> None:
         self._card_id = card_id
         self._owner_id = owner_id

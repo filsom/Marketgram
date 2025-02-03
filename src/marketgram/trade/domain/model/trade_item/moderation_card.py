@@ -14,18 +14,20 @@ class ModerationCard:
         owner_id: int,
         category_id: int,
         price: Money,
+        init_price: Money,
         descriptions: list[Description],
         features: dict,
         action_time: ActionTime,
         shipment: Shipment,
         created_at: datetime,
         status: StatusCard,
-        card_id: int = None,
+        card_id: int | None = None,
     ) -> None:
         self._card_id = card_id
         self._owner_id = owner_id
         self._category_id = category_id
         self._price = price
+        self._init_price = init_price
         self._descriptions = descriptions
         self._features = features
         self._action_time = action_time

@@ -10,18 +10,17 @@ from sqlalchemy import (
     BigInteger
 )
 
-from marketgram.trade.port.adapter.sqlalchemy_resources.metadata import (
-    sqlalchemy_metadata
-)
+from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
+
 
 
 deals_table = Table(
     'deals',
-    sqlalchemy_metadata,
+    metadata,
     Column('deal_id', BigInteger, primary_key=True, nullable=False, autoincrement=True),
     Column('card_id', BigInteger, ForeignKey('cards.card_id'), nullable=False),
     Column('qty_purchased', Integer, nullable=False),
-    Column('shipment', String, nullable=False),
+    Column('shipment', String(20), nullable=False),
     Column('price', DECIMAL(20, 2), nullable=False),
     Column('status', String, nullable=True),
     Column('created_at', DateTime(timezone=True), nullable=False),
@@ -35,7 +34,7 @@ deals_table = Table(
 
 deals_members_table = Table(
     'deals_members',
-    sqlalchemy_metadata,
+    metadata,
     Column('deal_id', BigInteger, ForeignKey('deals.deal_id'), primary_key=True, nullable=False),
     Column('seller_id', BigInteger, ForeignKey('members.user_id'), primary_key=True, nullable=False),
     Column('buyer_id', BigInteger, ForeignKey('members.user_id'), primary_key=True, nullable=False),
@@ -44,7 +43,7 @@ deals_members_table = Table(
 
 deals_entries_table = Table(
     'deals_entries',
-    sqlalchemy_metadata,
+    metadata,
     Column('deal_id', BigInteger, ForeignKey('deals.deal_id'), primary_key=True, nullable=False),
     Column('entry_id', UUID, ForeignKey('entries.entry_id'), primary_key=True, nullable=False),
 )
