@@ -1,30 +1,27 @@
-from sqlalchemy import (
-    DECIMAL,
-    BigInteger, 
-    Column,
-    DateTime, 
-    ForeignKey, 
-    Integer, 
-    String, 
-    Table
-)
+from sqlalchemy import DECIMAL, BigInteger, Column, ForeignKey, Integer, String, Table
 
-from marketgram.common.port.adapter import sqlalchemy_metadata
+from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
+
+
+
+category_types_table = Table(
+    'category_types',
+    metadata,
+    Column('type_category_id', BigInteger, primary_key=True, nullable=False, autoincrement=True),
+    Column('name', String(50), nullable=False)
+)
 
 
 categories_table = Table(
-    'deals',
-    sqlalchemy_metadata,
+    'categories',
+    metadata,
     Column('category_id', BigInteger, primary_key=True, nullable=False, autoincrement=True),
-    Column('card_id', BigInteger, ForeignKey('cards.card_id'), nullable=False),
-    Column('qty_purchased', Integer, nullable=False),
+    Column('service_id', BigInteger, ForeignKey('services.service_id'), nullable=False),
+    Column('category_type_id', BigInteger, ForeignKey('category_types.type_category_id'), nullable=False),
+    Column('alias', String(50), nullable=False),
+    Column('shipping_hours', Integer, nullable=False),
+    Column('inspection_hours', Integer, nullable=False),
     Column('shipment', String, nullable=False),
-    Column('price', DECIMAL(20, 2), nullable=False),
-    Column('status', String, nullable=True),
-    Column('created_at', DateTime(timezone=True), nullable=False),
-    Column('shipped_at', DateTime(timezone=True), nullable=True),
-    Column('inspected_at', DateTime(timezone=True), nullable=True),
-    Column('ship_to', DateTime(timezone=True), nullable=False), 
-    Column('inspect_to', DateTime(timezone=True), nullable=False),
-    Column('download_link', String, nullable=True),
+    Column('minimum_price', DECIMAL(20, 2), nullable=False),
+    Column('minimum_procent_discount', DECIMAL(20, 2), nullable=True),
 )
