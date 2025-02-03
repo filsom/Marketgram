@@ -44,7 +44,7 @@ class Category:
     ) -> ModerationCard:
         if price < self._minimum_price: 
             raise DomainError()
-
+        
         if action_time is None:  
             action_time = self._action_time
         

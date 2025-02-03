@@ -19,8 +19,8 @@ class Seller:
     def __init__(
         self,
         user_id: UUID,
-        balance: Money,
         member_id: int | None = None,
+        balance: Money | None = None,
         paycard: Paycard = None,
         is_blocked: bool = False,
     ) -> None:

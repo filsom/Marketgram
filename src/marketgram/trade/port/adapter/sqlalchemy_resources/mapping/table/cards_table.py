@@ -47,6 +47,6 @@ descriptions_table = Table(
     Column('name', String, nullable=False),
     Column('body', String, nullable=False),
     Column('status', String, nullable=False),
-    Column('set_in', DateTime(timezone=True), nullable=False),
-    Column('archived_in', DateTime(timezone=True), nullable=True, default=INFINITY),
+    Column('set_in', DateTime(timezone=True), nullable=True),
+    Column('archived_in', DateTime(timezone=True), nullable=False, default=INFINITY),
 )

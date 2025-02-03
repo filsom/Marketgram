@@ -1,4 +1,4 @@
-from sqlalchemy.orm import registry, composite
+from sqlalchemy.orm import registry, composite, relationship
 
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
@@ -15,7 +15,8 @@ def categories_registry_mapper(mapper: registry) -> None:
         category_types_table,
         properties={
             'type_category_id': category_types_table.c.type_category_id,
-            'name': category_types_table.c.name
+            'name': category_types_table.c.name,
+            '_category': relationship('Category')
         }
     )
     mapper.map_imperatively(

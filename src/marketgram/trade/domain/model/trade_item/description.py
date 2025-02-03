@@ -18,8 +18,8 @@ class Description:
         name: str,
         body: str,
         status: StatusDescription,
-        description_id: int = None,
         set_in: datetime = None,
+        description_id: int = None,
         card_id: int | None = None,
         archived_in: datetime | str = INFINITY
     ) -> None:

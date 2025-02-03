@@ -14,16 +14,14 @@ class Currency(StrEnum):
 
 @dataclass(frozen=True, order=True)
 class Money:
-    number: InitVar[str | int]
-
-    value: Decimal | None = None
+    value: str | int
     currency: Currency = field(default=Currency.RUB)
 
-    def __post_init__(self, number: str | int) -> None:
+    def __post_init__(self) -> None:
         object.__setattr__(
             self, 
             'value', 
-            Decimal(str(number))
+            Decimal(str(self.value))
             .quantize(Decimal('1.00'), ROUND_HALF_EVEN)
         )
 

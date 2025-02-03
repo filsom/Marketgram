@@ -30,7 +30,12 @@ def cards_registry_mapper(mapper: registry) -> None:
         descriptions_table,
         properties={
             '_card_id': descriptions_table.c.card_id,
-            '_status': descriptions_table.c.status
+            '_description_id': descriptions_table.c.description_id,
+            '_name': descriptions_table.c.name,
+            '_body': descriptions_table.c.body,
+            '_status': descriptions_table.c.status,
+            '_set_in': descriptions_table.c.set_in,
+            '_archived_in': descriptions_table.c.archived_in
         }
     )
     sell_card_mapper = mapper.map_imperatively(
@@ -45,7 +50,7 @@ def cards_registry_mapper(mapper: registry) -> None:
             '_card_id': cards_table.c.card_id,
             '_owner_id': cards_table.c.owner_id,
             '__price': cards_table.c.price,
-            '_price': composite(Money, '__price'),
+            '_price': composite(Money, cards_table.c.price),
             '_shipment': cards_table.c.shipment,
             '_action_time': composite(
                 ActionTime,
