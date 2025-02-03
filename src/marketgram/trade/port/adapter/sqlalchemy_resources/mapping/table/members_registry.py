@@ -63,14 +63,14 @@ def members_registry_mapper(mapper: registry) -> None:
             '_balance': query_expression(),
             '_service_agreements': relationship(
                 'ServiceAgreement',
-                secondary=service_agreements_table,
                 default_factory=list,
-                lazy='joined'
+                lazy='selectin'
             ),
             '_entries': relationship(
                 'PostingEntry',
                 default_factory=list,
-                lazy='noload'
+                lazy='noload',
+                overlaps="_entries"
             )
         }
     )

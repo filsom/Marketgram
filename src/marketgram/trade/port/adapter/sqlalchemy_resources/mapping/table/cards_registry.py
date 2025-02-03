@@ -4,24 +4,35 @@ from sqlalchemy import case, event, func, select
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
+from marketgram.trade.domain.model.trade_item.description import Description
 from marketgram.trade.domain.model.trade_item.editable_card import EditableCard
 from marketgram.trade.domain.model.trade_item.moderation_card import ModerationCard
 from marketgram.trade.domain.model.trade_item.purchased_card import PurchasedCard
 from marketgram.trade.domain.model.trade_item.sell_card import SellCard
 from marketgram.trade.domain.model.trade_item.sell_stock_card import SellStockCard
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.inventory_entries_table import (
-    inventory_entries_table
+    inventory_entries_table,
+    cards_inventory_entries_table
 )
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.cards_table import (
     cards_table,
-    cards_descriptions_table
+    cards_descriptions_table,
+    descriptions_table
 )
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.categories_table import (
-    categories_table
+    categories_table,
 )
 
 
 def cards_registry_mapper(mapper: registry) -> None:
+    mapper.map_imperatively(
+        Description,
+        descriptions_table,
+        properties={
+            '_card_id': descriptions_table.c.card_id,
+            '_status': descriptions_table.c.status
+        }
+    )
     sell_card_mapper = mapper.map_imperatively(
         SellCard,
         cards_table,
@@ -33,14 +44,15 @@ def cards_registry_mapper(mapper: registry) -> None:
         properties={
             '_card_id': cards_table.c.card_id,
             '_owner_id': cards_table.c.owner_id,
-            '_price': composite(Money,cards_table.c.price),
+            '__price': cards_table.c.price,
+            '_price': composite(Money, '__price'),
             '_shipment': cards_table.c.shipment,
             '_action_time': composite(
                 ActionTime,
                 cards_table.c.shipping_hours,
                 cards_table.c.inspection_hours
             ),
-            '_status': cards_table.c.status
+            '_status': cards_table.c.status,
         }
     )
     mapper.map_imperatively(
@@ -51,15 +63,18 @@ def cards_registry_mapper(mapper: registry) -> None:
         properties={
             '_stock_balance': column_property(
                 select(func.sum(inventory_entries_table.c.qty))
-                .where(inventory_entries_table.c.card_id == cards_table.c.card_id)
+                .join(
+                    cards_inventory_entries_table, 
+                    cards_inventory_entries_table.c.card_id == cards_table.c.card_id
+                )
                 .scalar_subquery()
             ),
             '_inventory_entries': relationship(
                 'InventoryEntry',
-                secondary=inventory_entries_table,
+                secondary=cards_inventory_entries_table,
                 lazy='noload',
-                default_factory=list
-            )
+                default_factory=list,
+            ),
         }
     )
     mapper.map_imperatively(
@@ -70,11 +85,11 @@ def cards_registry_mapper(mapper: registry) -> None:
             '_owner_id': cards_table.c.owner_id,
             '_category_id': cards_table.c.category_id,
             '_price': composite(Money, cards_table.c.price),
-            '_init_price': composite(Money, cards_table.c.price),
+            '_init_price': composite(Money, cards_table.c.init_price),
             '_descriptions': relationship(
                 'Description',
                 secondary=cards_descriptions_table,
-                primaryjoin="and_(Description.status.in_(['new', 'current']))",
+                lazy='selectin'
             ),
             '_features': cards_table.c.features,
             '_action_time': composite(
@@ -93,7 +108,7 @@ def cards_registry_mapper(mapper: registry) -> None:
         properties={
             '_card_id': cards_table.c.card_id,
             '_price': composite(Money, cards_table.c.price),
-            '_init_price': composite(Money, cards_table.c.price),
+            '_init_price': composite(Money, cards_table.c.init_price),
             '_action_time': composite(
                 ActionTime,
                 cards_table.c.shipping_hours,
@@ -106,7 +121,8 @@ def cards_registry_mapper(mapper: registry) -> None:
             '_descriptions': relationship(
                 'Description',
                 secondary=cards_descriptions_table,
-                primaryjoin="and_(Description.status.in_(['new', 'current']))",
+                overlaps="_descriptions",
+                lazy='selectin'
             ),
         }
     )
@@ -121,7 +137,8 @@ def cards_registry_mapper(mapper: registry) -> None:
             '_descriptions': relationship(
                 'Description',
                 secondary=cards_descriptions_table,
-                primaryjoin="and_(Description.status.in_(['new', 'current']))",
+                overlaps="_descriptions",
+                lazy='selectin'
             ),
             '_features': cards_table.c.features,
             '_action_time': composite(

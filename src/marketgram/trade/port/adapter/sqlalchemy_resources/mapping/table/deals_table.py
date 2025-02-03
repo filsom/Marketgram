@@ -36,8 +36,8 @@ deals_members_table = Table(
     'deals_members',
     metadata,
     Column('deal_id', BigInteger, ForeignKey('deals.deal_id'), primary_key=True, nullable=False),
-    Column('seller_id', BigInteger, ForeignKey('members.user_id'), primary_key=True, nullable=False),
-    Column('buyer_id', BigInteger, ForeignKey('members.user_id'), primary_key=True, nullable=False),
+    Column('seller_id', BigInteger, ForeignKey('members.member_id'), primary_key=True, nullable=False),
+    Column('buyer_id', BigInteger, ForeignKey('members.member_id'), primary_key=True, nullable=False),
 )
 
 

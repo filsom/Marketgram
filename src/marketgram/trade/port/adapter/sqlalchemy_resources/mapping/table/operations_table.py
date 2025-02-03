@@ -9,7 +9,8 @@ from sqlalchemy import (
     Integer, 
     String, 
     Table, 
-    event
+    event,
+    BigInteger
 )
 
 from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
@@ -19,7 +20,7 @@ operations_table = Table(
     'operations',
     metadata,
     Column('operation_id', UUID, primary_key=True, nullable=False),
-    Column('member_id', UUID, ForeignKey('members.member_id'), index=True, nullable=False),
+    Column('member_id', BigInteger, ForeignKey('members.member_id'), index=True, nullable=False),
     Column('amount', DECIMAL(20, 2), nullable=False),
     Column('created_at', DateTime, nullable=False),
     Column('is_processed', Boolean, nullable=False),
@@ -31,7 +32,7 @@ operations_table = Table(
 
 
 func = DDL(
-    "CREATE UNIQUE INDEX ON operations(user_id) WHERE NOT is_processed AND type = 'payout'"
+    "CREATE UNIQUE INDEX ON operations(member_id) WHERE NOT is_processed AND type = 'payout'"
 )
 event.listen(operations_table, 'after_create', func.execute_if(dialect="postgresql"))
 

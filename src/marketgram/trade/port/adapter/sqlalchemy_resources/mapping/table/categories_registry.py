@@ -32,7 +32,8 @@ def categories_registry_mapper(mapper: registry) -> None:
                 categories_table.c.inspection_hours
             ),
             '_shipment': categories_table.c.shipment,
-            '_minimum_price': composite(Money, categories_table.c.minimum_price),
+            '__minimum_price': categories_table.c.minimum_price,
+            '_minimum_price': composite(Money, '__minimum_price'),
             '_minimum_procent_discount': categories_table.c.minimum_procent_discount
         }
     )
