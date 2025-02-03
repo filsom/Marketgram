@@ -136,8 +136,6 @@ def cards_registry_mapper(mapper: registry) -> None:
     )
     
 
-
-
 @event.listens_for(SellCard, 'load')
 def load_user(card, value):
     card.events = []
