@@ -7,8 +7,8 @@ from marketgram.trade.domain.model.exceptions import BUY_FROM_YOURSELF
 
 @dataclass
 class Members:
-    seller_id: UUID
-    buyer_id: UUID
+    seller_id: int
+    buyer_id: int
 
     def __post_init__(self) -> None:
         if self.seller_id == self.buyer_id:

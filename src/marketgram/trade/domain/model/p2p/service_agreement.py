@@ -9,7 +9,7 @@ from marketgram.trade.domain.model.types import INFINITY
 class ServiceAgreement:
     def __init__(
         self,
-        manager_id: UUID,
+        manager_id: int,
         payout_tax: Decimal,
         sales_tax: Decimal,
         minimum_payout: Money,

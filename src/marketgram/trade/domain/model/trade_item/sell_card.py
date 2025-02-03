@@ -15,7 +15,7 @@ class SellCard:
     def __init__(
         self,
         card_id: int,
-        owner_id: UUID,
+        owner_id: int,
         price: Money,
         shipment: Shipment,
         action_time: ActionTime,
@@ -31,7 +31,7 @@ class SellCard:
 
     def purchase(
         self, 
-        buyer_id: UUID, 
+        buyer_id: int, 
         quantity: int, 
         occurred_at: datetime
     ) -> ShipDeal:

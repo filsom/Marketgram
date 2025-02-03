@@ -20,10 +20,12 @@ class Seller:
         self,
         user_id: UUID,
         balance: Money,
+        member_id: int | None = None,
         paycard: Paycard = None,
         is_blocked: bool = False,
     ) -> None:
         self._user_id = user_id
+        self._member_id = member_id
         self._paycard = paycard
         self._is_blocked = is_blocked
         self._balance = balance
@@ -49,7 +51,7 @@ class Seller:
         
         return Payout(
             uuid4(),
-            self._user_id,
+            self._seller_id,
             self._paycard.synonym,
             amount,
             current_time,
@@ -58,6 +60,10 @@ class Seller:
         
     def change_paycard(self, paycard: Paycard) -> None:
         self._paycard = paycard
+
+    @property
+    def seller_id(self) -> int:
+        return self._member_id
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Seller):

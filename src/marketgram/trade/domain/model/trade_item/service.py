@@ -70,6 +70,10 @@ class Service:
     def service_id(self) -> int:
         return self._service_id
     
+    @property
+    def categories(self) -> list[Category]:
+        return self._categories
+    
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Service):
             return False

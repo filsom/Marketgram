@@ -15,12 +15,12 @@ class StatusDescription(StrEnum):
 class Description:
     def __init__(
         self,
-        card_id: UUID,
         name: str,
         body: str,
         status: StatusDescription,
         description_id: int = None,
         set_in: datetime = None,
+        card_id: int | None = None,
         archived_in: datetime | str = INFINITY
     ) -> None:
         self._card_id = card_id

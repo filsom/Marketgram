@@ -11,7 +11,7 @@ from marketgram.trade.domain.model.trade_item.status_card import StatusCard
 class ModerationCard:
     def __init__(
         self,
-        owner_id: UUID,
+        owner_id: int,
         category_id: int,
         price: Money,
         descriptions: list[Description],

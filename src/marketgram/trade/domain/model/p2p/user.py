@@ -23,9 +23,11 @@ class User:
         user_id: UUID,
         balance: Money,
         entries: list[PostingEntry],
+        member_id: int | None = None,
         is_blocked: bool = False
     ) -> None:
         self._user_id = user_id
+        self._member_id = member_id
         self._is_blocked = is_blocked
         self._balance = balance
         self._entries = entries
@@ -47,7 +49,7 @@ class User:
 
         self._entries.append(
             PostingEntry(
-                self._user_id,
+                self._member_id,
                 deal.buyers_debt,
                 current_time,
                 AccountType.USER,
@@ -71,10 +73,14 @@ class User:
 
         return Payment(
             uuid4(),
-            self._user_id,
+            self._member_id,
             amount,
             current_time,
         )
+    
+    @property
+    def buyer_id(self) -> int:
+        return self._member_id
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, User):

@@ -18,14 +18,12 @@ from marketgram.trade.port.adapter.sqlalchemy_resources.operations_mapper import
 )
 
 
-class SQLAlchemyDealsRepository:
+class DealsRepository:
     def __init__(
         self, 
         async_session: AsyncSession,
-        operations_mapper: SQLAlchemyOperationsMapper
     ) -> None:
         self._async_session = async_session
-        self._operations_mapper = operations_mapper
 
     def add(self, deal: ShipDeal) -> None:
         self._async_session.add(deal)

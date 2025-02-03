@@ -18,9 +18,11 @@ class SalesManager:
         balance: Money,
         entries: list[PostingEntry],
         service_agreements: list[ServiceAgreement],
+        member_id: int | None = None,
         paycard: Paycard | None = None
     ) -> None:
         self._user_id = user_id
+        self._member_id = member_id
         self._balance = balance
         self._entries = entries
         self._paycard = paycard
@@ -52,7 +54,7 @@ class SalesManager:
 
         self._service_agreements.append(
             ServiceAgreement(
-                self._user_id,
+                self._member_id,
                 payout_tax,
                 sales_tax,
                 minimum_payout,
@@ -86,6 +88,10 @@ class SalesManager:
     
     def change_paycard(self, paycard: Paycard) -> None: 
         self._paycard = paycard
+
+    @property
+    def manager_id(self) -> int:
+        return self._member_id
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, SalesManager):

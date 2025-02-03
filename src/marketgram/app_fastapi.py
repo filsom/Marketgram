@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import sys
 
 from dishka import make_async_container
 import uvicorn
@@ -19,6 +20,16 @@ async def lifespan(app: FastAPI):
 
     
 app = FastAPI(lifespan=lifespan)
+
+def foo():
+   sys.exit(1)
+
+
+def bar(obj):
+   with obj:
+       foo()
+       return 
+   print("hahaha")
 
 
 def create_app(app):

@@ -10,13 +10,13 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True)
 class DisputeOpenedEvent:
-    seller_id: UUID
+    seller_id: int
     occurred_at: datetime
 
 
 @dataclass(frozen=True)
 class DisputeClosedEvent:
-    seller_id: UUID
+    seller_id: int
     occurred_at: datetime
 
 
@@ -28,7 +28,7 @@ class PurchasedCardWithAutoShipmentEvent:
 
 @dataclass(frozen=True)
 class DealCreatedNotification:
-    seller_id: UUID
+    seller_id: int
     deal_id: int
     card_id: int
     qty: int
@@ -38,7 +38,7 @@ class DealCreatedNotification:
 
 @dataclass(frozen=True)
 class ShippedByDealNotification:
-    buyer_id: UUID
+    buyer_id: int
     deal_id: int
     download_link: str
     occurred_at: datetime
@@ -46,14 +46,14 @@ class ShippedByDealNotification:
 
 @dataclass(frozen=True)
 class ZeroInventoryBalanceNotification:
-    seller_id: UUID
+    seller_id: int
     card_id: int
     occurred_at: datetime
 
 
 @dataclass(frozen=True)
 class SellerCancelledDealNotification:
-    buyer_id: UUID
+    buyer_id: int
     deal_id: int
     occurred_at: datetime
 

@@ -14,7 +14,7 @@ class Payout:
     def __init__(
         self,
         payout_id: UUID,
-        user_id: UUID,
+        seller_id: int,
         paycard_synonym: str,
         tax_free: Money,
         created_at: datetime,
@@ -24,7 +24,7 @@ class Payout:
         is_blocked: bool = False
     ) -> None:
         self._payout_id = payout_id
-        self._user_id = user_id
+        self._seller_id = seller_id
         self._paycard_synonym = paycard_synonym
         self._tax_free = tax_free
         self._created_at = created_at
@@ -44,7 +44,7 @@ class Payout:
         amount_payout = agreement.calculate_amount_payout(self._tax_free)
         self._entries.append(
             PostingEntry(
-                self._user_id,
+                self._seller_id,
                 amount_payout,
                 current_time,
                 AccountType.SELLER,

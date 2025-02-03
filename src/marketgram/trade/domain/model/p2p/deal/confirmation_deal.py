@@ -16,7 +16,7 @@ class ConfirmationDeal:
     def __init__(
         self, 
         deal_id: int,
-        seller_id: UUID,
+        seller_id: int,
         price: Money,
         deadlines: Deadlines,
         status: StatusDeal,

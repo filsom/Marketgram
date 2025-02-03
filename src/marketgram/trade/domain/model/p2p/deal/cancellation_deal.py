@@ -19,7 +19,7 @@ class CancellationDeal:
     def __init__(
         self,
         deal_id: int,
-        buyer_id: UUID,
+        buyer_id: int,
         price: Money,
         deadlines: Deadlines,
         status: StatusDeal,

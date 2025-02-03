@@ -9,14 +9,14 @@ from marketgram.trade.domain.model.types import AccountType, Operation
 class PostingEntry:
     def __init__(
         self,
-        user_id: UUID,
+        member_id: int,
         amount: Money,
         posted_in: datetime,
         account_type: AccountType,
         operation: Operation,
         entry_status: EntryStatus
     ) -> None:
-        self._user_id = user_id
+        self._member_id = member_id
         self._amount = amount
         self._account_type = account_type
         self._operation = operation
@@ -32,16 +32,3 @@ class PostingEntry:
 
     def archive(self) -> None:
         self._is_archived = True
-
-    def __repr__(self) -> str:
-        return (
-            f'PostingEntry('
-                f'user_id={self._user_id}, '
-                f'amount={self._amount}, ' 
-                f'posted_in={self._posted_in}, ' 
-                f'account_type={self._account_type}, ' 
-                f'operation={self._operation}, ' 
-                f'entry_status={self._entry_status}, ' 
-                f'is_archived={self._is_archived}' 
-            ')'
-        )
