@@ -1,19 +1,13 @@
-from dataclasses import dataclass
 from datetime import UTC, datetime
 from decimal import Decimal
 from typing import AsyncGenerator
-from uuid import UUID, uuid4
 
 import pytest
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 
 from marketgram.trade.domain.model.money import Money
-from marketgram.trade.domain.model.p2p.deal.cancellation_deal import CancellationDeal
-from marketgram.trade.domain.model.p2p.deal.confirmation_deal import ConfirmationDeal
-from marketgram.trade.domain.model.p2p.deal.dispute_deal import DisputeDeal
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
-from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.p2p.service_agreement import ServiceAgreement
 from marketgram.trade.port.adapter.sqlalchemy_resources.deals_repository import DealsRepository
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.deals_table import (
@@ -22,15 +16,8 @@ from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.deals_tabl
     deals_table
 )
 from tests.integration.trade.conftest import BUYER, MANAGER, SELLER
+from tests.integration.trade.deal_extensions import DealExtensions
 
-
-@dataclass(frozen=True)
-class Deal:
-    unshipped: ShipDeal | None
-    unconfirmed: ConfirmationDeal | None
-    unclosed: CancellationDeal | None
-    not_disputed: DisputeDeal | None
-    disputed: DisputeDeal | None
 
 
 class TradeTestCase:
@@ -48,7 +35,7 @@ class TradeTestCase:
             deal_id = result.scalar().deal_id
             return deal_id
 
-    async def query_multiple_deal_statuses(self) -> Deal:
+    async def query_multiple_deal_statuses(self) -> DealExtensions:
         async with AsyncSession(self._engine) as session:
             deal_id = await self.query_deal_id()
             deals_repository = DealsRepository(session)
@@ -59,7 +46,7 @@ class TradeTestCase:
             not_disputed_deal = await deals_repository.not_disputed_with_id(BUYER[1], deal_id)
             disputed_deal = await deals_repository.disputed_with_id(deal_id)
 
-            return Deal(
+            return DealExtensions(
                 unshipped_deal,
                 unconfirmed_deal,
                 unclosed_deal,

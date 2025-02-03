@@ -23,12 +23,11 @@ class TestMultipleDealStatuses(TradeTestCase):
 
         # Assert
         deal = await self.query_multiple_deal_statuses()
-
-        assert deal.unshipped is not None
-        assert deal.unconfirmed is None
-        assert deal.unclosed is not None
-        assert deal.not_disputed is None
-        assert deal.disputed is None
+        deal.can_be_shipped() \
+            .cannot_be_confirmed() \
+            .can_be_closed() \
+            .cannot_open_duspute() \
+            .there_was_no_dispute()
 
     async def test_seller_has_shipped_the_items(self) -> None:
         # Arrange
@@ -45,12 +44,11 @@ class TestMultipleDealStatuses(TradeTestCase):
 
         # Assert
         deal = await self.query_multiple_deal_statuses()
-
-        assert deal.unshipped is None
-        assert deal.unconfirmed is not None
-        assert deal.unclosed is not None
-        assert deal.not_disputed is not None
-        assert deal.disputed is None
+        deal.cant_ship() \
+            .can_be_сonfirmed() \
+            .can_be_closed() \
+            .can_open_dispute() \
+            .there_was_no_dispute()
 
     async def test_buyer_confirms_the_quality_of_the_items(self) -> None:
         async with AsyncSession(self._engine) as session:
@@ -67,9 +65,8 @@ class TestMultipleDealStatuses(TradeTestCase):
 
         # Assert
         deal = await self.query_multiple_deal_statuses()
-
-        assert deal.unshipped is None
-        assert deal.unconfirmed is None
-        assert deal.unclosed is None
-        assert deal.not_disputed is None
-        assert deal.disputed is None
+        deal.cant_ship() \
+            .cannot_be_confirmed() \
+            .cant_be_closed() \
+            .cannot_open_duspute() \
+            .there_was_no_dispute()
