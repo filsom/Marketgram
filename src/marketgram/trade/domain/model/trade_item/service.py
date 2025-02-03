@@ -26,7 +26,6 @@ class Service:
     def create_new_category(
         self,
         category_types: TypeCategory,
-        status_deal: StatusDeal,
         shipment: Shipment,
         action_time: ActionTime,
         min_price: Money,
@@ -56,7 +55,6 @@ class Service:
                 category_alias,
                 action_time,
                 shipment,
-                status_deal,
                 min_price,
                 min_procent_discount
             )

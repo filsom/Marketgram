@@ -21,7 +21,7 @@ class User:
     def __init__(
         self, 
         user_id: UUID,
-        entries: list[PostingEntry],
+        entries: list[PostingEntry] | None = None,
         balance: Money | None = None,
         member_id: int | None = None,
         is_blocked: bool = False

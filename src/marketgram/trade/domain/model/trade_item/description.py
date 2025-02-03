@@ -17,8 +17,8 @@ class Description:
         self,
         name: str,
         body: str,
-        status: StatusDescription,
-        set_in: datetime = None,
+        status: StatusDescription = StatusDescription.CURRENT,
+        set_in: datetime | None = None,
         description_id: int = None,
         card_id: int | None = None,
         archived_in: datetime | str = INFINITY

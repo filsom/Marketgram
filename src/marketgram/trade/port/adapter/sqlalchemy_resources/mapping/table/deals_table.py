@@ -2,6 +2,7 @@ from sqlalchemy import (
     DECIMAL, 
     UUID,
     DateTime,
+    Enum,
     Integer, 
     String, 
     Table, 
@@ -11,6 +12,8 @@ from sqlalchemy import (
 )
 
 from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
+from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
+from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
 
 
 
@@ -20,9 +23,9 @@ deals_table = Table(
     Column('deal_id', BigInteger, primary_key=True, nullable=False, autoincrement=True),
     Column('card_id', BigInteger, ForeignKey('cards.card_id'), nullable=False),
     Column('qty_purchased', Integer, nullable=False),
-    Column('shipment', String(20), nullable=False),
+    Column('shipment', Enum(Shipment, native_enum=False), nullable=False),
     Column('price', DECIMAL(20, 2), nullable=False),
-    Column('status', String, nullable=True),
+    Column('status', Enum(StatusDeal, native_enum=False), nullable=True),
     Column('created_at', DateTime(timezone=True), nullable=False),
     Column('shipped_at', DateTime(timezone=True), nullable=True),
     Column('inspected_at', DateTime(timezone=True), nullable=True),

@@ -1,6 +1,7 @@
 from sqlalchemy import (
     DECIMAL, 
     DateTime,
+    Enum,
     Integer,
     String, 
     Table, 
@@ -11,6 +12,8 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import JSONB
 
 from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
+from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
+from marketgram.trade.domain.model.trade_item.status_card import StatusCard
 from marketgram.trade.domain.model.types import INFINITY
 
 
@@ -25,9 +28,9 @@ cards_table = Table(
     Column('features', JSONB, nullable=True),
     Column('shipping_hours', Integer, nullable=False),
     Column('inspection_hours', Integer, nullable=False),
-    Column('shipment', String(20), nullable=False),
+    Column('shipment', Enum(Shipment), nullable=False),
     Column('created_at', DateTime(timezone=True), nullable=False),
-    Column('status', String, nullable=False),
+    Column('status', Enum(StatusCard, native_enum=False), nullable=False),
 )
 
 

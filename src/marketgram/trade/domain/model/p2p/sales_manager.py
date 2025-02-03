@@ -15,9 +15,9 @@ class SalesManager:
     def __init__(
         self, 
         user_id: UUID,
-        balance: Money,
-        entries: list[PostingEntry],
-        service_agreements: list[ServiceAgreement],
+        balance: Money | None = None,
+        entries: list[PostingEntry] | None = None,
+        service_agreements: list[ServiceAgreement] | None = None,
         member_id: int | None = None,
         paycard: Paycard | None = None
     ) -> None:

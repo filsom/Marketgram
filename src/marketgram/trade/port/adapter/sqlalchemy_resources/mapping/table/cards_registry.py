@@ -50,7 +50,7 @@ def cards_registry_mapper(mapper: registry) -> None:
             '_card_id': cards_table.c.card_id,
             '_owner_id': cards_table.c.owner_id,
             '__price': cards_table.c.price,
-            '_price': composite(Money, cards_table.c.price),
+            '_price': composite(Money, '__price'),
             '_shipment': cards_table.c.shipment,
             '_action_time': composite(
                 ActionTime,

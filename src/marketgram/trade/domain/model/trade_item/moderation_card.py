@@ -62,6 +62,9 @@ class ModerationCard:
                 
                 self._status = StatusCard.ON_SALE
 
+    def add_desciption(self, description: Description) -> None:
+        self._descriptions.append(description)
+
     @property
     def status(self) -> StatusCard:
         return self._status
@@ -69,6 +72,10 @@ class ModerationCard:
     @property
     def action_time(self) -> ActionTime:
         return self._action_time
+    
+    @property
+    def card_id(self) -> int:
+        return self._card_id
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ModerationCard):
