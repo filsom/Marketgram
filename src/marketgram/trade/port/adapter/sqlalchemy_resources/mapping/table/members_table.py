@@ -8,7 +8,7 @@ from marketgram.trade.port.adapter.sqlalchemy_resources.metadata import (
 members_table = Table(
     'members',
     sqlalchemy_metadata,
-    Column('member_id', Integer, primary_key=True, nullable=False),
+    Column('member_id', Integer, primary_key=True, autoincrement=True, nullable=False),
     Column('user_id', UUID, unique=True, nullable=False),
     Column('synonym', String, nullable=True),
     Column('first6', String, nullable=True),

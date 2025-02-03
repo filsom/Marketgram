@@ -50,7 +50,6 @@ def members_registry_mapper(mapper: registry) -> None:
         properties={
             '_member_id': members_table.c.member_id,
             '_user_id': members_table.c.user_id,
-            '_is_blocked': members_table.c.is_blocked,
             '_paycard': composite(
                 Paycard, 
                 members_table.c.first6,
@@ -63,6 +62,11 @@ def members_registry_mapper(mapper: registry) -> None:
                 'ServiceAgreement',
                 default_factory=list,
                 lazy='joined'
+            ),
+            '_entries': relationship(
+                'PostingEntry',
+                default_factory=list,
+                lazy='noload'
             )
         }
     )
