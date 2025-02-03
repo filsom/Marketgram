@@ -108,8 +108,8 @@ class ShipDeal:
             )
 
     @property
-    def buyers_debt(self) -> Money:
-        return -self._price
+    def write_off_ammount(self) -> Money:
+        return -self._price * self._qty_purchased
     
     @property
     def download_link(self) -> str:

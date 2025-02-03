@@ -14,7 +14,7 @@ class Payout:
     def __init__(
         self,
         payout_id: UUID,
-        seller_id: int,
+        member_id: int,
         paycard_synonym: str,
         tax_free: Money,
         created_at: datetime,
@@ -24,7 +24,7 @@ class Payout:
         is_blocked: bool = False
     ) -> None:
         self._payout_id = payout_id
-        self._seller_id = seller_id
+        self._member_id = member_id
         self._paycard_synonym = paycard_synonym
         self._tax_free = tax_free
         self._created_at = created_at

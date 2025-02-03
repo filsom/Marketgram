@@ -45,7 +45,7 @@ class SellCard:
             Members(self._owner_id, buyer_id),
             quantity,
             self._shipment,
-            self._price * quantity,
+            self._price,
             self._action_time.create_deadlines(occurred_at),
             StatusDeal.NOT_SHIPPED,
             occurred_at

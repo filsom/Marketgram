@@ -50,7 +50,7 @@ class User:
         self._entries.append(
             PostingEntry(
                 self._member_id,
-                deal.buyers_debt,
+                deal.write_off_ammount,
                 current_time,
                 AccountType.USER,
                 Operation.BUY,

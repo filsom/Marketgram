@@ -17,14 +17,14 @@ class Payment:
     def __init__(
         self,
         payment_id: UUID,
-        buyer_id: int,
+        member_id: int,
         amount: Money,
         created_at: datetime,
         is_processed: bool = False,
         is_blocked: bool = False,
     ) -> None:
         self._payment_id = payment_id
-        self._buyer_id = buyer_id
+        self._member_id = member_id
         self._amount = amount
         self._created_at = created_at
         self._is_processed = is_processed

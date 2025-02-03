@@ -5,14 +5,7 @@ from marketgram.trade.domain.model.p2p.deal.cancellation_deal import Cancellatio
 from marketgram.trade.domain.model.p2p.deal.confirmation_deal import ConfirmationDeal
 from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.deal.dispute_deal import DisputeDeal
-from marketgram.trade.domain.model.p2p.deal.receipt_deal import ReceiptDeal
-from marketgram.trade.domain.model.p2p.deal.ship_deal import (
-    ShipDeal, 
-    ShipLoginCodeDeal, 
-    ShipProvidingLinkDeal
-)
-from marketgram.trade.domain.model.p2p.time_tags import TimeTags
-from marketgram.trade.domain.model.p2p.type_deal import TypeDeal
+from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.deals_table import (
     deals_table, 

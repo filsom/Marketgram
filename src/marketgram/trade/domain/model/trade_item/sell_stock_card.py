@@ -57,6 +57,8 @@ class SellStockCard(SellCard):
             raise DomainError()
         
         if remainder == 0:
+            self._shipment = Shipment.HAND
+            self._status = StatusCard.EDITING
             self.events.append(
                 ZeroInventoryBalanceNotification(
                     self._owner_id,
@@ -76,7 +78,7 @@ class SellStockCard(SellCard):
             Members(self._owner_id, buyer_id),
             quantity,
             self._shipment,
-            self._price * quantity,
+            self._price,
             self._action_time.create_deadlines(occurred_at),
             StatusDeal.NOT_SHIPPED,
             occurred_at
