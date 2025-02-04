@@ -19,14 +19,14 @@ class FailDeal:
         self,
         deal_id: int,
         buyer_id: int,
-        price: Money,
+        unit_price: Money,
         deadlines: Deadlines,
         status: StatusDeal,
         entries: list[PostingEntry]
     ) -> None:
         self._deal_id = deal_id
         self._buyer_id = buyer_id
-        self._price = price
+        self._unit_price = unit_price
         self._deadlines = deadlines
         self._status = status
         self._entries = entries
@@ -52,7 +52,7 @@ class FailDeal:
         self._entries.append(
             PostingEntry(
                 self._buyer_id,
-                self._price,
+                self._unit_price,
                 occurred_at,
                 AccountType.USER,
                 Operation.REFUND,

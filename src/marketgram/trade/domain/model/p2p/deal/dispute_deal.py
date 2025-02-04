@@ -16,14 +16,14 @@ class DisputeDeal:
         self,
         deal_id: int,
         members: Members,
-        price: Money,
+        unit_price: Money,
         deadlines: Deadlines,
         status: StatusDeal,
         entries: list[PostingEntry],
     ) -> None:
         self._deal_id = deal_id
         self._members = members
-        self._price = price
+        self._unit_price = unit_price
         self._deadlines = deadlines
         self._entries = entries
         self._status = status
@@ -37,7 +37,7 @@ class DisputeDeal:
         self._entries.append(
             PostingEntry(
                 self._members.seller_id,
-                agreement.calculate_payment_to_seller(self._price),
+                agreement.calculate_payment_to_seller(self._unit_price),
                 occurred_at,
                 AccountType.SELLER,
                 Operation.SALE,
@@ -47,7 +47,7 @@ class DisputeDeal:
         self._entries.append(
             PostingEntry(
                 agreement._manager_id,
-                agreement.calculate_sales_profit(self._price),
+                agreement.calculate_sales_profit(self._unit_price),
                 occurred_at,
                 AccountType.MANAGER,
                 Operation.SALE,
@@ -66,7 +66,7 @@ class DisputeDeal:
         self._entries.append(
             PostingEntry(
                 self._members.buyer_id,
-                self._price,
+                self._unit_price,
                 datetime.now(),
                 AccountType.USER,
                 Operation.REFUND,

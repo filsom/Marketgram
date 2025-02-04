@@ -27,7 +27,7 @@ class ShipDeal:
         members: Members,
         qty_purchased: int,
         shipment: Shipment,
-        price: Money,
+        unit_price: Money,
         deadlines: Deadlines,
         status: StatusDeal,
         created_at: datetime,
@@ -40,7 +40,7 @@ class ShipDeal:
         self._members = members
         self._qty_purchased = qty_purchased
         self._shipment = shipment
-        self._price = price
+        self._unit_price = unit_price
         self._deadlines = deadlines
         self._status = status
         self._created_at = created_at
@@ -109,7 +109,7 @@ class ShipDeal:
 
     @property
     def write_off_ammount(self) -> Money:
-        return -self._price * self._qty_purchased
+        return -self._unit_price * self._qty_purchased
     
     @property
     def download_link(self) -> str:

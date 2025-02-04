@@ -25,7 +25,7 @@ class UnconfirmedDeal:
         self, 
         deal_id: int,
         members: Members,
-        price: Money,
+        unit_price: Money,
         qty_purcased: int,
         deadlines: Deadlines,
         status: StatusDeal,
@@ -34,7 +34,7 @@ class UnconfirmedDeal:
     ) -> None:
         self._deal_id = deal_id
         self._members = members
-        self._price = price
+        self._unit_price = unit_price
         self._qty_purchased = qty_purcased
         self._deadlines = deadlines
         self._status = status
@@ -93,7 +93,7 @@ class UnconfirmedDeal:
             uuid4(),
             Claim(qty_defects, reason, return_type),
             self._members.start_dispute(self._deal_id),
-            self._price,
+            self._unit_price,
             occurred_at
         )
 
@@ -111,7 +111,7 @@ class UnconfirmedDeal:
     
     @property
     def amount_deal(self) -> Money:
-        return self._price * self._qty_purchased
+        return self._unit_price * self._qty_purchased
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, UnconfirmedDeal):
