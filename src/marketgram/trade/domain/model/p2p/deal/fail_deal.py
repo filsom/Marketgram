@@ -1,5 +1,4 @@
 from datetime import datetime
-from uuid import UUID
 
 from marketgram.trade.domain.model.events import SellerCancelledDealNotification
 from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
@@ -15,7 +14,7 @@ from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.types import AccountType, Operation
 
 
-class CancellationDeal:
+class FailDeal:
     def __init__(
         self,
         deal_id: int,
@@ -71,7 +70,7 @@ class CancellationDeal:
         return self._entries
 
     def __eq__(self, other: object) -> bool:
-        if not isinstance(other, CancellationDeal):
+        if not isinstance(other, FailDeal):
             return False
 
         return self._deal_id == other._deal_id

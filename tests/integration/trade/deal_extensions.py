@@ -1,7 +1,7 @@
 from typing import Self
 
-from marketgram.trade.domain.model.p2p.deal.cancellation_deal import CancellationDeal
-from marketgram.trade.domain.model.p2p.deal.confirmation_deal import ConfirmationDeal
+from marketgram.trade.domain.model.p2p.deal.fail_deal import FailDeal
+from marketgram.trade.domain.model.p2p.deal.unconfirmed_deal import UnconfirmedDeal
 from marketgram.trade.domain.model.p2p.deal.dispute_deal import DisputeDeal
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 
@@ -10,8 +10,8 @@ class DealExtensions:
     def __init__(
         self,
         unshipped: ShipDeal | None,
-        unconfirmed: ConfirmationDeal | None,
-        unclosed: CancellationDeal | None,
+        unconfirmed: UnconfirmedDeal | None,
+        unclosed: FailDeal | None,
         not_disputed: DisputeDeal | None,
         disputed: DisputeDeal | None,
     ) -> None:

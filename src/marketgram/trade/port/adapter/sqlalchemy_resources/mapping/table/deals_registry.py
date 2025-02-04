@@ -3,8 +3,8 @@ from sqlalchemy import event
 
 from marketgram.trade.domain.model.p2p.deal.overdue_deal import OverdueDeal
 from marketgram.trade.domain.model.p2p.members import Members
-from marketgram.trade.domain.model.p2p.deal.cancellation_deal import CancellationDeal
-from marketgram.trade.domain.model.p2p.deal.confirmation_deal import ConfirmationDeal
+from marketgram.trade.domain.model.p2p.deal.fail_deal import FailDeal
+from marketgram.trade.domain.model.p2p.deal.unconfirmed_deal import UnconfirmedDeal
 from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.deal.dispute_deal import DisputeDeal
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
@@ -51,7 +51,7 @@ def deals_registry_mapper(mapper: registry) -> None:
         }
     )
     mapper.map_imperatively(
-        ConfirmationDeal,
+        UnconfirmedDeal,
         deals_table,
         properties={
             '_deal_id': deals_table.c.deal_id,
@@ -75,7 +75,7 @@ def deals_registry_mapper(mapper: registry) -> None:
         }
     )
     mapper.map_imperatively(
-        CancellationDeal,
+        FailDeal,
         deals_table,
         properties={
             '_deal_id': deals_table.c.deal_id,
@@ -155,12 +155,12 @@ def load_user(deal, value):
     deal.events = []
 
 
-@event.listens_for(CancellationDeal, 'load')
+@event.listens_for(FailDeal, 'load')
 def load_user(deal, value):
     deal.events = []
 
 
-@event.listens_for(ConfirmationDeal, 'load')
+@event.listens_for(UnconfirmedDeal, 'load')
 def load_user(deal, value):
     deal.events = []
 

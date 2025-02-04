@@ -3,8 +3,8 @@ from uuid import uuid4
 
 import pytest
 from marketgram.trade.domain.model.money import Money
-from marketgram.trade.domain.model.p2p.deal.cancellation_deal import (
-    CancellationDeal
+from marketgram.trade.domain.model.p2p.deal.fail_deal import (
+    FailDeal
 )
 from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
 from marketgram.trade.domain.model.p2p.errors import (
@@ -55,9 +55,9 @@ class TestCancellationDeal:
         assert len(deal.entries) == 0
         assert len(deal.events) == 0
 
-    def make_deal(self, status: StatusDeal) -> CancellationDeal:
+    def make_deal(self, status: StatusDeal) -> FailDeal:
         deadlines = ActionTime(1, 1).create_deadlines(datetime.now(UTC))
-        return CancellationDeal(
+        return FailDeal(
             1, 
             uuid4(),
             Money(200),

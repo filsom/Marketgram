@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 
 @dataclass(frozen=True)
-class DisputeOpenedEvent:
+class DisputeOpenedNotification:
     seller_id: int
     occurred_at: datetime
 

@@ -2,7 +2,7 @@ from datetime import datetime
 
 from marketgram.trade.domain.model.events import (
     DisputeClosedEvent, 
-    DisputeOpenedEvent
+    DisputeOpenedNotification
 )
 from marketgram.trade.domain.model.p2p.errors import (
     DO_NOT_OPEN_DISPUTE, 
@@ -41,7 +41,7 @@ class DisputeDeal:
             raise CheckDeadlineError(DO_NOT_OPEN_DISPUTE)
 
         self.events.append(
-            DisputeOpenedEvent(
+            DisputeOpenedNotification(
                 self._members.seller_id, 
                 occurred_at
             )

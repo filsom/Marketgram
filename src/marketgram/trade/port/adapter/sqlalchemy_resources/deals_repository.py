@@ -5,8 +5,8 @@ from sqlalchemy import and_, select
 from sqlalchemy.orm import with_polymorphic
 
 from marketgram.trade.domain.model.p2p.members import Members
-from marketgram.trade.domain.model.p2p.deal.cancellation_deal import CancellationDeal
-from marketgram.trade.domain.model.p2p.deal.confirmation_deal import ConfirmationDeal
+from marketgram.trade.domain.model.p2p.deal.fail_deal import FailDeal
+from marketgram.trade.domain.model.p2p.deal.unconfirmed_deal import UnconfirmedDeal
 from marketgram.trade.domain.model.p2p.deal.dispute_deal import DisputeDeal
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
@@ -50,9 +50,9 @@ class DealsRepository:
         self,
         buyer_id: int,
         deal_id: int
-    ) -> ConfirmationDeal | None:
+    ) -> UnconfirmedDeal | None:
         stmt = (
-            select(ConfirmationDeal)
+            select(UnconfirmedDeal)
             .join(Members, Members.buyer_id == buyer_id)
             .where(and_(
                 deals_table.c.deal_id == deal_id,
@@ -67,9 +67,9 @@ class DealsRepository:
         self,
         seller_id: UUID,
         deal_id: int
-    ) -> CancellationDeal | None:
+    ) -> FailDeal | None:
         stmt = (
-            select(CancellationDeal)
+            select(FailDeal)
             .join(Members, Members.seller_id == seller_id)
             .where(and_(
                 deals_table.c.deal_id == deal_id,
