@@ -1,13 +1,6 @@
 from datetime import datetime
 
-from marketgram.trade.domain.model.events import (
-    DisputeClosedEvent, 
-    DisputeOpenedNotification
-)
-from marketgram.trade.domain.model.p2p.errors import (
-    DO_NOT_OPEN_DISPUTE, 
-    CheckDeadlineError,
-)
+from marketgram.trade.domain.model.events import DisputeClosedEvent
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
@@ -35,18 +28,6 @@ class DisputeDeal:
         self._entries = entries
         self._status = status
         self.events = []
-
-    def open_dispute(self, occurred_at: datetime) -> None:   
-        if not self._deadlines.check(self._status, occurred_at):
-            raise CheckDeadlineError(DO_NOT_OPEN_DISPUTE)
-
-        self.events.append(
-            DisputeOpenedNotification(
-                self._members.seller_id, 
-                occurred_at
-            )
-        )
-        self._status = StatusDeal.DISPUTE
 
     def satisfy_seller(
         self, 
