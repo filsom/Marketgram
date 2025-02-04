@@ -35,7 +35,7 @@ class UnconfirmedDeal:
         self._deal_id = deal_id
         self._members = members
         self._price = price
-        self._qty_purcased = qty_purcased
+        self._qty_purchased = qty_purcased
         self._deadlines = deadlines
         self._status = status
         self._inspected_at = inspected_at
@@ -79,7 +79,7 @@ class UnconfirmedDeal:
         if not self._deadlines.check(self._status, occurred_at):
             raise CheckDeadlineError(DO_NOT_OPEN_DISPUTE)
         
-        if qty_defects > self._qty_purcased:
+        if qty_defects > self._qty_purchased:
             raise DomainError()
 
         self._status = StatusDeal.DISPUTE
@@ -111,7 +111,7 @@ class UnconfirmedDeal:
     
     @property
     def amount_deal(self) -> Money:
-        return self._price * self._qty_purcased
+        return self._price * self._qty_purchased
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, UnconfirmedDeal):
