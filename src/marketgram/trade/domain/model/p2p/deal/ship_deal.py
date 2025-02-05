@@ -58,10 +58,8 @@ class ShipDeal:
         if self._shipment.is_link():
             if download_link is None:
                 raise AddLinkError(MISSING_DOWNLOAD_LINK)
-            
-        elif self._shipment.is_message():
-            if download_link is not None:
-                raise AddLinkError(IN_THE_CHAT)
+
+            self._download_link = download_link
             
         elif self._shipment.is_not_auto_link():
             self.events.append(
@@ -72,7 +70,6 @@ class ShipDeal:
                     occurred_at
                 )
             )
-        self._download_link = download_link
         self._shipped_at = occurred_at
         self._status = StatusDeal.INSPECTION
 
