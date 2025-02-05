@@ -45,13 +45,9 @@ class OpenedDispute:
 
     def satisfy_buyer(
         self, 
-        qty_return: int, 
         download_link: str | None,
         occurred_at: datetime
-    ) -> None:
-        if self._claim.qty_return != qty_return:
-            raise QuantityItemError()
-        
+    ) -> None:        
         if self._claim.is_replacement():
             if self._shipment.is_hand():
                 if download_link is None:
@@ -63,7 +59,7 @@ class OpenedDispute:
                 self.events.append(
                     SellerShippedReplacementWithAutoShipmentEvent(
                         self, 
-                        qty_return,
+                        self._claim.qty_return,
                         occurred_at
                     )
                 )
@@ -78,7 +74,7 @@ class OpenedDispute:
             self.events.append(
                 SellerClosedDisputeWithRefundEvent(
                     self._dispute_members.deal_id,
-                    qty_return,
+                    self._claim.qty_return,
                     occurred_at
                 )
             )
