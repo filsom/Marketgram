@@ -117,7 +117,7 @@ class DisputeDeal:
             PostingEntry(
                 self._members.buyer_id,
                 self.amount_deal,
-                datetime.now(),
+                occurred_at,
                 AccountType.USER,
                 Operation.REFUND,
                 EntryStatus.ACCEPTED
