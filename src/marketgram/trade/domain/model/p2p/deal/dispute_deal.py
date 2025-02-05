@@ -33,10 +33,51 @@ class DisputeDeal:
 
     def allocate(
         self,
-        quantity: int,
-        occurred_at: datetime
+        qty_return: int,
+        occurred_at: datetime,
+        agreement: ServiceAgreement
     ) -> None:
-        pass
+        qty_sell = self._qty_purchased - qty_return
+
+        self._entries.append(
+            PostingEntry(
+                self._members.buyer_id,
+                qty_return * self._unit_price,
+                occurred_at,
+                AccountType.USER,
+                Operation.REFUND,
+                EntryStatus.ACCEPTED
+            )
+        )
+        if qty_sell:
+            self._qty_purchased = qty_sell
+            self._entries.append(
+                PostingEntry(
+                    self._members.seller_id,
+                    agreement.calculate_payment_to_seller(self.amount_deal),
+                    occurred_at,
+                    AccountType.SELLER,
+                    Operation.SALE,
+                    EntryStatus.FREEZ
+                )
+            )
+            self._entries.append(
+                PostingEntry(
+                    agreement._manager_id,
+                    agreement.calculate_sales_profit(self.amount_deal),
+                    occurred_at,
+                    AccountType.MANAGER,
+                    Operation.SALE,
+                    EntryStatus.ACCEPTED
+                )
+            )
+        self.events.append(
+            DisputeClosedEvent(
+                self._members.seller_id, 
+                occurred_at
+            )
+        )
+        self.status = StatusDeal.CLOSED
 
     def close_and_pay_the_seller(
         self, 
