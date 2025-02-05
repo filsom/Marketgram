@@ -135,7 +135,7 @@ class DisputeDeal:
         )
         temporary_list.append(
             PostingEntry(
-                agreement._manager_id,
+                agreement.manager_id,
                 agreement.calculate_sales_profit(amount),
                 occurred_at,
                 AccountType.MANAGER,
