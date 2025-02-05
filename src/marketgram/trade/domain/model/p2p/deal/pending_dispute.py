@@ -42,6 +42,7 @@ class PendingDispute:
         self.events(
             BuyerRejectedReplacementNotification(
                 self._deal_id,
+                self._dispute_id,
                 occurred_at
             )
         )

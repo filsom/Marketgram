@@ -57,4 +57,5 @@ class AdminJoinNotification:
 @dataclass(frozen=True)
 class BuyerRejectedReplacementNotification:
     deal_id: int
+    dispute_id: int
     occurred_at: datetime
