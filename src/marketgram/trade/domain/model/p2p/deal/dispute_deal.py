@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from marketgram.trade.domain.model.events import DisputeClosedEvent
+from marketgram.trade.domain.model.p2p.errors import QuantityItemError
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
@@ -37,6 +38,12 @@ class DisputeDeal:
         occurred_at: datetime,
         agreement: ServiceAgreement
     ) -> None:
+        if qty_return <= 0:
+            raise QuantityItemError()
+
+        if qty_return > self._qty_purchased:
+            raise QuantityItemError()
+
         qty_sell = self._qty_purchased - qty_return
 
         self._entries.append(
