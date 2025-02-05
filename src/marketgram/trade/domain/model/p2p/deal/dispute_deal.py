@@ -17,6 +17,7 @@ class DisputeDeal:
         deal_id: int,
         members: Members,
         unit_price: Money,
+        qty_purchased: int,
         deadlines: Deadlines,
         status: StatusDeal,
         entries: list[PostingEntry],
@@ -24,12 +25,20 @@ class DisputeDeal:
         self._deal_id = deal_id
         self._members = members
         self._unit_price = unit_price
+        self._qty_purchased = qty_purchased
         self._deadlines = deadlines
         self._entries = entries
         self._status = status
         self.events = []
 
-    def satisfy_seller(
+    def allocate(
+        self,
+        quantity: int,
+        occurred_at: datetime
+    ) -> None:
+        pass
+
+    def close_and_pay_the_seller(
         self, 
         occurred_at: datetime,
         agreement: ServiceAgreement
@@ -37,7 +46,7 @@ class DisputeDeal:
         self._entries.append(
             PostingEntry(
                 self._members.seller_id,
-                agreement.calculate_payment_to_seller(self._unit_price),
+                agreement.calculate_payment_to_seller(self.amount_deal),
                 occurred_at,
                 AccountType.SELLER,
                 Operation.SALE,
@@ -47,7 +56,7 @@ class DisputeDeal:
         self._entries.append(
             PostingEntry(
                 agreement._manager_id,
-                agreement.calculate_sales_profit(self._unit_price),
+                agreement.calculate_sales_profit(self.amount_deal),
                 occurred_at,
                 AccountType.MANAGER,
                 Operation.SALE,
@@ -62,11 +71,11 @@ class DisputeDeal:
         )
         self._status = StatusDeal.CLOSED
 
-    def satisfy_buyer(self, occurred_at: datetime) -> None:
+    def cancel_and_refund(self, occurred_at: datetime) -> None:
         self._entries.append(
             PostingEntry(
                 self._members.buyer_id,
-                self._unit_price,
+                self.amount_deal,
                 datetime.now(),
                 AccountType.USER,
                 Operation.REFUND,
@@ -88,6 +97,10 @@ class DisputeDeal:
     @property
     def entries(self) -> list[PostingEntry]:
         return self._entries
+    
+    @property
+    def amount_deal(self) -> Money:
+        return self._qty_purchased * self._unit_price
     
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, DisputeDeal):

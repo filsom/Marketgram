@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from marketgram.trade.domain.model.p2p.deal.admin_dispute import AdminDispute
 
 
+# Разблокировать выплату продавцу!
 @dataclass(frozen=True)
 class DisputeClosedEvent:
     seller_id: int
@@ -19,7 +20,7 @@ class DisputeClosedEvent:
 class PurchasedCardWithAutoShipmentEvent:
     deal: ShipDeal
     occurred_at: datetime
-    
+
 
 @dataclass(frozen=True)
 class BuyerClosedDisputeEvent:

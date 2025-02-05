@@ -58,7 +58,7 @@ class TestDisputeDeal:
         service_agreement = self.make_service_agreement()
 
         # Act
-        deal.satisfy_seller(datetime.now(UTC), service_agreement)
+        deal.close_and_pay_the_seller(datetime.now(UTC), service_agreement)
 
         # Assert
         assert deal.status == StatusDeal.CLOSED
