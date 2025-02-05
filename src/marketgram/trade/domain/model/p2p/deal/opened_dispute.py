@@ -73,10 +73,7 @@ class OpenedDispute:
         self._confirm_in = occurred_at + timedelta(hours=1)
         self._status = StatusDispute.PENDING
 
-    def buyer_refund(self, occurred_at: datetime) -> None:
-        if not self._claim.return_is_money():
-            raise OpenedDisputeError()
-        
+    def buyer_refund(self, occurred_at: datetime) -> None:        
         self.events.append(
             SellerClosedDisputeWithRefundEvent(
                 self._dispute_members.deal_id,
