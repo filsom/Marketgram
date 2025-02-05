@@ -73,16 +73,16 @@ class OpenedDispute:
         self._confirm_in = occurred_at + timedelta(hours=1)
         self._status = StatusDispute.PENDING
 
-    def buyer_refund(self, occurred_at: datetime) -> None:        
+    def buyer_refund(self, occurred_at: datetime) -> None: 
+        self._claim = self._claim.change_return_type(
+            ReturnType.MONEY
+        )
         self.events.append(
             SellerClosedDisputeWithRefundEvent(
                 self._dispute_members.deal_id,
                 self._claim.qty_return,
                 occurred_at
             )
-        )
-        self._claim = self._claim.change_return_type(
-            ReturnType.MONEY
         )
         self._status = StatusDispute.CLOSED
 
