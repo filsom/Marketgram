@@ -1,10 +1,8 @@
 from datetime import datetime, timedelta
-from uuid import uuid4
 
 from marketgram.trade.domain.model.entry_status import EntryStatus
 from marketgram.trade.domain.model.events import DisputeOpenedNotification
 from marketgram.trade.domain.model.money import Money
-from marketgram.trade.domain.model.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.deal.claim import Claim, ReturnType
 from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.deal.dispute import Dispute, StatusDispute
@@ -26,6 +24,7 @@ class UnconfirmedDeal:
     def __init__(
         self, 
         deal_id: int,
+        card_id: int,
         members: Members,
         unit_price: Money,
         qty_purcased: int,
@@ -36,6 +35,7 @@ class UnconfirmedDeal:
         entries: list[PostingEntry]
     ) -> None:
         self._deal_id = deal_id
+        self._card_id = card_id
         self._members = members
         self._unit_price = unit_price
         self._qty_purchased = qty_purcased
@@ -94,11 +94,9 @@ class UnconfirmedDeal:
             )
         )        
         return Dispute(
-            uuid4(),
+            self._card_id,
             Claim(qty_defects, reason, return_type),
             self._members.start_dispute(self._deal_id),
-            self._unit_price,
-            self._qty_purchased,
             self._shipment,
             occurred_at,
             occurred_at + timedelta(days=1),

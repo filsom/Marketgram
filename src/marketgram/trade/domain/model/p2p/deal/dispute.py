@@ -1,26 +1,25 @@
-from datetime import datetime, timedelta
-from enum import StrEnum, auto
-from uuid import UUID
+from datetime import datetime
 
-from marketgram.trade.domain.model.events import AdminJoinNotification, BuyerClosedDisputeEvent, SellerClosedDisputeWithAutoShipmentEvent, SellerClosedDisputeWithRefund
-from marketgram.trade.domain.model.money import Money
+from marketgram.trade.domain.model.events import (
+    AdminJoinNotification, 
+    BuyerClosedDisputeEvent, 
+    SellerClosedDisputeWithAutoShipmentEvent, 
+    SellerClosedDisputeWithRefund
+)
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
+from marketgram.trade.domain.model.p2p.deal.status_dispute import StatusDispute
 from marketgram.trade.domain.model.p2p.deal.unconfirmed_deal import Claim
-from marketgram.trade.domain.model.p2p.errors import AddLinkError, OpenedDisputeError, QuantityItemError
+from marketgram.trade.domain.model.p2p.errors import (
+    AddLinkError, 
+    OpenedDisputeError, 
+    QuantityItemError
+)
 from marketgram.trade.domain.model.p2p.members import DisputeMembers
-
-
-class StatusDispute(StrEnum):
-    OPEN = auto()
-    PENDING = auto()
-    ADMIN_JOINED = auto()
-    CLOSED = auto()
 
 
 class Dispute:
     def __init__(
         self,
-        dispute_id: UUID,
         card_id: int,
         claim: Claim,
         dispute_members: DisputeMembers,
@@ -28,6 +27,7 @@ class Dispute:
         open_in: datetime,
         admin_join_in: datetime,
         status: StatusDispute,
+        dispute_id: int | None = None,
         download_link: str | None = None
     ) -> None:
         self._dispute_id = dispute_id
@@ -102,3 +102,15 @@ class Dispute:
             )
         )
         self._status = StatusDispute.ADMIN_JOINED
+
+    def open_again(self) -> None:
+        self._status = StatusDispute.OPEN
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Dispute):
+            return False
+
+        return self._dispute_id == other._dispute_id
+    
+    def __hash__(self) -> int:
+        return hash(self._dispute_id)
