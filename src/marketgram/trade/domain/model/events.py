@@ -19,14 +19,7 @@ class DisputeClosedEvent:
 class PurchasedCardWithAutoShipmentEvent:
     deal: ShipDeal
     occurred_at: datetime
-
-
-@dataclass(frozen=True)
-class SellerCancelledDisputeDealEvent:
-    deal_id: int
-    qty_return: int
-    occurred_at: datetime
-
+    
 
 @dataclass(frozen=True)
 class BuyerClosedDisputeEvent:
