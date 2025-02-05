@@ -20,7 +20,7 @@ class Category:
         alias: str,
         action_time: ActionTime,
         shipment: Shipment,
-        minimum_price: Money,
+        minimum_unit_price: Money,
         minimum_procent_discount: Decimal,
         category_id: int | None = None
     ) -> None:
@@ -30,19 +30,19 @@ class Category:
         self._alias = alias
         self._action_time = action_time
         self._shipment = shipment
-        self._minimum_price = minimum_price
+        self._minimum_unit_price = minimum_unit_price
         self._minimum_procent_discount = minimum_procent_discount
     
     def new_card(
         self, 
         user_id: int,
         description: Description,
-        price: Money,
+        unit_price: Money,
         features: dict, 
         action_time: ActionTime | None,
         current_date: datetime
     ) -> ModerationCard:
-        if price < self._minimum_price: 
+        if unit_price < self._minimum_unit_price: 
             raise DomainError()
         
         if action_time is None:  
@@ -51,8 +51,8 @@ class Category:
         return ModerationCard(
             user_id,
             self._category_id,
-            price,
-            price,
+            unit_price,
+            unit_price,
             [description],
             features,
             action_time,
@@ -79,7 +79,7 @@ class Category:
     
     @property
     def minimum_price(self) -> Money:
-        return self._minimum_price
+        return self._minimum_unit_price
     
     @property
     def minimum_procent_discount(self) -> Decimal:

@@ -23,7 +23,7 @@ class CardsRepository:
         stmt = (
             select(SellCard)
             .where(and_(
-                SellCard._price == price,
+                SellCard._unit_price == price,
                 SellCard._card_id == card_id
             ))
             .with_for_update()

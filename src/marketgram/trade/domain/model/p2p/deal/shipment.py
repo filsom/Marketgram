@@ -9,6 +9,9 @@ class Shipment(StrEnum):
     def is_link(self) -> bool:
         return self in [Shipment.AUTO, Shipment.HAND]
     
+    def is_not_auto_link(self) -> bool:
+        return self in [Shipment.HAND, Shipment.CHAT]
+
     def is_hand(self) -> bool:
         return self == Shipment.HAND
 

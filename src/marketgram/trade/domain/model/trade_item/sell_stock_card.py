@@ -8,6 +8,7 @@ from marketgram.trade.domain.model.events import (
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
+from marketgram.trade.domain.model.p2p.errors import QuantityItemError
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
@@ -24,7 +25,7 @@ class SellStockCard(SellCard):
         self,
         card_id: int,
         owner_id: int,
-        price: Money,
+        unit_price: Money,
         shipment: Shipment,
         action_time: ActionTime,
         status: StatusCard,
@@ -34,7 +35,7 @@ class SellStockCard(SellCard):
         super().__init__(
             card_id, 
             owner_id, 
-            price, 
+            unit_price, 
             shipment, 
             action_time, 
             status
@@ -49,7 +50,7 @@ class SellStockCard(SellCard):
         occurred_at: datetime
     ) -> ShipDeal:
         if quantity <= 0:
-            raise DomainError()
+            raise QuantityItemError()
         
         remainder = self._stock_balance - quantity
         if remainder < 0:
@@ -77,7 +78,7 @@ class SellStockCard(SellCard):
             Members(self._owner_id, buyer_id),
             quantity,
             self._shipment,
-            self._price,
+            self._unit_price,
             self._action_time.create_deadlines(occurred_at),
             StatusDeal.NOT_SHIPPED,
             occurred_at

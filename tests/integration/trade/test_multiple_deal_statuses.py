@@ -57,7 +57,7 @@ class TestMultipleDealStatuses(TradeTestCase):
             deal = await DealsRepository(session).unconfirmed_with_id(BUYER[1], deal_id)
 
         # Act
-            deal.confirm_quality(
+            deal.confirm(
                 datetime.now(UTC),
                 self.make_service_agreement()
             )

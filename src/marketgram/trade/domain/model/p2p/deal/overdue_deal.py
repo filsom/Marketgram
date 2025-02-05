@@ -14,13 +14,13 @@ class OverdueDeal:
         self, 
         deal_id: int,
         members: Members,
-        price: Money,
+        unit_price: Money,
         status: StatusDeal,
         entries: list[PostingEntry]
     ):
         self._deal_id = deal_id
         self._members = members
-        self._price = price
+        self._unit_price = unit_price
         self._status = status
         self._entries = entries
 
@@ -34,7 +34,7 @@ class OverdueDeal:
                 self._entries.append(
                     PostingEntry(
                         self._members.buyer_id,
-                        self._price,
+                        self._unit_price,
                         occurred_at,
                         AccountType.USER,
                         Operation.REFUND,
@@ -45,7 +45,7 @@ class OverdueDeal:
                 self._entries.append(
                     PostingEntry(
                         self._members.seller_id,
-                        agreement.calculate_payment_to_seller(self._price),
+                        agreement.calculate_payment_to_seller(self._unit_price),
                         occurred_at,
                         AccountType.SELLER,
                         Operation.SALE,
@@ -55,7 +55,7 @@ class OverdueDeal:
                 self._entries.append(
                     PostingEntry(
                         agreement._manager_id,
-                        agreement.calculate_sales_profit(self._price),
+                        agreement.calculate_sales_profit(self._unit_price),
                         occurred_at,
                         AccountType.MANAGER,
                         Operation.SALE,

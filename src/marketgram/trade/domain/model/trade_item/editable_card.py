@@ -19,7 +19,7 @@ class EditableCard:
     def __init__(
         self,
         card_id: int,
-        price: Money,
+        unit_price: Money,
         init_price: Money,
         action_time: ActionTime,
         shipment: Shipment,
@@ -29,7 +29,7 @@ class EditableCard:
         descriptions: list[Description]
     ) -> None:
         self._card_id = card_id
-        self._price = price
+        self._unit_price = unit_price
         self._init_price = init_price
         self._action_time = action_time
         self._shipment = shipment
@@ -38,7 +38,7 @@ class EditableCard:
         self._status = status
         self._descriptions = descriptions
 
-    def set_discounted_price(self, new_price: Money) -> None:
+    def set_discounted_price(self, new_unit_price: Money) -> None:
         if self._init_price < (self._minimum_price 
                                 + self._minimum_price 
                                 * self._minimum_procent_discount):
@@ -46,14 +46,14 @@ class EditableCard:
         
         max_limit = self._init_price - self._init_price * self._minimum_procent_discount
         
-        if new_price < self._minimum_price or new_price > max_limit.round_up():
+        if new_unit_price < self._minimum_price or new_unit_price > max_limit.round_up():
             raise DomainError(
                 UNACCEPTABLE_DISCOUNT_RANGE.format(self._minimum_price, max_limit)
             )
-        self._price = new_price
+        self._unit_price = new_unit_price
 
     def remove_discount(self) -> None:
-        self._price = self._init_price
+        self._unit_price = self._init_price
 
     def put_on_sale(self) -> None:
         self._status = StatusCard.ON_SALE
