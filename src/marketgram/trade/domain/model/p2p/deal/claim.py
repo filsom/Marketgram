@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from enum import StrEnum, auto
 
-from marketgram.trade.domain.model.exceptions import DomainError
 from marketgram.trade.domain.model.money import Money
+from marketgram.trade.domain.model.p2p.errors import QuantityItemError
 
 
 class ReturnType(StrEnum):
@@ -18,7 +18,7 @@ class Claim:
 
     def __post_init__(self) -> None:
         if self.qty_return <= 0:
-            raise DomainError()
+            raise QuantityItemError()
         
     def calculate_amount_return(self, price: Money) -> Money:
         return self.qty_return * price

@@ -9,11 +9,7 @@ class Deadlines:
     ship_to: datetime
     inspect_to: datetime
     
-    def check(
-        self, 
-        status: StatusDeal,
-        occurred_at: datetime
-    ) -> bool:
+    def check(self, status: StatusDeal, occurred_at: datetime) -> bool:
         match status:
             case StatusDeal.NOT_SHIPPED:
                 return occurred_at < self.ship_to

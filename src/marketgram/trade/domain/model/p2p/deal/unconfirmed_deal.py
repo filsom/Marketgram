@@ -11,7 +11,8 @@ from marketgram.trade.domain.model.p2p.deal.dispute import Dispute
 from marketgram.trade.domain.model.p2p.errors import (
     DO_NOT_OPEN_DISPUTE, 
     LATE_CONFIRMATION, 
-    CheckDeadlineError
+    CheckDeadlineError,
+    QuantityItemError
 )
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.p2p.sales_manager import ServiceAgreement
@@ -80,7 +81,7 @@ class UnconfirmedDeal:
             raise CheckDeadlineError(DO_NOT_OPEN_DISPUTE)
         
         if qty_defects > self._qty_purchased:
-            raise DomainError()
+            raise QuantityItemError()
 
         self._status = StatusDeal.DISPUTE
         self.events.append(
