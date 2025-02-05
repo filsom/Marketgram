@@ -13,7 +13,6 @@ from marketgram.trade.domain.model.p2p.deal.unconfirmed_deal import Claim
 from marketgram.trade.domain.model.p2p.errors import (
     AddLinkError, 
     OpenedDisputeError, 
-    QuantityItemError
 )
 from marketgram.trade.domain.model.p2p.members import DisputeMembers
 
@@ -66,10 +65,6 @@ class OpenedDispute:
                     occurred_at
                 )
             )
-        elif self._shipment.is_message():
-            if download_link is not None:
-                raise AddLinkError()
-        
         self._confirm_in = occurred_at + timedelta(hours=1)
         self._status = StatusDispute.PENDING
 
