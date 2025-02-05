@@ -44,7 +44,7 @@ class AdminDispute:
                 return 
             
             elif self._shipment.is_not_auto_link():
-                self._claim= self._claim.change_return_type(
+                self._claim = self._claim.change_return_type(
                     ReturnType.MONEY
                 )
             
