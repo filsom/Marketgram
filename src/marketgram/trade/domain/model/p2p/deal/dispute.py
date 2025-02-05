@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from marketgram.trade.domain.model.events import (
     AdminJoinNotification, 
@@ -28,6 +28,7 @@ class Dispute:
         admin_join_in: datetime,
         status: StatusDispute,
         dispute_id: int | None = None,
+        confirm_in: datetime | None = None,
         download_link: str | None = None
     ) -> None:
         self._dispute_id = dispute_id
@@ -39,6 +40,7 @@ class Dispute:
         self._admin_join_in = admin_join_in
         self._status = status
         self._download_link = download_link
+        self._confirm_in = confirm_in
         self.events = []   
 
     def satisfy_buyer(
@@ -69,6 +71,7 @@ class Dispute:
                 if download_link is not None:
                     raise AddLinkError()
             
+            self._confirm_in = occurred_at + timedelta(hours=1)
             self._status = StatusDispute.PENDING
 
         elif self._claim.return_is_money():

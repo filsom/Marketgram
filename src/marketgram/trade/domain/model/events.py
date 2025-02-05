@@ -104,3 +104,15 @@ class SellerClosedDisputeWithRefund:
 class AdminJoinNotification:
     deal_id: int
     occurred_at: datetime
+
+
+@dataclass(frozen=True)
+class BuyerConfirmedAndClosedDispute:
+    deal_id: int
+    occurred_at: datetime
+
+
+@dataclass(frozen=True)
+class BuyerRejectedReplacement:
+    deal_id: int
+    occurred_at: datetime
