@@ -49,7 +49,7 @@ class OpenedDispute:
         download_link: str | None,
         occurred_at: datetime
     ) -> None:
-        if not self._claim.is_replacement():
+        if self._claim.return_is_money():
             raise OpenedDisputeError()
         
         if self._shipment.is_hand():
