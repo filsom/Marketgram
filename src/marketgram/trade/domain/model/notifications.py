@@ -51,3 +51,10 @@ class ReissuePurchasedCardNotification:
 class AdminJoinNotification:
     deal_id: int
     occurred_at: datetime
+
+
+# Пользователь отклонил возврат товара (некачесвенный). Ждем админа!
+@dataclass(frozen=True)
+class BuyerRejectedReplacementNotification:
+    deal_id: int
+    occurred_at: datetime

@@ -65,10 +65,3 @@ class AdminClosedDisputeWithRefundEvent:
 class BuyerConfirmedAndClosedDisputeEvent:
     deal_id: int
     occurred_at: datetime
-
-
-# Пользователь отклонил возврат товара (некачесвенный). Ждем админа!
-@dataclass(frozen=True)
-class BuyerRejectedReplacementEvent:
-    deal_id: int
-    occurred_at: datetime
