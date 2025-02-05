@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from marketgram.trade.domain.model.events import (
     BuyerClosedDisputeEvent, 
-    SellerClosedDisputeWithAutoShipmentEvent, 
+    SellerShippedUnderDisputeWithAutoShipmentEvent, 
     SellerClosedDisputeWithRefundEvent
 )
 from marketgram.trade.domain.model.notifications import AdminJoinNotification
@@ -61,7 +61,7 @@ class OpenedDispute:
 
             elif self._shipment.is_auto_link():
                 self.events.append(
-                    SellerClosedDisputeWithAutoShipmentEvent(
+                    SellerShippedUnderDisputeWithAutoShipmentEvent(
                         self, 
                         qty_return,
                         occurred_at

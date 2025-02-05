@@ -29,7 +29,7 @@ class BuyerClosedDisputeEvent:
 
 
 @dataclass(frozen=True)
-class SellerClosedDisputeWithAutoShipmentEvent:
+class SellerShippedUnderDisputeWithAutoShipmentEvent:
     dispute: OpenedDispute
     qty_return: int
     occurred_at: datetime
