@@ -8,6 +8,7 @@ from marketgram.trade.domain.model.money import Money
 if TYPE_CHECKING:
     from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
     from marketgram.trade.domain.model.p2p.deal.dispute import Dispute
+    from marketgram.trade.domain.model.p2p.deal.admin_dispute import AdminDispute
 
 
 
@@ -94,7 +95,21 @@ class SellerClosedDisputeWithAutoShipmentEvent:
 
 
 @dataclass(frozen=True)
+class AdminClosedDisputeWithAutoShipmentEvent:
+    dispute: AdminDispute
+    qty_return: int
+    occurred_at: datetime
+
+
+@dataclass(frozen=True)
 class SellerClosedDisputeWithRefund:
+    deal_id: int
+    qty_return: int
+    occurred_at: datetime
+
+
+@dataclass(frozen=True)
+class AdminClosedDisputeWithRefund:
     deal_id: int
     qty_return: int
     occurred_at: datetime

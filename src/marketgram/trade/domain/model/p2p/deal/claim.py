@@ -28,3 +28,10 @@ class Claim:
     
     def is_replacement(self) -> bool:
         return self.return_type == ReturnType.ITEM 
+    
+    def change_return_type(self, return_type: ReturnType) -> 'Claim':
+        return Claim(
+            self.qty_return,
+            self.reason,
+            return_type
+        )
