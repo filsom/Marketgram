@@ -16,14 +16,14 @@ class SellCard:
         self,
         card_id: int,
         owner_id: int,
-        price: Money,
+        unit_price: Money,
         shipment: Shipment,
         action_time: ActionTime,
         status: StatusCard
     ) -> None:
         self._card_id = card_id
         self._owner_id = owner_id
-        self._price = price
+        self._unit_price = unit_price
         self._shipment = shipment
         self._action_time = action_time
         self._status = status
@@ -51,7 +51,7 @@ class SellCard:
             Members(self._owner_id, buyer_id),
             quantity,
             self._shipment,
-            self._price,
+            self._unit_price,
             self._action_time.create_deadlines(occurred_at),
             StatusDeal.NOT_SHIPPED,
             occurred_at
@@ -62,7 +62,7 @@ class SellCard:
 
     @property
     def price(self) -> Money:
-        return self._price
+        return self._unit_price
     
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, SellCard):

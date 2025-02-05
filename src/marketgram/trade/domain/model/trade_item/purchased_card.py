@@ -16,7 +16,7 @@ class PurchasedCard:
         card_id: int,
         owner_id: int,
         category_id: int,
-        price: Money,
+        _unit_price: Money,
         descriptions: list[Description],
         features: dict,
         action_time: ActionTime,
@@ -27,7 +27,7 @@ class PurchasedCard:
         self._card_id = card_id
         self._owner_id = owner_id
         self._category_id = category_id
-        self._price = price
+        self._unit_price = _unit_price
         self._descriptions = descriptions
         self._features = features
         self._action_time = action_time
@@ -41,8 +41,8 @@ class PurchasedCard:
                 return ModerationCard(
                     self._owner_id,
                     self._category_id,
-                    self._price,
-                    self._price,
+                    self._unit_price,
+                    self._unit_price,
                     description,
                     self._features,
                     self._action_time,

@@ -13,7 +13,7 @@ class ModerationCard:
         self,
         owner_id: int,
         category_id: int,
-        price: Money,
+        unit_price: Money,
         init_price: Money,
         descriptions: list[Description],
         features: dict,
@@ -26,7 +26,7 @@ class ModerationCard:
         self._card_id = card_id
         self._owner_id = owner_id
         self._category_id = category_id
-        self._price = price
+        self._unit_price = unit_price
         self._init_price = init_price
         self._descriptions = descriptions
         self._features = features

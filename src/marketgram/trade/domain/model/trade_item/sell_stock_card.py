@@ -24,7 +24,7 @@ class SellStockCard(SellCard):
         self,
         card_id: int,
         owner_id: int,
-        price: Money,
+        unit_price: Money,
         shipment: Shipment,
         action_time: ActionTime,
         status: StatusCard,
@@ -34,7 +34,7 @@ class SellStockCard(SellCard):
         super().__init__(
             card_id, 
             owner_id, 
-            price, 
+            unit_price, 
             shipment, 
             action_time, 
             status
@@ -77,7 +77,7 @@ class SellStockCard(SellCard):
             Members(self._owner_id, buyer_id),
             quantity,
             self._shipment,
-            self._price,
+            self._unit_price,
             self._action_time.create_deadlines(occurred_at),
             StatusDeal.NOT_SHIPPED,
             occurred_at

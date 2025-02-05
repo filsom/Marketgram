@@ -28,13 +28,13 @@ class Service:
         category_types: TypeCategory,
         shipment: Shipment,
         action_time: ActionTime,
-        min_price: Money,
-        min_procent_discount: Decimal,
+        minimum_unit_price: Money,
+        minimum_procent_discount: Decimal,
     ) -> None:
-        if min_price <= Money(0):
+        if minimum_unit_price <= Money(0):
             raise DomainError()
         
-        if 0 >= min_procent_discount >= 1:
+        if 0 >= minimum_procent_discount >= 1:
             raise DomainError()
 
         if shipment.is_auto_link():
@@ -55,8 +55,8 @@ class Service:
                 category_alias,
                 action_time,
                 shipment,
-                min_price,
-                min_procent_discount
+                minimum_unit_price,
+                minimum_procent_discount
             )
         )
     
