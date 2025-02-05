@@ -7,7 +7,6 @@ from marketgram.trade.domain.model.p2p.errors import (
     PAYMENT_TO_SELLER, 
     RETURN_TO_BUYER, 
     CheckDeadlineError,
-    OpenedDisputeError,
 )
 from marketgram.trade.domain.model.posting_entry import PostingEntry
 from marketgram.trade.domain.model.entry_status import EntryStatus
@@ -36,9 +35,6 @@ class FailDeal:
         self.events = []
 
     def cancel(self, occurred_at: datetime) -> None:
-        if self._status.is_dispute():
-            raise OpenedDisputeError()
-
         if not self._deadlines.check(self._status, occurred_at):
             match self._status:
                 case StatusDeal.NOT_SHIPPED:
