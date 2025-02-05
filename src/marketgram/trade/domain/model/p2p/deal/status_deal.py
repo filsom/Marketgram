@@ -9,5 +9,5 @@ class StatusDeal(StrEnum):
     DISPUTE = auto()
     ADMIN_CLOSED = auto()
 
-    def is_not_dispute(self) -> bool:
-        return self != StatusDeal.DISPUTE
+    def is_dispute(self) -> bool:
+        return self == StatusDeal.DISPUTE

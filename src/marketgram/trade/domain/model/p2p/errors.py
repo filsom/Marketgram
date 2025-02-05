@@ -24,3 +24,7 @@ DO_NOT_OPEN_DISPUTE = 'Спор не отркыть! Привышено врем
 
 class QuantityItemError(DomainError):
     pass
+
+
+class OpenedDisputeError(DomainError):
+    pass

@@ -61,6 +61,7 @@ class SellerCancelledDealNotification:
 @dataclass(frozen=True)
 class SellerCancelledDisputeDealEvent:
     deal_id: int
+    qty_return: int
     occurred_at: datetime
 
 

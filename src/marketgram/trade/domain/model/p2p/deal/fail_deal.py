@@ -6,7 +6,9 @@ from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
 from marketgram.trade.domain.model.p2p.errors import (
     PAYMENT_TO_SELLER, 
     RETURN_TO_BUYER, 
-    CheckDeadlineError
+    CheckDeadlineError,
+    OpenedDisputeError,
+    QuantityItemError
 )
 from marketgram.trade.domain.model.posting_entry import PostingEntry
 from marketgram.trade.domain.model.entry_status import EntryStatus
@@ -35,39 +37,34 @@ class FailDeal:
         self.events = []
 
     def cancel(self, occurred_at: datetime) -> None:
-        if self._status.is_not_dispute():
-            if not self._deadlines.check(self._status, occurred_at):
-                match self._status:
-                    case StatusDeal.NOT_SHIPPED:
-                        raise CheckDeadlineError(RETURN_TO_BUYER)
-                    
-                    case StatusDeal.INSPECTION:
-                        raise CheckDeadlineError(PAYMENT_TO_SELLER)     
+        if self._status.is_dispute():
+            raise OpenedDisputeError()
 
-            self._entries.append(
-                PostingEntry(
-                    self._buyer_id,
-                    self.amount_return,
-                    occurred_at,
-                    AccountType.USER,
-                    Operation.REFUND,
-                    EntryStatus.ACCEPTED
-                )
+        if not self._deadlines.check(self._status, occurred_at):
+            match self._status:
+                case StatusDeal.NOT_SHIPPED:
+                    raise CheckDeadlineError(RETURN_TO_BUYER)
+                
+                case StatusDeal.INSPECTION:
+                    raise CheckDeadlineError(PAYMENT_TO_SELLER)     
+
+        self._entries.append(
+            PostingEntry(
+                self._buyer_id,
+                self.amount_return,
+                occurred_at,
+                AccountType.USER,
+                Operation.REFUND,
+                EntryStatus.ACCEPTED
             )
-            self.events.append(
-                SellerCancelledDealNotification(
-                    self._buyer_id,
-                    self._deal_id,
-                    occurred_at
-                )
+        )
+        self.events.append(
+            SellerCancelledDealNotification(
+                self._buyer_id,
+                self._deal_id,
+                occurred_at
             )
-        else:
-            self.events.append(
-                SellerCancelledDisputeDealEvent(
-                    self._deal_id,
-                    occurred_at
-                )
-            )
+        )
         self._status = StatusDeal.CANCELLED
     
     @property
