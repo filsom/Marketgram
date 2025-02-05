@@ -12,6 +12,7 @@ from marketgram.trade.domain.model.p2p.members import DisputeMembers
 
 class StatusDispute(StrEnum):
     OPEN = auto()
+    PENDING = auto()
     ADMIN_JOINED = auto()
     CLOSED = auto()
 
@@ -39,12 +40,12 @@ class Dispute:
         self._open_in = open_in
         self._status = status
         self._download_link = download_link
-        self.events = []
+        self.events = []   
 
     def satisfy_buyer(
         self, 
         qty_return: int, 
-        download_link: str | None, 
+        download_link: str | None,
         occurred_at: datetime
     ) -> None:
         if self._status.is_admin_joined():
@@ -71,6 +72,8 @@ class Dispute:
             elif self._shipment.is_message():
                 if download_link is not None:
                     raise AddLinkError()
+            
+            self._status = StatusDispute.PENDING
 
         elif self._claim.return_is_money():
             self.events.append(
