@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from marketgram.trade.domain.model.events import SellerCancelledDealNotification
+from marketgram.trade.domain.model.notifications import SellerCancelledDealNotification
 from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
 from marketgram.trade.domain.model.p2p.errors import (

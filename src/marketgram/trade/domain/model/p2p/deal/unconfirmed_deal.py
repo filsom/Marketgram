@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 
 from marketgram.trade.domain.model.entry_status import EntryStatus
-from marketgram.trade.domain.model.events import DisputeOpenedNotification
 from marketgram.trade.domain.model.money import Money
+from marketgram.trade.domain.model.notifications import DisputeOpenedNotification
 from marketgram.trade.domain.model.p2p.deal.claim import Claim, ReturnType
 from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.deal.opened_dispute import OpenedDispute, StatusDispute

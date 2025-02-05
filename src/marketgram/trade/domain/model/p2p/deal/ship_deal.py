@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from marketgram.trade.domain.model.events import (
-    DealCreatedNotification, 
-    ShippedByDealNotification
+from marketgram.trade.domain.model.notifications import (
+    DealCreatedNotification,
+    ShippedByDealNotification,
 )
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.errors import (

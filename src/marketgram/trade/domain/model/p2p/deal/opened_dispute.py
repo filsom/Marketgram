@@ -1,11 +1,11 @@
 from datetime import datetime, timedelta
 
 from marketgram.trade.domain.model.events import (
-    AdminJoinNotification, 
     BuyerClosedDisputeEvent, 
     SellerClosedDisputeWithAutoShipmentEvent, 
     SellerClosedDisputeWithRefundEvent
 )
+from marketgram.trade.domain.model.notifications import AdminJoinNotification
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.deal.status_dispute import StatusDispute
 from marketgram.trade.domain.model.p2p.deal.unconfirmed_deal import Claim
