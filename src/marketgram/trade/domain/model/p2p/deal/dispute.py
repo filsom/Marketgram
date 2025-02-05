@@ -26,7 +26,6 @@ class Dispute:
         card_id: int,
         claim: Claim,
         dispute_members: DisputeMembers,
-        unit_price: Money,
         shipment: Shipment,
         open_in: datetime,
         status: StatusDispute,
@@ -36,7 +35,6 @@ class Dispute:
         self._card_id = card_id
         self._claim = claim
         self._dispute_members = dispute_members
-        self._unit_price = unit_price
         self._shipment = shipment
         self._open_in = open_in
         self._status = status
