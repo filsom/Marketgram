@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import StrEnum, auto
 from uuid import UUID
 
-from marketgram.trade.domain.model.events import AdminJoinNotification, BuyerClosedDisputeEvent, SellerClosedDisputeWithAutoShipmentEvent
+from marketgram.trade.domain.model.events import AdminJoinNotification, BuyerClosedDisputeEvent, SellerClosedDisputeWithAutoShipmentEvent, SellerClosedDisputeWithRefund
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.deal.unconfirmed_deal import Claim
@@ -26,6 +26,7 @@ class Dispute:
         card_id: int,
         claim: Claim,
         dispute_members: DisputeMembers,
+        unit_price: Money,
         shipment: Shipment,
         open_in: datetime,
         status: StatusDispute,
@@ -35,6 +36,7 @@ class Dispute:
         self._card_id = card_id
         self._claim = claim
         self._dispute_members = dispute_members
+        self._unit_price = unit_price
         self._shipment = shipment
         self._open_in = open_in
         self._status = status
@@ -63,7 +65,8 @@ class Dispute:
             elif self._shipment.is_auto_link():
                 self.events.append(
                     SellerClosedDisputeWithAutoShipmentEvent(
-                        self._card_id, 
+                        self, 
+                        qty_return,
                         occurred_at
                     )
                 )
@@ -72,7 +75,14 @@ class Dispute:
                     raise AddLinkError()
 
         elif self._claim.return_is_money():
-            pass
+            self.events.append(
+                SellerClosedDisputeWithRefund(
+                    self._dispute_members.deal_id,
+                    qty_return,
+                    occurred_at
+                )
+            )
+            self._status = StatusDispute.CLOSED
             
     def satisfy_seller(self, occurred_at: datetime) -> None:
         if self._status.is_admin_joined():

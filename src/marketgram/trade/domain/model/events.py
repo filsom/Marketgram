@@ -2,10 +2,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from typing import TYPE_CHECKING
-from uuid import UUID
+
+from marketgram.trade.domain.model.money import Money
 
 if TYPE_CHECKING:
     from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
+    from marketgram.trade.domain.model.p2p.deal.dispute import Dispute
+
 
 
 @dataclass(frozen=True)
@@ -85,7 +88,15 @@ class BuyerClosedDisputeEvent:
 
 @dataclass(frozen=True)
 class SellerClosedDisputeWithAutoShipmentEvent:
-    card_id: int
+    dispute: Dispute
+    qty_return: int
+    occurred_at: datetime
+
+
+@dataclass(frozen=True)
+class SellerClosedDisputeWithRefund:
+    deal_id: int
+    qty_return: int
     occurred_at: datetime
 
 
