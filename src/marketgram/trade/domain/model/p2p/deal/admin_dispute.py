@@ -43,6 +43,11 @@ class AdminDispute:
                 self._status = StatusDispute.PENDING
                 return 
             
+            elif self._shipment.is_not_auto_link():
+                self._claim= self._claim.change_return_type(
+                    ReturnType.MONEY
+                )
+            
         elif self._claim.return_is_money():
             self.buyer_refund(occurred_at)
 

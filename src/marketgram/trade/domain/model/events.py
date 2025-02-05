@@ -36,6 +36,7 @@ class SellerShippedReplacementWithAutoShipmentEvent:
     occurred_at: datetime
 
 
+# Участики дождались админа и его решению была произведена замена.
 @dataclass(frozen=True)
 class AdminShippedReplacementWithAutoShipmentEvent:
     dispute: AdminDispute
