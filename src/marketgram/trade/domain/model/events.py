@@ -36,7 +36,7 @@ class SellerShippedUnderDisputeWithAutoShipmentEvent:
 
 
 @dataclass(frozen=True)
-class AdminClosedDisputeWithAutoShipmentEvent:
+class AdminShippedUnderDisputeWithAutoShipmentEvent:
     dispute: AdminDispute
     qty_return: int
     occurred_at: datetime
