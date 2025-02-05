@@ -7,7 +7,8 @@ from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.exceptions import DomainError
 from marketgram.trade.domain.model.p2p.deal.claim import Claim, ReturnType
 from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
-from marketgram.trade.domain.model.p2p.deal.dispute import Dispute
+from marketgram.trade.domain.model.p2p.deal.dispute import Dispute, StatusDispute
+from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.errors import (
     DO_NOT_OPEN_DISPUTE, 
     LATE_CONFIRMATION, 
@@ -29,6 +30,7 @@ class UnconfirmedDeal:
         unit_price: Money,
         qty_purcased: int,
         deadlines: Deadlines,
+        shipment: Shipment,
         status: StatusDeal,
         inspected_at: datetime | None,
         entries: list[PostingEntry]
@@ -38,6 +40,7 @@ class UnconfirmedDeal:
         self._unit_price = unit_price
         self._qty_purchased = qty_purcased
         self._deadlines = deadlines
+        self._shipment = shipment
         self._status = status
         self._inspected_at = inspected_at
         self._entries = entries
@@ -95,7 +98,10 @@ class UnconfirmedDeal:
             Claim(qty_defects, reason, return_type),
             self._members.start_dispute(self._deal_id),
             self._unit_price,
-            occurred_at
+            self._qty_purchased,
+            self._shipment,
+            occurred_at,
+            StatusDispute.OPEN
         )
 
     @property
