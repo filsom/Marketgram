@@ -7,7 +7,7 @@ from marketgram.trade.domain.model.money import Money
 
 if TYPE_CHECKING:
     from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
-    from marketgram.trade.domain.model.p2p.deal.dispute import Dispute
+    from marketgram.trade.domain.model.p2p.deal.opened_dispute import OpenedDispute
     from marketgram.trade.domain.model.p2p.deal.admin_dispute import AdminDispute
 
 
@@ -89,7 +89,7 @@ class BuyerClosedDisputeEvent:
 
 @dataclass(frozen=True)
 class SellerClosedDisputeWithAutoShipmentEvent:
-    dispute: Dispute
+    dispute: OpenedDispute
     qty_return: int
     occurred_at: datetime
 

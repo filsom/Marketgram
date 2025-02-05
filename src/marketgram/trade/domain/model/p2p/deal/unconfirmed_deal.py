@@ -5,7 +5,7 @@ from marketgram.trade.domain.model.events import DisputeOpenedNotification
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.deal.claim import Claim, ReturnType
 from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
-from marketgram.trade.domain.model.p2p.deal.dispute import Dispute, StatusDispute
+from marketgram.trade.domain.model.p2p.deal.opened_dispute import OpenedDispute, StatusDispute
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.errors import (
     DO_NOT_OPEN_DISPUTE, 
@@ -79,7 +79,7 @@ class UnconfirmedDeal:
         reason: str, 
         return_type: ReturnType, 
         occurred_at: datetime
-    ) -> Dispute:   
+    ) -> OpenedDispute:   
         if not self._deadlines.check(self._status, occurred_at):
             raise CheckDeadlineError(DO_NOT_OPEN_DISPUTE)
         
@@ -93,7 +93,7 @@ class UnconfirmedDeal:
                 occurred_at
             )
         )        
-        return Dispute(
+        return OpenedDispute(
             self._card_id,
             Claim(qty_defects, reason, return_type),
             self._members.start_dispute(self._deal_id),

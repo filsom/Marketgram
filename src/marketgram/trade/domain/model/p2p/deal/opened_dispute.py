@@ -17,7 +17,7 @@ from marketgram.trade.domain.model.p2p.errors import (
 from marketgram.trade.domain.model.p2p.members import DisputeMembers
 
 
-class Dispute:
+class OpenedDispute:
     def __init__(
         self,
         card_id: int,
@@ -113,7 +113,7 @@ class Dispute:
         self._download_link = download_link
 
     def __eq__(self, other: object) -> bool:
-        if not isinstance(other, Dispute):
+        if not isinstance(other, OpenedDispute):
             return False
 
         return self._dispute_id == other._dispute_id
