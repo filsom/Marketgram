@@ -4,7 +4,7 @@ from marketgram.trade.domain.model.events import (
     BuyerConfirmedAndClosedDisputeEvent, 
     BuyerRejectedReplacementEvent
 )
-from marketgram.trade.domain.model.p2p.deal.claim import Claim
+from marketgram.trade.domain.model.p2p.deal.claim import Claim, ReturnType
 from marketgram.trade.domain.model.p2p.deal.status_dispute import StatusDispute
 from marketgram.trade.domain.model.p2p.errors import CheckDeadlineError
 
@@ -46,6 +46,9 @@ class PendingDispute:
                 self._deal_id,
                 occurred_at
             )
+        )
+        self._claim = self._claim.change_return_type(
+            ReturnType.MONEY
         )
         self._status = StatusDispute.ADMIN_JOINED
 

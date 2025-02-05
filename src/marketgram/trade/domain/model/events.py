@@ -22,6 +22,7 @@ class PurchasedCardWithAutoShipmentEvent:
     occurred_at: datetime
 
 
+# Покупатель закрывает спор. Перевести полную оплату продавцу.
 @dataclass(frozen=True)
 class BuyerClosedDisputeEvent:
     deal_id: int
@@ -65,6 +66,7 @@ class BuyerConfirmedAndClosedDisputeEvent:
     occurred_at: datetime
 
 
+# Пользователь отклонил возврат товара (некачесвенный). Ждем админа!
 @dataclass(frozen=True)
 class BuyerRejectedReplacementEvent:
     deal_id: int
