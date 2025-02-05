@@ -7,10 +7,9 @@ from marketgram.trade.domain.model.notifications import (
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.errors import (
     AUTO_LINK, 
-    IN_THE_CHAT, 
+    IN_THE_CHAT,
     MISSING_DOWNLOAD_LINK, 
     OVERDUE_SHIPMENT, 
-    RE_ADD, 
     AddLinkError, 
     CheckDeadlineError
 )
@@ -50,16 +49,21 @@ class ShipDeal:
 
     def confirm_shipment(
         self, 
+        download_link: str | None,  
         occurred_at: datetime
     ) -> None:
         if not self._deadlines.check(self._status, occurred_at):
             raise CheckDeadlineError(OVERDUE_SHIPMENT)
         
         if self._shipment.is_link():
-            if self._download_link is None:
+            if download_link is None:
                 raise AddLinkError(MISSING_DOWNLOAD_LINK)
-        
-        if not self._shipment.is_message():
+            
+        elif self._shipment.is_message():
+            if download_link is not None:
+                raise AddLinkError(IN_THE_CHAT)
+            
+        elif self._shipment.is_not_auto_link():
             self.events.append(
                 ShippedByDealNotification(
                     self._members.buyer_id,
@@ -68,31 +72,9 @@ class ShipDeal:
                     occurred_at
                 )
             )
+        self._download_link = download_link
         self._shipped_at = occurred_at
         self._status = StatusDeal.INSPECTION
-
-    def add_download_link(
-        self, 
-        link: str,  
-        occurred_at: datetime
-    ) -> None:
-        if not self._deadlines.check(self._status, occurred_at):
-            raise CheckDeadlineError(OVERDUE_SHIPMENT)
-        
-        if self._shipment.is_auto_link():
-            if self._download_link is None:
-                self._download_link = link
-                return 
-            else:
-                raise AddLinkError(AUTO_LINK)
-                    
-        if self._shipment.is_message():
-            raise AddLinkError(IN_THE_CHAT)
-        
-        if self._download_link is not None:
-            raise AddLinkError(RE_ADD)
-        
-        self._download_link = link
 
     def notify_seller(self) -> None:
         if self._shipment.is_notify_to_the_seller():
