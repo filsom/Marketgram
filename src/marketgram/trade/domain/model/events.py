@@ -29,14 +29,14 @@ class BuyerClosedDisputeEvent:
 
 
 @dataclass(frozen=True)
-class SellerShippedUnderDisputeWithAutoShipmentEvent:
+class SellerShippedReplacementWithAutoShipmentEvent:
     dispute: OpenedDispute
     qty_return: int
     occurred_at: datetime
 
 
 @dataclass(frozen=True)
-class AdminShippedUnderDisputeWithAutoShipmentEvent:
+class AdminShippedReplacementWithAutoShipmentEvent:
     dispute: AdminDispute
     qty_return: int
     occurred_at: datetime
