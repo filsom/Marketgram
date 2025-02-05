@@ -6,6 +6,7 @@ from marketgram.trade.domain.model.events import (
     SellerClosedDisputeWithRefundEvent
 )
 from marketgram.trade.domain.model.notifications import AdminJoinNotification
+from marketgram.trade.domain.model.p2p.deal.claim import ReturnType
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.deal.status_dispute import StatusDispute
 from marketgram.trade.domain.model.p2p.deal.unconfirmed_deal import Claim
@@ -43,43 +44,51 @@ class OpenedDispute:
         self._confirm_in = confirm_in
         self.events = []   
 
-    def satisfy_buyer(
+    def provide_replacement(
         self, 
         download_link: str | None,
         occurred_at: datetime
-    ) -> None:        
-        if self._claim.is_replacement():
-            if self._shipment.is_hand():
-                if download_link is None:
-                    raise AddLinkError()
-            
-                self._download_link = download_link
+    ) -> None:
+        if not self._claim.is_replacement():
+            raise OpenedDisputeError()
+        
+        if self._shipment.is_hand():
+            if download_link is None:
+                raise AddLinkError()
+        
+            self._download_link = download_link
 
-            elif self._shipment.is_auto_link():
-                self.events.append(
-                    SellerShippedReplacementWithAutoShipmentEvent(
-                        self, 
-                        self._claim.qty_return,
-                        occurred_at
-                    )
-                )
-            elif self._shipment.is_message():
-                if download_link is not None:
-                    raise AddLinkError()
-            
-            self._confirm_in = occurred_at + timedelta(hours=1)
-            self._status = StatusDispute.PENDING
-
-        elif self._claim.return_is_money():
+        elif self._shipment.is_auto_link():
             self.events.append(
-                SellerClosedDisputeWithRefundEvent(
-                    self._dispute_members.deal_id,
+                SellerShippedReplacementWithAutoShipmentEvent(
+                    self, 
                     self._claim.qty_return,
                     occurred_at
                 )
             )
-            self._status = StatusDispute.CLOSED
-            
+        elif self._shipment.is_message():
+            if download_link is not None:
+                raise AddLinkError()
+        
+        self._confirm_in = occurred_at + timedelta(hours=1)
+        self._status = StatusDispute.PENDING
+
+    def buyer_refund(self, occurred_at: datetime) -> None:
+        if not self._claim.return_is_money():
+            raise OpenedDisputeError()
+        
+        self.events.append(
+            SellerClosedDisputeWithRefundEvent(
+                self._dispute_members.deal_id,
+                self._claim.qty_return,
+                occurred_at
+            )
+        )
+        self._claim = self._claim.change_return_type(
+            ReturnType.MONEY
+        )
+        self._status = StatusDispute.CLOSED
+
     def satisfy_seller(self, occurred_at: datetime) -> None:        
         self.events.append(
             BuyerClosedDisputeEvent(
