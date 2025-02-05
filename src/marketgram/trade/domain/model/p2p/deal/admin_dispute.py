@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from marketgram.trade.domain.model.events import (
-    AdminShippedUnderDisputeWithAutoShipmentEvent, 
+    AdminShippedReplacementWithAutoShipmentEvent, 
     AdminClosedDisputeWithRefundEvent
 )
 from marketgram.trade.domain.model.p2p.deal.claim import Claim, ReturnType
@@ -34,7 +34,7 @@ class AdminDispute:
         if self._claim.is_replacement():
             if self._shipment.is_auto_link():
                 self.events.append(
-                    AdminShippedUnderDisputeWithAutoShipmentEvent(
+                    AdminShippedReplacementWithAutoShipmentEvent(
                         self,
                         self._claim.qty_return,
                         occurred_at
