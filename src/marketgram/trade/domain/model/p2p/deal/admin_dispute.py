@@ -40,6 +40,9 @@ class AdminDispute:
                         occurred_at
                     )
                 )
+                self._status = StatusDispute.PENDING
+                return 
+            
         elif self._claim.return_is_money():
             self.buyer_refund(occurred_at)
 
