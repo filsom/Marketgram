@@ -2,7 +2,7 @@ from datetime import datetime
 
 from marketgram.trade.domain.model.events import (
     AdminClosedDisputeWithAutoShipmentEvent, 
-    AdminClosedDisputeWithRefund
+    AdminClosedDisputeWithRefundEvent
 )
 from marketgram.trade.domain.model.p2p.deal.claim import Claim, ReturnType
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
@@ -50,7 +50,7 @@ class AdminDispute:
             self._claim = self._claim.change_return_type(ReturnType.MONEY)
 
         self.events.append(
-            AdminClosedDisputeWithRefund(
+            AdminClosedDisputeWithRefundEvent(
                 self._dispute_members.deal_id,
                 self._claim.qty_return,
                 occurred_at

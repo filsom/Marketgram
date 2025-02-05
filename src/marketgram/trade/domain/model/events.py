@@ -3,19 +3,10 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from marketgram.trade.domain.model.money import Money
-
 if TYPE_CHECKING:
     from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
     from marketgram.trade.domain.model.p2p.deal.opened_dispute import OpenedDispute
     from marketgram.trade.domain.model.p2p.deal.admin_dispute import AdminDispute
-
-
-
-@dataclass(frozen=True)
-class DisputeOpenedNotification:
-    seller_id: int
-    occurred_at: datetime
 
 
 @dataclass(frozen=True)
@@ -31,53 +22,9 @@ class PurchasedCardWithAutoShipmentEvent:
 
 
 @dataclass(frozen=True)
-class DealCreatedNotification:
-    seller_id: int
-    deal_id: int
-    card_id: int
-    qty: int
-    shipped_at: datetime
-    occurred_at: datetime
-
-
-@dataclass(frozen=True)
-class ShippedByDealNotification:
-    buyer_id: int
-    deal_id: int
-    download_link: str
-    occurred_at: datetime
-
-
-@dataclass(frozen=True)
-class ZeroInventoryBalanceNotification:
-    seller_id: int
-    card_id: int
-    occurred_at: datetime
-
-
-@dataclass(frozen=True)
-class SellerCancelledDealNotification:
-    buyer_id: int
-    deal_id: int
-    occurred_at: datetime
-
-
-@dataclass(frozen=True)
 class SellerCancelledDisputeDealEvent:
     deal_id: int
     qty_return: int
-    occurred_at: datetime
-
-
-@dataclass(frozen=True)
-class DefectiveItemShipped:
-    pass
-
-
-@dataclass(frozen=True)
-class ReissuePurchasedCardNotification:
-    seller_id: int
-    card_id: int
     occurred_at: datetime
 
 
@@ -102,32 +49,26 @@ class AdminClosedDisputeWithAutoShipmentEvent:
 
 
 @dataclass(frozen=True)
-class SellerClosedDisputeWithRefund:
+class SellerClosedDisputeWithRefundEvent:
     deal_id: int
     qty_return: int
     occurred_at: datetime
 
 
 @dataclass(frozen=True)
-class AdminClosedDisputeWithRefund:
+class AdminClosedDisputeWithRefundEvent:
     deal_id: int
     qty_return: int
     occurred_at: datetime
 
 
 @dataclass(frozen=True)
-class AdminJoinNotification:
+class BuyerConfirmedAndClosedDisputeEvent:
     deal_id: int
     occurred_at: datetime
 
 
 @dataclass(frozen=True)
-class BuyerConfirmedAndClosedDispute:
-    deal_id: int
-    occurred_at: datetime
-
-
-@dataclass(frozen=True)
-class BuyerRejectedReplacement:
+class BuyerRejectedReplacementEvent:
     deal_id: int
     occurred_at: datetime

@@ -1,8 +1,8 @@
 from datetime import datetime
 
 from marketgram.trade.domain.model.events import (
-    BuyerConfirmedAndClosedDispute, 
-    BuyerRejectedReplacement
+    BuyerConfirmedAndClosedDisputeEvent, 
+    BuyerRejectedReplacementEvent
 )
 from marketgram.trade.domain.model.p2p.deal.claim import Claim
 from marketgram.trade.domain.model.p2p.deal.status_dispute import StatusDispute
@@ -30,7 +30,7 @@ class PendingDispute:
             raise CheckDeadlineError()
         
         self.events.append(
-            BuyerConfirmedAndClosedDispute(
+            BuyerConfirmedAndClosedDisputeEvent(
                 self._deal_id,
                 occurred_at
             )
@@ -42,7 +42,7 @@ class PendingDispute:
             raise CheckDeadlineError()
         
         self.events(
-            BuyerRejectedReplacement(
+            BuyerRejectedReplacementEvent(
                 self._deal_id,
                 occurred_at
             )

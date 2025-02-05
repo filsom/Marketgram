@@ -4,7 +4,7 @@ from marketgram.trade.domain.model.events import (
     AdminJoinNotification, 
     BuyerClosedDisputeEvent, 
     SellerClosedDisputeWithAutoShipmentEvent, 
-    SellerClosedDisputeWithRefund
+    SellerClosedDisputeWithRefundEvent
 )
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.deal.status_dispute import StatusDispute
@@ -76,7 +76,7 @@ class OpenedDispute:
 
         elif self._claim.return_is_money():
             self.events.append(
-                SellerClosedDisputeWithRefund(
+                SellerClosedDisputeWithRefundEvent(
                     self._dispute_members.deal_id,
                     qty_return,
                     occurred_at
