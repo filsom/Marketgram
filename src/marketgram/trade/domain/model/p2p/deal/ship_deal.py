@@ -61,7 +61,7 @@ class ShipDeal:
 
             self._download_link = download_link
             
-        if self._shipment.is_not_auto_link():
+        elif self._shipment.is_not_auto_link():
             self.events.append(
                 ShippedByDealNotification(
                     self._members.buyer_id,
