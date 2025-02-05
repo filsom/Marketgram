@@ -19,6 +19,7 @@ class AdminDispute:
         dispute_members: DisputeMembers,
         shipment: Shipment,
         status: StatusDispute,
+        download_link: str | None
     ) -> None:
         self._dispute_id = dispute_id
         self._card_id = card_id
@@ -26,6 +27,7 @@ class AdminDispute:
         self._dispute_members = dispute_members
         self._shipment = shipment
         self._status = status
+        self._download_link = download_link
         self.events = []   
 
     def satisfy_buyer(self, occurred_at: datetime) -> None:
@@ -56,3 +58,15 @@ class AdminDispute:
         )
         if self._status != StatusDispute.CLOSED:
             self._status = StatusDispute.CLOSED
+
+    def add_download_link(self, download_link: str) -> None:
+        self._download_link = download_link
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, AdminDispute):
+            return False
+
+        return self._dispute_id == other._dispute_id
+    
+    def __hash__(self) -> int:
+        return hash(self._dispute_id)

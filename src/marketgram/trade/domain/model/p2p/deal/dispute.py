@@ -109,6 +109,9 @@ class Dispute:
     def open_again(self) -> None:
         self._status = StatusDispute.OPEN
 
+    def add_download_link(self, download_link: str) -> None:
+        self._download_link = download_link
+
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Dispute):
             return False
