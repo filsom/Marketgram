@@ -75,3 +75,21 @@ class ReissuePurchasedCardNotification:
     seller_id: int
     card_id: int
     occurred_at: datetime
+
+
+@dataclass(frozen=True)
+class BuyerClosedDisputeEvent:
+    deal_id: int
+    occurred_at: datetime
+
+
+@dataclass(frozen=True)
+class SellerClosedDisputeWithAutoShipmentEvent:
+    card_id: int
+    occurred_at: datetime
+
+
+@dataclass(frozen=True)
+class AdminJoinNotification:
+    deal_id: int
+    occurred_at: datetime

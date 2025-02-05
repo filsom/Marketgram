@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from marketgram.trade.domain.model.events import SellerCancelledDealNotification, SellerCancelledDisputeDealEvent
+from marketgram.trade.domain.model.events import SellerCancelledDealNotification
 from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
 from marketgram.trade.domain.model.p2p.errors import (
@@ -8,7 +8,6 @@ from marketgram.trade.domain.model.p2p.errors import (
     RETURN_TO_BUYER, 
     CheckDeadlineError,
     OpenedDisputeError,
-    QuantityItemError
 )
 from marketgram.trade.domain.model.posting_entry import PostingEntry
 from marketgram.trade.domain.model.entry_status import EntryStatus
