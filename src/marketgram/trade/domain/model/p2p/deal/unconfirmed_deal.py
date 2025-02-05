@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from uuid import uuid4
 
 from marketgram.trade.domain.model.entry_status import EntryStatus
@@ -101,6 +101,7 @@ class UnconfirmedDeal:
             self._qty_purchased,
             self._shipment,
             occurred_at,
+            occurred_at + timedelta(days=1),
             StatusDispute.OPEN
         )
 

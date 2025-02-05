@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from enum import StrEnum, auto
 from uuid import UUID
 
@@ -16,9 +16,6 @@ class StatusDispute(StrEnum):
     ADMIN_JOINED = auto()
     CLOSED = auto()
 
-    def is_admin_joined(self) -> bool:
-        return self == StatusDispute.ADMIN_JOINED
-
 
 class Dispute:
     def __init__(
@@ -29,6 +26,7 @@ class Dispute:
         dispute_members: DisputeMembers,
         shipment: Shipment,
         open_in: datetime,
+        admin_join_in: datetime,
         status: StatusDispute,
         download_link: str | None = None
     ) -> None:
@@ -38,6 +36,7 @@ class Dispute:
         self._dispute_members = dispute_members
         self._shipment = shipment
         self._open_in = open_in
+        self._admin_join_in = admin_join_in
         self._status = status
         self._download_link = download_link
         self.events = []   
@@ -48,9 +47,6 @@ class Dispute:
         download_link: str | None,
         occurred_at: datetime
     ) -> None:
-        if self._status.is_admin_joined():
-            raise OpenedDisputeError()
-        
         if self._claim.qty_return != qty_return:
             raise QuantityItemError()
         
@@ -85,10 +81,7 @@ class Dispute:
             )
             self._status = StatusDispute.CLOSED
             
-    def satisfy_seller(self, occurred_at: datetime) -> None:
-        if self._status.is_admin_joined():
-            raise OpenedDisputeError()
-        
+    def satisfy_seller(self, occurred_at: datetime) -> None:        
         self.events.append(
             BuyerClosedDisputeEvent(
                 self._dispute_members.deal_id,
@@ -97,9 +90,10 @@ class Dispute:
         )
         self._status = StatusDispute.CLOSED
 
-    def add_admin(self, occurred_at: datetime) -> None:
-        if self._status.is_admin_joined():
-            raise OpenedDisputeError()
+    def add_admin(self, occurred_at: datetime) -> None:        
+        if self._status == StatusDispute.OPEN:
+            if self._admin_join_in > occurred_at:
+                raise OpenedDisputeError()
         
         self.events.append(
             AdminJoinNotification(
