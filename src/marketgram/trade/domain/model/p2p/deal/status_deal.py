@@ -8,3 +8,6 @@ class StatusDeal(StrEnum):
     CANCELLED = auto()
     DISPUTE = auto()
     ADMIN_CLOSED = auto()
+
+    def is_not_dispute(self) -> bool:
+        return self != StatusDeal.DISPUTE
