@@ -46,38 +46,21 @@ class DisputeDeal:
 
         qty_sell = self._qty_purchased - qty_return
 
-        self._entries.append(
-            PostingEntry(
-                self._members.buyer_id,
-                qty_return * self._unit_price,
-                occurred_at,
-                AccountType.USER,
-                Operation.REFUND,
-                EntryStatus.ACCEPTED
-            )
+        entry = self._entry_for_buyer(
+            qty_return * self._unit_price, 
+            occurred_at
         )
+        self.entries.append(entry)
+    
         if qty_sell:
             self._qty_purchased = qty_sell
-            self._entries.append(
-                PostingEntry(
-                    self._members.seller_id,
-                    agreement.calculate_payment_to_seller(self.amount_deal),
-                    occurred_at,
-                    AccountType.SELLER,
-                    Operation.SALE,
-                    EntryStatus.FREEZ
-                )
+            entries = self._entries_for_seller(
+                self.amount_deal,
+                agreement,
+                occurred_at
             )
-            self._entries.append(
-                PostingEntry(
-                    agreement._manager_id,
-                    agreement.calculate_sales_profit(self.amount_deal),
-                    occurred_at,
-                    AccountType.MANAGER,
-                    Operation.SALE,
-                    EntryStatus.ACCEPTED
-                )
-            )
+            self.entries.extend(entries)
+
         self.events.append(
             DisputeClosedEvent(
                 self._members.seller_id, 
@@ -91,26 +74,12 @@ class DisputeDeal:
         occurred_at: datetime,
         agreement: ServiceAgreement
     ) -> None:
-        self._entries.append(
-            PostingEntry(
-                self._members.seller_id,
-                agreement.calculate_payment_to_seller(self.amount_deal),
-                occurred_at,
-                AccountType.SELLER,
-                Operation.SALE,
-                EntryStatus.FREEZ
-            )
+        entries = self._entries_for_seller(
+            self.amount_deal,
+            agreement,
+            occurred_at
         )
-        self._entries.append(
-            PostingEntry(
-                agreement._manager_id,
-                agreement.calculate_sales_profit(self.amount_deal),
-                occurred_at,
-                AccountType.MANAGER,
-                Operation.SALE,
-                EntryStatus.ACCEPTED
-            )
-        )
+        self.entries.extend(entries)
         self.events.append(
             DisputeClosedEvent(
                 self._members.seller_id, 
@@ -120,16 +89,11 @@ class DisputeDeal:
         self._status = StatusDeal.CLOSED
 
     def cancel_and_refund(self, occurred_at: datetime) -> None:
-        self._entries.append(
-            PostingEntry(
-                self._members.buyer_id,
-                self.amount_deal,
-                occurred_at,
-                AccountType.USER,
-                Operation.REFUND,
-                EntryStatus.ACCEPTED
-            )
+        entry = self._entry_for_buyer(
+            self.amount_deal, 
+            occurred_at
         )
+        self.entries.append(entry)
         self.events.append(
             DisputeClosedEvent(
                 self._members.seller_id, 
@@ -137,6 +101,49 @@ class DisputeDeal:
             )
         )
         self._status = StatusDeal.CANCELLED  
+
+    def _entry_for_buyer(
+        self, 
+        amount: Money, 
+        occurred_at: datetime
+    ) -> PostingEntry:
+        return PostingEntry(
+            self._members.buyer_id,
+            amount,
+            occurred_at,
+            AccountType.USER,
+            Operation.REFUND,
+            EntryStatus.ACCEPTED
+        )
+
+    def _entries_for_seller(
+        self, 
+        amount: Money,
+        agreement: ServiceAgreement,
+        occurred_at: datetime
+    ) -> list[PostingEntry]:
+        temporary_list = []
+        temporary_list.append(
+            PostingEntry(
+                self._members.seller_id,
+                agreement.calculate_payment_to_seller(amount),
+                occurred_at,
+                AccountType.SELLER,
+                Operation.SALE,
+                EntryStatus.FREEZ
+            )
+        )
+        temporary_list.append(
+            PostingEntry(
+                agreement._manager_id,
+                agreement.calculate_sales_profit(amount),
+                occurred_at,
+                AccountType.MANAGER,
+                Operation.SALE,
+                EntryStatus.ACCEPTED
+            )
+        )
+        return temporary_list
     
     @property
     def status(self) -> StatusDeal:

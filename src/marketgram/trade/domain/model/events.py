@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from marketgram.trade.domain.model.p2p.deal.admin_dispute import AdminDispute
 
 
-# Разблокировать выплату продавцу!
+# Разблокировать выплату продавцу.
 @dataclass(frozen=True)
 class DisputeClosedEvent:
     seller_id: int
@@ -42,6 +42,7 @@ class AdminClosedDisputeWithAutoShipmentEvent:
     occurred_at: datetime
 
 
+# Закрыть сделку и перевести частичную оплату продавцу.
 @dataclass(frozen=True)
 class SellerClosedDisputeWithRefundEvent:
     deal_id: int
@@ -49,6 +50,7 @@ class SellerClosedDisputeWithRefundEvent:
     occurred_at: datetime
 
 
+# Закрыть сделку и перевести частичную оплату продавцу.
 @dataclass(frozen=True)
 class AdminClosedDisputeWithRefundEvent:
     deal_id: int
@@ -56,6 +58,7 @@ class AdminClosedDisputeWithRefundEvent:
     occurred_at: datetime
 
 
+# Закрыть сделку и перевести полную оплату продавцу.
 @dataclass(frozen=True)
 class BuyerConfirmedAndClosedDisputeEvent:
     deal_id: int
