@@ -79,7 +79,7 @@ class SellStockCard(SellCard):
                 InventoryOperation.REPLACE, 
                 occurred_at
             )
-        except QuantityItemError():
+        except QuantityItemError:
             raise ReplacingItemError()
         
     def _take_inventory(
