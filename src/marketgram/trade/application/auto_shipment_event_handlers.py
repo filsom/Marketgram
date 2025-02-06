@@ -49,5 +49,4 @@ class AutoReplacementEventHandler:
         except ReplacingItemError:
             event.dispute.open_again()
 
-        await self._file_storage(event.dispute.deal_id)
-        return event.dispute.provide_replacement(event.occurred_at)
+        return await self._file_storage(event.dispute.deal_id)
