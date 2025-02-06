@@ -1,5 +1,6 @@
 from marketgram.trade.domain.model.errors import ReplacingItemError
 from marketgram.trade.domain.model.events import (
+    AdminShippedReplacementWithAutoShipmentEvent,
     PurchasedCardWithAutoShipmentEvent, 
     SellerShippedReplacementWithAutoShipmentEvent
 )
@@ -58,4 +59,36 @@ class AutoReplacementEventHandler:
             )
         return await self._event_dispatcher.dispatch(
             card.events
+        )
+    
+
+class AdminAutoReplacementEventHandler:
+    def __init__(
+        self,
+        cards_repository: CardsRepository,
+        event_dispatcher: EventDispatcher,
+        file_storage: FileStorage
+    ) -> None:
+        self._cards_repository = cards_repository
+        self._event_dispatcher = event_dispatcher
+        self._file_storage = file_storage
+
+    async def handle(
+        self, 
+        event: AdminShippedReplacementWithAutoShipmentEvent
+    ) -> None:
+        card = await self._cards_repository \
+            .sell_card_with_id(event.dispute.card_id)
+        
+        try:
+            card.replace(event.qty_return, event.occurred_at)
+        except ReplacingItemError:
+            event.dispute.buyer_refund(event.occurred_at)
+        else:
+            await self._file_storage.allocate(
+                event.dispute.deal_id,
+                event.qty_return
+            )
+        return await self._event_dispatcher.dispatch(
+            card.events, event.dispute.events
         )

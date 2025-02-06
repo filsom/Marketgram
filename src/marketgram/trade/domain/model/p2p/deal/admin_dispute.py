@@ -57,7 +57,7 @@ class AdminDispute:
                 ReturnType.MONEY
             )
             self._confirm_in = None
-            
+
         self.events.append(
             AdminClosedDisputeWithRefundEvent(
                 self._dispute_members.deal_id,
@@ -67,6 +67,14 @@ class AdminDispute:
         )
         if self._status != StatusDispute.CLOSED:
             self._status = StatusDispute.CLOSED
+
+    @property
+    def card_id(self) -> int:
+        return self._card_id
+    
+    @property
+    def deal_id(self) -> int:
+        return self._dispute_members.deal_id
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, AdminDispute):
