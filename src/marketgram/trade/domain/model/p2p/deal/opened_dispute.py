@@ -12,7 +12,11 @@ from marketgram.trade.domain.model.notifications import (
 from marketgram.trade.domain.model.p2p.deal.claim import ReturnType
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.deal.unconfirmed_deal import Claim
-from marketgram.trade.domain.model.errors import MISSING_DOWNLOAD_LINK, AddLinkError, OpenedDisputeError
+from marketgram.trade.domain.model.errors import (
+    MISSING_DOWNLOAD_LINK, 
+    AddLinkError, 
+    OpenedDisputeError
+)
 from marketgram.trade.domain.model.p2p.members import DisputeMembers
 from marketgram.trade.domain.model.statuses import StatusDispute
 
@@ -57,7 +61,7 @@ class OpenedDispute:
                     occurred_at
                 )
             )
-        elif self._shipment.is_hand():
+        if self._shipment.is_hand():
             if download_link is None:
                 raise AddLinkError(MISSING_DOWNLOAD_LINK)
             
