@@ -6,7 +6,7 @@ from marketgram.trade.domain.model.p2p.deal.claim import Claim, ReturnType
 from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.deal.opened_dispute import OpenedDispute, StatusDispute
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
-from marketgram.trade.domain.model.p2p.errors import (
+from marketgram.trade.domain.model.errors import (
     DO_NOT_OPEN_DISPUTE, 
     LATE_CONFIRMATION, 
     CheckDeadlineError,

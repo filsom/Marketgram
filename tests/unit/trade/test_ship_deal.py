@@ -7,7 +7,7 @@ from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
-from marketgram.trade.domain.model.p2p.errors import (
+from marketgram.trade.domain.model.errors import (
     AUTO_LINK,
     IN_THE_CHAT,
     MISSING_DOWNLOAD_LINK,

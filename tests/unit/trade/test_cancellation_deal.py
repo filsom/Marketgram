@@ -7,7 +7,7 @@ from marketgram.trade.domain.model.p2p.deal.fail_deal import (
     FailDeal
 )
 from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
-from marketgram.trade.domain.model.p2p.errors import (
+from marketgram.trade.domain.model.errors import (
     PAYMENT_TO_SELLER, 
     RETURN_TO_BUYER, 
     CheckDeadlineError

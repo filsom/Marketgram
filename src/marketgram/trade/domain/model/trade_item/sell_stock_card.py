@@ -8,7 +8,7 @@ from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.notifications import ZeroInventoryBalanceNotification
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
-from marketgram.trade.domain.model.p2p.errors import QuantityItemError
+from marketgram.trade.domain.model.errors import QuantityItemError
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.statuses import StatusCard, StatusDeal
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime

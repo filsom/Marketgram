@@ -7,7 +7,7 @@ import pytest
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.deal.unconfirmed_deal import UnconfirmedDeal
 from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
-from marketgram.trade.domain.model.p2p.errors import LATE_CONFIRMATION, CheckDeadlineError
+from marketgram.trade.domain.model.errors import LATE_CONFIRMATION, CheckDeadlineError
 from marketgram.trade.domain.model.p2p.service_agreement import ServiceAgreement
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
 

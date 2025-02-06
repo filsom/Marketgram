@@ -9,7 +9,7 @@ from marketgram.trade.domain.model.notifications import AdminJoinNotification
 from marketgram.trade.domain.model.p2p.deal.claim import ReturnType
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.deal.unconfirmed_deal import Claim
-from marketgram.trade.domain.model.p2p.errors import (
+from marketgram.trade.domain.model.errors import (
     AddLinkError, 
     OpenedDisputeError, 
 )

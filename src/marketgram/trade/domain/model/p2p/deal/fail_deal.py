@@ -2,7 +2,7 @@ from datetime import datetime
 
 from marketgram.trade.domain.model.notifications import SellerCancelledDealNotification
 from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
-from marketgram.trade.domain.model.p2p.errors import (
+from marketgram.trade.domain.model.errors import (
     PAYMENT_TO_SELLER, 
     RETURN_TO_BUYER, 
     CheckDeadlineError,

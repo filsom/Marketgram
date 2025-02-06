@@ -5,7 +5,7 @@ from marketgram.trade.domain.model.notifications import (
     ShippedByDealNotification,
 )
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
-from marketgram.trade.domain.model.p2p.errors import (
+from marketgram.trade.domain.model.errors import (
     MISSING_DOWNLOAD_LINK, 
     OVERDUE_SHIPMENT, 
     AddLinkError, 

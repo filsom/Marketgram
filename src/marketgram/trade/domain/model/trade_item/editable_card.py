@@ -9,7 +9,7 @@ from marketgram.trade.domain.model.trade_item.description import (
     Description, 
     StatusDescription
 )
-from marketgram.trade.domain.model.exceptions import (
+from marketgram.trade.domain.model.errors import (
     DISCOUNT_ERROR, 
     UNACCEPTABLE_DISCOUNT_RANGE
 )

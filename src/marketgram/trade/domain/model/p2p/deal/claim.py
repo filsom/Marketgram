@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import StrEnum, auto
 
 from marketgram.trade.domain.model.money import Money
-from marketgram.trade.domain.model.p2p.errors import QuantityItemError
+from marketgram.trade.domain.model.errors import QuantityItemError
 
 
 class ReturnType(StrEnum):

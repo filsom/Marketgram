@@ -6,7 +6,7 @@ import pytest
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.deal.dispute_deal import DisputeDeal
 from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
-from marketgram.trade.domain.model.p2p.errors import (
+from marketgram.trade.domain.model.errors import (
     DO_NOT_OPEN_DISPUTE, 
     CheckDeadlineError
 )
