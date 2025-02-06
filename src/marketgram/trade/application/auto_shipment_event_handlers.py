@@ -7,6 +7,7 @@ from marketgram.trade.domain.model.events import (
 from marketgram.trade.domain.model.trade_item.cards_repository import CardsRepository
 from marketgram.trade.domain.model.trade_item.file_storage import FileStorage
 from marketgram.trade.port.adapter.event_dispatcher import EventDispatcher
+from marketgram.trade.port.adapter.sqlalchemy_resources.trade_session import TradeSession
 
 
 
@@ -33,10 +34,12 @@ class AutoShipmentEventHandler:
 class SellerAutoReplacementEventHandler:
     def __init__(
         self,
+        session: TradeSession,
         cards_repository: CardsRepository,
         event_dispatcher: EventDispatcher,
         file_storage: FileStorage
     ) -> None:
+        self._session = session
         self._cards_repository = cards_repository
         self._event_dispatcher = event_dispatcher
         self._file_storage = file_storage
@@ -45,6 +48,8 @@ class SellerAutoReplacementEventHandler:
         self, 
         event: SellerShippedReplacementWithAutoShipmentEvent
     ) -> None:
+        await self._session.trading_lock(event.dispute.card_id)
+
         card = await self._cards_repository \
             .sell_card_with_id(event.dispute.card_id)
         
@@ -65,10 +70,12 @@ class SellerAutoReplacementEventHandler:
 class AdminAutoReplacementEventHandler:
     def __init__(
         self,
+        session: TradeSession,
         cards_repository: CardsRepository,
         event_dispatcher: EventDispatcher,
         file_storage: FileStorage
     ) -> None:
+        self._session = session
         self._cards_repository = cards_repository
         self._event_dispatcher = event_dispatcher
         self._file_storage = file_storage
@@ -77,6 +84,8 @@ class AdminAutoReplacementEventHandler:
         self, 
         event: AdminShippedReplacementWithAutoShipmentEvent
     ) -> None:
+        await self._session.trading_lock(event.dispute.card_id)
+
         card = await self._cards_repository \
             .sell_card_with_id(event.dispute.card_id)
         
