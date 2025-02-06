@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from marketgram.trade.domain.model.events import (
     AdminShippedReplacementWithAutoShipmentEvent, 
@@ -19,6 +19,7 @@ class AdminDispute:
         dispute_members: DisputeMembers,
         shipment: Shipment,
         status: StatusDispute,
+        confirm_in: datetime | None
     ) -> None:
         self._dispute_id = dispute_id
         self._card_id = card_id
@@ -26,6 +27,7 @@ class AdminDispute:
         self._dispute_members = dispute_members
         self._shipment = shipment
         self._status = status
+        self._confirm_in = confirm_in
         self.events = []   
 
     def satisfy_buyer(self, occurred_at: datetime) -> None:
@@ -38,6 +40,7 @@ class AdminDispute:
                         occurred_at
                     )
                 )
+                self._confirm_in = occurred_at + timedelta(hours=1)
                 self._status = StatusDispute.PENDING
                 return 
             
@@ -53,6 +56,8 @@ class AdminDispute:
             self._claim = self._claim.change_return_type(
                 ReturnType.MONEY
             )
+            self._confirm_in = None
+            
         self.events.append(
             AdminClosedDisputeWithRefundEvent(
                 self._dispute_members.deal_id,
