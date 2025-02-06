@@ -12,7 +12,7 @@ from marketgram.trade.domain.model.notifications import (
 from marketgram.trade.domain.model.p2p.deal.claim import ReturnType
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.deal.unconfirmed_deal import Claim
-from marketgram.trade.domain.model.errors import OpenedDisputeError
+from marketgram.trade.domain.model.errors import MISSING_DOWNLOAD_LINK, AddLinkError, OpenedDisputeError
 from marketgram.trade.domain.model.p2p.members import DisputeMembers
 from marketgram.trade.domain.model.statuses import StatusDispute
 
@@ -41,26 +41,33 @@ class OpenedDispute:
         self._confirm_in = confirm_in
         self.events = []   
 
-    def provide_replacement(self, occurred_at: datetime) -> None:
+    def provide_replacement(
+        self, 
+        occurred_at: datetime,
+        download_link: str | None = None
+    ) -> None:
         if self._claim.return_is_money():
             raise OpenedDisputeError()
-    
+
         if self._shipment.is_auto_link():
             self.events.append(
                 SellerShippedReplacementWithAutoShipmentEvent(
-                    self, 
+                    self,
                     self._claim.qty_return,
                     occurred_at
                 )
             )
-        elif self._shipment.is_not_auto_link():
-            self.events.append(
-                ShippedReplacementByDisputeNotification(
-                    self._dispute_members.buyer_id,
-                    self._dispute_members.deal_id,
-                    occurred_at
-                )
+        elif self._shipment.is_hand():
+            if download_link is None:
+                raise AddLinkError(MISSING_DOWNLOAD_LINK)
+            
+        self.events.append(
+            ShippedReplacementByDisputeNotification(
+                self._dispute_members.buyer_id,
+                self._dispute_members.deal_id,
+                occurred_at
             )
+        )
         self._confirm_in = occurred_at + timedelta(hours=1)
         self._status = StatusDispute.PENDING
 
@@ -100,6 +107,7 @@ class OpenedDispute:
         self._status = StatusDispute.ADMIN_JOINED
 
     def open_again(self) -> None:
+        self.events.clear()
         self._confirm_in = None
         self._status = StatusDispute.OPEN
 
@@ -110,6 +118,10 @@ class OpenedDispute:
     @property
     def deal_id(self) -> int:
         return self._dispute_members.deal_id
+    
+    @property
+    def status(self) -> int:
+        return self._status
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, OpenedDispute):

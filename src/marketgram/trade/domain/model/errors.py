@@ -5,6 +5,10 @@ class CheckDeadlineError(DomainError):
     pass
 
 
+class AddLinkError(DomainError):
+    pass
+
+MISSING_DOWNLOAD_LINK = 'Отсутствует ссылка для скачивания!'
 OVERDUE_SHIPMENT = 'Отгрузка товара просрочена! Будет осуществлен автоматический возврат денежных средств покупателю!'
 RETURN_TO_BUYER = 'Будет осуществлен автоматический возврат денежных средств покупателю!'
 PAYMENT_TO_SELLER = 'Ожидайте, покупатель не подтвердил получение, деньги автоматически поступят на ваш баланс.'

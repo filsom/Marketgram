@@ -63,7 +63,7 @@ class SellerAutoReplacementEventHandler:
                 event.qty_return
             )
         return await self._event_dispatcher.dispatch(
-            card.events
+            card.events, event.dispute.events
         )
     
 
