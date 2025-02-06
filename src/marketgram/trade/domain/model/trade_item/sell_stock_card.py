@@ -50,7 +50,7 @@ class SellStockCard(SellCard):
     ) -> ShipDeal:
         self._take_inventory(
             quantity, 
-            InventoryOperation.REPLACE, 
+            InventoryOperation.BUY, 
             occurred_at
         )
         deal = ShipDeal(
