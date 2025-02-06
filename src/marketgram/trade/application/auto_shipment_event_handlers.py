@@ -21,7 +21,8 @@ class AutoShipmentEventHandler:
         event: PurchasedCardWithAutoShipmentEvent
     ) -> None:
         await self._file_storage.allocate(
-            event.deal.deal_id
+            event.deal.deal_id,
+            event.deal.qty_purchased
         )
         return await event.deal.confirm_shipment(
             event.occurred_at
@@ -49,4 +50,7 @@ class AutoReplacementEventHandler:
         except ReplacingItemError:
             event.dispute.open_again()
 
-        return await self._file_storage(event.dispute.deal_id)
+        return await self._file_storage.allocate(
+            event.dispute.deal_id,
+            event.qty_return
+        )

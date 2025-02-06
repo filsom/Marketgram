@@ -84,6 +84,10 @@ class ShipDeal:
     @property
     def deal_id(self) -> int:
         return self._deal_id
+    
+    @property 
+    def qty_purchased(self) -> int:
+        return self._qty_purchased
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ShipDeal):
