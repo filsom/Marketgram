@@ -1,10 +1,9 @@
 from datetime import datetime
 
-from marketgram.common.domain.model.errors import DomainError
 from marketgram.trade.domain.model.notifications import ReissuePurchasedCardNotification
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
-from marketgram.trade.domain.model.errors import QuantityItemError
+from marketgram.trade.domain.model.errors import QuantityItemError, ReplacingItemError
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.statuses import StatusCard, StatusDeal
@@ -61,7 +60,7 @@ class SellCard:
         self._status = StatusCard.EDITING
 
     def replace(self, qty_replacement: int) -> None:
-        raise DomainError()
+        raise ReplacingItemError()
 
     @property
     def price(self) -> Money:

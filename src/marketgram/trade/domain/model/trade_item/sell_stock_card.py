@@ -8,7 +8,7 @@ from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.notifications import ZeroInventoryBalanceNotification
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
-from marketgram.trade.domain.model.errors import QuantityItemError
+from marketgram.trade.domain.model.errors import QuantityItemError, ReplacingItemError
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.statuses import StatusCard, StatusDeal
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
@@ -73,11 +73,14 @@ class SellStockCard(SellCard):
         qty_replacement: int, 
         occurred_at: datetime
     ) -> None:
-        self._take_inventory(
-            qty_replacement, 
-            InventoryOperation.REPLACE, 
-            occurred_at
-        )
+        try:
+            self._take_inventory(
+                qty_replacement, 
+                InventoryOperation.REPLACE, 
+                occurred_at
+            )
+        except QuantityItemError():
+            raise ReplacingItemError()
         
     def _take_inventory(
         self, 
@@ -90,7 +93,7 @@ class SellStockCard(SellCard):
         
         remainder = self._stock_balance - quantity
         if remainder < 0:
-            raise DomainError()
+            raise QuantityItemError()
         
         if remainder == 0:
             self._shipment = Shipment.HAND
