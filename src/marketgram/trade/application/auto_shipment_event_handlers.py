@@ -23,7 +23,7 @@ class AutoShipmentEventHandler:
         await self._file_storage.allocate(
             event.deal.deal_id
         )
-        await event.deal.confirm_shipment(
+        return await event.deal.confirm_shipment(
             event.occurred_at
         )
 
