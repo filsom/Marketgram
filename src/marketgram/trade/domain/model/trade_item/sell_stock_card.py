@@ -48,6 +48,44 @@ class SellStockCard(SellCard):
         quantity: int, 
         occurred_at: datetime
     ) -> ShipDeal:
+        self._take_inventory(
+            quantity, 
+            InventoryOperation.REPLACE, 
+            occurred_at
+        )
+        deal = ShipDeal(
+            self._card_id,
+            Members(self._owner_id, buyer_id),
+            quantity,
+            self._shipment,
+            self._unit_price,
+            self._action_time.create_deadlines(occurred_at),
+            StatusDeal.NOT_SHIPPED,
+            occurred_at
+        )  
+        self.events.append(
+            PurchasedCardWithAutoShipmentEvent(deal, occurred_at)
+        )
+        return deal
+    
+    def replace(
+        self, 
+        qty_replacement: int, 
+        occurred_at: datetime
+    ) -> None:
+        self._take_inventory(
+            qty_replacement, 
+            InventoryOperation.REPLACE, 
+            occurred_at
+        )
+        
+
+    def _take_inventory(
+        self, 
+        quantity: int, 
+        operation: InventoryOperation, 
+        occurred_at: datetime
+    ) -> None:
         if quantity <= 0:
             raise QuantityItemError()
         
@@ -69,20 +107,6 @@ class SellStockCard(SellCard):
             InventoryEntry(
                 -quantity, 
                 occurred_at, 
-                InventoryOperation.BUY
+                operation
             )
         )
-        deal = ShipDeal(
-            self._card_id,
-            Members(self._owner_id, buyer_id),
-            quantity,
-            self._shipment,
-            self._unit_price,
-            self._action_time.create_deadlines(occurred_at),
-            StatusDeal.NOT_SHIPPED,
-            occurred_at
-        )  
-        self.events.append(
-            PurchasedCardWithAutoShipmentEvent(deal, occurred_at)
-        )
-        return deal

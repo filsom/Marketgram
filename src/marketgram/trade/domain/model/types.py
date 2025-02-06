@@ -23,3 +23,4 @@ class AccountType(StrEnum):
 class InventoryOperation(StrEnum):
     UPLOADING = auto()
     BUY = auto()
+    REPLACE = auto
