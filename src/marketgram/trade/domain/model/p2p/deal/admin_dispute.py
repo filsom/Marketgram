@@ -44,11 +44,7 @@ class AdminDispute:
                 self._status = StatusDispute.PENDING
                 return 
             
-        self._claim = self._claim.change_return_type(
-            ReturnType.MONEY
-        )
         self.buyer_refund(occurred_at)
-
         self._status = StatusDispute.CLOSED
         
     def buyer_refund(self, occurred_at: datetime) -> None:
