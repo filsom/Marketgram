@@ -43,20 +43,18 @@ class AdminDispute:
                 self._status = StatusDispute.PENDING
                 return 
             
-            elif self._shipment.is_not_auto_link():
-                self._claim = self._claim.change_return_type(
-                    ReturnType.MONEY
-                )
-            
-        elif self._claim.return_is_money():
-            self.buyer_refund(occurred_at)
+        self._claim = self._claim.change_return_type(
+            ReturnType.MONEY
+        )
+        self.buyer_refund(occurred_at)
 
         self._status = StatusDispute.CLOSED
         
     def buyer_refund(self, occurred_at: datetime) -> None:
         if self._claim.is_replacement():
-            self._claim = self._claim.change_return_type(ReturnType.MONEY)
-
+            self._claim = self._claim.change_return_type(
+                ReturnType.MONEY
+            )
         self.events.append(
             AdminClosedDisputeWithRefundEvent(
                 self._dispute_members.deal_id,
