@@ -3,17 +3,19 @@ from marketgram.trade.domain.model.events import (
     PurchasedCardWithAutoShipmentEvent, 
     SellerShippedReplacementWithAutoShipmentEvent
 )
-from marketgram.trade.port.adapter.file_storage import FileStorage
-from marketgram.trade.port.adapter.sqlalchemy_resources.cards_repository import (
-    CardsRepository
-)
+from marketgram.trade.domain.model.trade_item.cards_repository import CardsRepository
+from marketgram.trade.domain.model.trade_item.file_storage import FileStorage
+from marketgram.trade.port.adapter.event_dispatcher import EventDispatcher
+
 
 
 class AutoShipmentEventHandler:
     def __init__(
         self,
+        event_dispatcher: EventDispatcher,
         file_storage: FileStorage
     ) -> None:
+        self._event_dispatcher = event_dispatcher
         self._file_storage = file_storage
 
     async def execute(
@@ -24,8 +26,11 @@ class AutoShipmentEventHandler:
             event.deal.deal_id,
             event.deal.qty_purchased
         )
-        return await event.deal.confirm_shipment(
+        await event.deal.confirm_shipment(
             event.occurred_at
+        )
+        return await self._event_dispatcher.dispatch(
+            event.deal.events
         )
 
 
@@ -33,9 +38,11 @@ class AutoReplacementEventHandler:
     def __init__(
         self,
         cards_repository: CardsRepository,
+        event_dispatcher: EventDispatcher,
         file_storage: FileStorage
     ) -> None:
         self._cards_repository = cards_repository
+        self._event_dispatcher = event_dispatcher
         self._file_storage = file_storage
 
     async def execute(
@@ -50,7 +57,10 @@ class AutoReplacementEventHandler:
         except ReplacingItemError:
             event.dispute.open_again()
         else:
-            return await self._file_storage.allocate(
+            await self._file_storage.allocate(
                 event.dispute.deal_id,
                 event.qty_return
             )
+        return await self._event_dispatcher.dispatch(
+            card.events
+        )
