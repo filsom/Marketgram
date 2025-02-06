@@ -27,6 +27,14 @@ class ShippedByDealNotification:
 
 
 @dataclass(frozen=True)
+class ShippedReplacementByDisputeNotification:
+    buyer_id: int
+    deal_id: int
+    download_link: str
+    occurred_at: datetime
+
+
+@dataclass(frozen=True)
 class ZeroInventoryBalanceNotification:
     seller_id: int
     card_id: int

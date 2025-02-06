@@ -29,7 +29,6 @@ class ShipDeal:
         status: StatusDeal,
         created_at: datetime,
         deal_id: int = None,
-        download_link: str = None,
         shipped_at: datetime = None
     ) -> None:
         self._deal_id = deal_id
@@ -41,30 +40,26 @@ class ShipDeal:
         self._deadlines = deadlines
         self._status = status
         self._created_at = created_at
-        self._download_link = download_link
         self._shipped_at = shipped_at
         self.events = []
 
     def confirm_shipment(
         self, 
-        download_link: str | None,  
-        occurred_at: datetime
+        occurred_at: datetime,
+        download_link: str | None = None,
     ) -> None:
         if not self._deadlines.check(self._status, occurred_at):
             raise CheckDeadlineError(OVERDUE_SHIPMENT)
-        
-        if self._shipment.is_link():
+            
+        if self._shipment.is_not_auto_link():
             if download_link is None:
                 raise AddLinkError(MISSING_DOWNLOAD_LINK)
-
-            self._download_link = download_link
             
-        elif self._shipment.is_not_auto_link():
             self.events.append(
                 ShippedByDealNotification(
                     self._members.buyer_id,
                     self._deal_id,
-                    self._download_link,
+                    download_link,
                     occurred_at
                 )
             )
@@ -87,10 +82,6 @@ class ShipDeal:
     @property
     def write_off_ammount(self) -> Money:
         return -self._unit_price * self._qty_purchased
-    
-    @property
-    def download_link(self) -> str:
-        return self._download_link
     
     @property
     def status(self) -> StatusDeal:

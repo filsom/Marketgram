@@ -5,12 +5,16 @@ from marketgram.trade.domain.model.events import (
     SellerShippedReplacementWithAutoShipmentEvent, 
     SellerClosedDisputeWithRefundEvent
 )
-from marketgram.trade.domain.model.notifications import AdminJoinNotification
+from marketgram.trade.domain.model.notifications import (
+    AdminJoinNotification, 
+    ShippedReplacementByDisputeNotification
+)
 from marketgram.trade.domain.model.p2p.deal.claim import ReturnType
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.deal.unconfirmed_deal import Claim
 from marketgram.trade.domain.model.errors import (
-    AddLinkError, 
+    MISSING_DOWNLOAD_LINK,
+    AddLinkError,
     OpenedDisputeError, 
 )
 from marketgram.trade.domain.model.p2p.members import DisputeMembers
@@ -29,7 +33,6 @@ class OpenedDispute:
         status: StatusDispute,
         dispute_id: int | None = None,
         confirm_in: datetime | None = None,
-        download_link: str | None = None
     ) -> None:
         self._dispute_id = dispute_id
         self._card_id = card_id
@@ -39,29 +42,34 @@ class OpenedDispute:
         self._open_in = open_in
         self._admin_join_in = admin_join_in
         self._status = status
-        self._download_link = download_link
         self._confirm_in = confirm_in
         self.events = []   
 
     def provide_replacement(
         self, 
-        download_link: str | None,
-        occurred_at: datetime
+        occurred_at: datetime, 
+        download_link: str | None = None  
     ) -> None:
         if self._claim.return_is_money():
             raise OpenedDisputeError()
-        
-        if self._shipment.is_hand():
-            if download_link is None:
-                raise AddLinkError()
-        
-            self._download_link = download_link
-
-        elif self._shipment.is_auto_link():
+    
+        if self._shipment.is_auto_link():
             self.events.append(
                 SellerShippedReplacementWithAutoShipmentEvent(
                     self, 
                     self._claim.qty_return,
+                    occurred_at
+                )
+            )
+        elif self._shipment.is_not_auto_link():
+            if download_link is None:
+                raise AddLinkError(MISSING_DOWNLOAD_LINK)
+            
+            self.events.append(
+                ShippedReplacementByDisputeNotification(
+                    self._dispute_members.buyer_id,
+                    self._dispute_members.deal_id,
+                    download_link,
                     occurred_at
                 )
             )
@@ -105,9 +113,6 @@ class OpenedDispute:
 
     def open_again(self) -> None:
         self._status = StatusDispute.OPEN
-
-    def add_download_link(self, download_link: str) -> None:
-        self._download_link = download_link
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, OpenedDispute):
