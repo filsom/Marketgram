@@ -59,7 +59,11 @@ class SellCard:
     def edit(self) -> None:
         self._status = StatusCard.EDITING
 
-    def replace(self, qty_replacement: int) -> None:
+    def replace(
+        self, 
+        qty_replacement: int, 
+        occurred_at: datetime
+    ) -> None:
         raise ReplacingItemError()
 
     @property
