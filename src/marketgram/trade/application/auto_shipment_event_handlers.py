@@ -12,10 +12,8 @@ from marketgram.trade.port.adapter.event_dispatcher import EventDispatcher
 class AutoShipmentEventHandler:
     def __init__(
         self,
-        event_dispatcher: EventDispatcher,
         file_storage: FileStorage
     ) -> None:
-        self._event_dispatcher = event_dispatcher
         self._file_storage = file_storage
 
     async def execute(
@@ -26,11 +24,8 @@ class AutoShipmentEventHandler:
             event.deal.deal_id,
             event.deal.qty_purchased
         )
-        await event.deal.confirm_shipment(
+        return await event.deal.confirm_shipment(
             event.occurred_at
-        )
-        return await self._event_dispatcher.dispatch(
-            event.deal.events
         )
 
 
