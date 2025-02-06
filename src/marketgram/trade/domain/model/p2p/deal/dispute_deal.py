@@ -31,7 +31,7 @@ class DisputeDeal:
         self._status = status
         self.events = []
 
-    def allocate(
+    def allocate_money(
         self,
         qty_return: int,
         occurred_at: datetime,
