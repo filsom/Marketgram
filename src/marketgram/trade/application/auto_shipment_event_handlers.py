@@ -29,7 +29,7 @@ class AutoShipmentEventHandler:
         )
 
 
-class AutoShipmentReplacementEventHandler:
+class AutoReplacementEventHandler:
     def __init__(
         self,
         cards_repository: CardsRepository,
