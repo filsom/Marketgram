@@ -8,13 +8,13 @@ from marketgram.trade.domain.model.events import (
 from marketgram.trade.domain.model.notifications import AdminJoinNotification
 from marketgram.trade.domain.model.p2p.deal.claim import ReturnType
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
-from marketgram.trade.domain.model.p2p.deal.status_dispute import StatusDispute
 from marketgram.trade.domain.model.p2p.deal.unconfirmed_deal import Claim
 from marketgram.trade.domain.model.p2p.errors import (
     AddLinkError, 
     OpenedDisputeError, 
 )
 from marketgram.trade.domain.model.p2p.members import DisputeMembers
+from marketgram.trade.domain.model.statuses import StatusDispute
 
 
 class OpenedDispute:

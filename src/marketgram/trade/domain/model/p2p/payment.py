@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from marketgram.trade.domain.model.posting_entry import (
+from marketgram.trade.domain.model.entries import (
     EntryStatus, 
     PostingEntry
 )

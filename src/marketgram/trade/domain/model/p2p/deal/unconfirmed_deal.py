@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 
-from marketgram.trade.domain.model.entry_status import EntryStatus
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.notifications import DisputeOpenedNotification
 from marketgram.trade.domain.model.p2p.deal.claim import Claim, ReturnType
@@ -15,8 +14,8 @@ from marketgram.trade.domain.model.p2p.errors import (
 )
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.p2p.sales_manager import ServiceAgreement
-from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
-from marketgram.trade.domain.model.posting_entry import PostingEntry
+from marketgram.trade.domain.model.entries import PostingEntry
+from marketgram.trade.domain.model.statuses import EntryStatus, StatusDeal
 from marketgram.trade.domain.model.types import AccountType, Operation
 
 

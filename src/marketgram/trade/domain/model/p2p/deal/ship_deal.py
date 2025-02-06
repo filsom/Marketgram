@@ -6,8 +6,6 @@ from marketgram.trade.domain.model.notifications import (
 )
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.errors import (
-    AUTO_LINK, 
-    IN_THE_CHAT,
     MISSING_DOWNLOAD_LINK, 
     OVERDUE_SHIPMENT, 
     AddLinkError, 
@@ -15,8 +13,8 @@ from marketgram.trade.domain.model.p2p.errors import (
 )
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
-from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
 from marketgram.trade.domain.model.money import Money
+from marketgram.trade.domain.model.statuses import StatusDeal
 
 
 class ShipDeal:

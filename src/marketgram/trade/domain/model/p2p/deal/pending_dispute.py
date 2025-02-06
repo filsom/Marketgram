@@ -3,8 +3,8 @@ from datetime import datetime
 from marketgram.trade.domain.model.events import BuyerConfirmedAndClosedDisputeEvent
 from marketgram.trade.domain.model.notifications import BuyerRejectedReplacementNotification
 from marketgram.trade.domain.model.p2p.deal.claim import Claim, ReturnType
-from marketgram.trade.domain.model.p2p.deal.status_dispute import StatusDispute
 from marketgram.trade.domain.model.p2p.errors import CheckDeadlineError
+from marketgram.trade.domain.model.statuses import StatusDispute
 
 
 class PendingDispute:

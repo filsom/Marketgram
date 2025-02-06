@@ -3,21 +3,20 @@ from datetime import datetime
 from marketgram.common.domain.model.errors import DomainError
 from marketgram.trade.domain.model.events import (
     PurchasedCardWithAutoShipmentEvent, 
-    ZeroInventoryBalanceNotification
 )
 from marketgram.trade.domain.model.money import Money
+from marketgram.trade.domain.model.notifications import ZeroInventoryBalanceNotification
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.errors import QuantityItemError
 from marketgram.trade.domain.model.p2p.members import Members
-from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
+from marketgram.trade.domain.model.statuses import StatusCard, StatusDeal
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
-from marketgram.trade.domain.model.trade_item.inventory_entry import (
+from marketgram.trade.domain.model.entries import (
     InventoryEntry, 
     InventoryOperation
 )
 from marketgram.trade.domain.model.trade_item.sell_card import SellCard
-from marketgram.trade.domain.model.trade_item.status_card import StatusCard
 
 
 class SellStockCard(SellCard):

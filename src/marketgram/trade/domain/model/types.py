@@ -25,3 +25,8 @@ class AccountType(StrEnum):
     USER = auto()
     SELLER = auto()
     MANAGER = auto()
+
+
+class InventoryOperation(StrEnum):
+    UPLOADING = auto()
+    BUY = auto()

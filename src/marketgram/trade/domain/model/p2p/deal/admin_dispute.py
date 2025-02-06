@@ -6,8 +6,8 @@ from marketgram.trade.domain.model.events import (
 )
 from marketgram.trade.domain.model.p2p.deal.claim import Claim, ReturnType
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
-from marketgram.trade.domain.model.p2p.deal.status_dispute import StatusDispute
 from marketgram.trade.domain.model.p2p.members import DisputeMembers
+from marketgram.trade.domain.model.statuses import StatusDispute
 
 
 class AdminDispute:

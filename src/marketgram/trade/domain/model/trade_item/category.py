@@ -4,11 +4,11 @@ from decimal import Decimal
 from marketgram.common.domain.model.errors import DomainError
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.money import Money
+from marketgram.trade.domain.model.statuses import StatusCard
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
 from marketgram.trade.domain.model.trade_item.description import Description
 from marketgram.trade.domain.model.trade_item.moderation_card import (
     ModerationCard, 
-    StatusCard
 )
 
 

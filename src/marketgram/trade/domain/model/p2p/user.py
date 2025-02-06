@@ -10,7 +10,7 @@ from marketgram.trade.domain.model.exceptions import (
     DomainError
 )
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
-from marketgram.trade.domain.model.posting_entry import EntryStatus, PostingEntry
+from marketgram.trade.domain.model.entries import EntryStatus, PostingEntry
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.payment import Payment
 from marketgram.trade.domain.model.types import AccountType, Operation

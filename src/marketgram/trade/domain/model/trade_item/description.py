@@ -1,15 +1,7 @@
 from datetime import datetime
-from enum import StrEnum, auto
-from uuid import UUID
 
+from marketgram.trade.domain.model.statuses import StatusDescription
 from marketgram.trade.domain.model.types import INFINITY
-
-
-class StatusDescription(StrEnum):
-    NEW = auto()
-    CURRENT = auto()
-    ARCHIVED = auto()
-    CANCELLED = auto()
 
 
 class Description:
