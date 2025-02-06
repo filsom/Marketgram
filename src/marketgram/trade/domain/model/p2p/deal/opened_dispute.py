@@ -100,6 +100,7 @@ class OpenedDispute:
         self._status = StatusDispute.ADMIN_JOINED
 
     def open_again(self) -> None:
+        self._confirm_in = None
         self._status = StatusDispute.OPEN
 
     def __eq__(self, other: object) -> bool:
