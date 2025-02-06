@@ -5,7 +5,6 @@ from marketgram.trade.domain.model.p2p.paycard import Paycard
 from marketgram.trade.domain.model.exceptions import (
     BALANCE_BLOCKED,
     INSUFFICIENT_FUNDS, 
-    MINIMUM_WITHDRAW,
     DomainError
 )
 from marketgram.trade.domain.model.money import Money
