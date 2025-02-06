@@ -49,8 +49,8 @@ class AutoReplacementEventHandler:
             card.replace(event.qty_return, event.occurred_at)
         except ReplacingItemError:
             event.dispute.open_again()
-
-        return await self._file_storage.allocate(
-            event.dispute.deal_id,
-            event.qty_return
-        )
+        else:
+            return await self._file_storage.allocate(
+                event.dispute.deal_id,
+                event.qty_return
+            )
