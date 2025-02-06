@@ -79,7 +79,6 @@ class SellStockCard(SellCard):
             occurred_at
         )
         
-
     def _take_inventory(
         self, 
         quantity: int, 
