@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from marketgram.common.domain.model.errors import DomainError
 from marketgram.trade.domain.model.events import (
     PurchasedCardWithAutoShipmentEvent, 
 )
