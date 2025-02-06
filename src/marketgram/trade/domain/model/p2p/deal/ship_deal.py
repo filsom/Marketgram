@@ -6,9 +6,7 @@ from marketgram.trade.domain.model.notifications import (
 )
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.errors import (
-    MISSING_DOWNLOAD_LINK, 
     OVERDUE_SHIPMENT, 
-    AddLinkError, 
     CheckDeadlineError
 )
 from marketgram.trade.domain.model.p2p.members import Members
@@ -43,23 +41,15 @@ class ShipDeal:
         self._shipped_at = shipped_at
         self.events = []
 
-    def confirm_shipment(
-        self, 
-        occurred_at: datetime,
-        download_link: str | None = None,
-    ) -> None:
+    def confirm_shipment(self, occurred_at: datetime) -> None:
         if not self._deadlines.check(self._status, occurred_at):
             raise CheckDeadlineError(OVERDUE_SHIPMENT)
             
-        if self._shipment.is_not_auto_link():
-            if download_link is None:
-                raise AddLinkError(MISSING_DOWNLOAD_LINK)
-            
+        if self._shipment.is_not_auto_link():            
             self.events.append(
                 ShippedByDealNotification(
                     self._members.buyer_id,
                     self._deal_id,
-                    download_link,
                     occurred_at
                 )
             )

@@ -22,7 +22,6 @@ class DealCreatedNotification:
 class ShippedByDealNotification:
     buyer_id: int
     deal_id: int
-    download_link: str
     occurred_at: datetime
 
 
@@ -30,7 +29,6 @@ class ShippedByDealNotification:
 class ShippedReplacementByDisputeNotification:
     buyer_id: int
     deal_id: int
-    download_link: str
     occurred_at: datetime
 
 

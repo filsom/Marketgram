@@ -12,11 +12,7 @@ from marketgram.trade.domain.model.notifications import (
 from marketgram.trade.domain.model.p2p.deal.claim import ReturnType
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.deal.unconfirmed_deal import Claim
-from marketgram.trade.domain.model.errors import (
-    MISSING_DOWNLOAD_LINK,
-    AddLinkError,
-    OpenedDisputeError, 
-)
+from marketgram.trade.domain.model.errors import OpenedDisputeError
 from marketgram.trade.domain.model.p2p.members import DisputeMembers
 from marketgram.trade.domain.model.statuses import StatusDispute
 
@@ -45,11 +41,7 @@ class OpenedDispute:
         self._confirm_in = confirm_in
         self.events = []   
 
-    def provide_replacement(
-        self, 
-        occurred_at: datetime, 
-        download_link: str | None = None  
-    ) -> None:
+    def provide_replacement(self, occurred_at: datetime) -> None:
         if self._claim.return_is_money():
             raise OpenedDisputeError()
     
@@ -62,14 +54,10 @@ class OpenedDispute:
                 )
             )
         elif self._shipment.is_not_auto_link():
-            if download_link is None:
-                raise AddLinkError(MISSING_DOWNLOAD_LINK)
-            
             self.events.append(
                 ShippedReplacementByDisputeNotification(
                     self._dispute_members.buyer_id,
                     self._dispute_members.deal_id,
-                    download_link,
                     occurred_at
                 )
             )
