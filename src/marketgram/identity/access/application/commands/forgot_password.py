@@ -31,18 +31,17 @@ class ForgotPasswordHandler:
         self._users_repository = UsersRepository(session)
     
     async def execute(self, command: ForgotPasswordCommand) -> None:
-        await self._session.begin()
-        user = await self._users_repository.with_email(command.email)
-        
-        if user is None or not user.is_active:
-            return 
-        
-        jwt_token = self._jwt_manager.encode(
-            datetime.now(UTC),
-            {'sub': user.to_string_id(), 'aud': 'user:password'}
-        )
-        message = self._message_renderer.render(user.email, jwt_token)
+        async with self._session.begin():
+            user = await self._users_repository.with_email(command.email) 
+            if user is None or not user.is_active:
+                return 
+            
+            jwt_token = self._jwt_manager.encode(
+                datetime.now(UTC),
+                {'sub': user.to_string_id(), 'aud': 'user:password'}
+            )
+            message = self._message_renderer.render(user.email, jwt_token)
 
-        await self._email_sender.send_message(message)
-        
-        return await self._session.commit()
+            await self._email_sender.send_message(message)
+            
+            await self._session.commit()

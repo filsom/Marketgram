@@ -35,18 +35,16 @@ class NewPasswordHandler:
         self._web_sessions_repository = WebSessionsRepository(session)
     
     async def execute(self, command: NewPasswordCommand) -> None:
-        await self._session.begin()
-        user_id = self._jwt_manager.decode(
-            command.token, 'user:password',
-        )      
-        user = await self._users_repository.with_id(user_id)
-        if user is None:
-            raise ApplicationError()
-        
-        user.change_password(command.password, self._password_hasher)
+        async with self._session.begin():
+            user_id = self._jwt_manager.decode(
+                command.token, 'user:password',
+            )      
+            user = await self._users_repository.with_id(user_id)
+            if user is None:
+                raise ApplicationError()
+            
+            user.change_password(command.password, self._password_hasher)
 
-        await self._web_sessions_repository \
-            .delete_all_with_user_id(user.user_id)
-        
-        return await self._session.commit()
-    
+            await self._web_sessions_repository \
+                .delete_all_with_user_id(user.user_id)
+            await self._session.commit()

@@ -38,21 +38,20 @@ class PasswordChangeHandler:
         self._web_sessions_repository = WebSessionsRepository(session)
 
     async def execute(self, command: PasswordChangeCommand) -> None:
-        await self._session.begin()
-        web_session = await self._web_sessions_repository \
-            .lively_with_id(command.session_id, datetime.now())
-        
-        if web_session is None:
-            raise ApplicationError()
-        
-        user = await self._users_repository.with_id(web_session.user_id)
+        async with self._session.begin():
+            web_session = await self._web_sessions_repository \
+                .lively_with_id(command.session_id, datetime.now())
+            
+            if web_session is None:
+                raise ApplicationError()
+            
+            user = await self._users_repository.with_id(web_session.user_id)
 
-        AuthenticationService(self._password_hasher) \
-            .authenticate(user, command.old_password)
+            AuthenticationService(self._password_hasher) \
+                .authenticate(user, command.old_password)
 
-        user.change_password(command.new_password, self._password_hasher)
+            user.change_password(command.new_password, self._password_hasher)
 
-        await self._web_sessions_repository \
-            .delete_all_with_user_id(user.user_id)
-        
-        await self._session.commit()
+            await self._web_sessions_repository \
+                .delete_all_with_user_id(user.user_id)
+            await self._session.commit()
