@@ -13,7 +13,7 @@ from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.entries_ta
 )
 
 
-class SQLAlchemyMembersRepository:
+class MembersRepository:
     def __init__(
         self,
         async_session: AsyncSession
