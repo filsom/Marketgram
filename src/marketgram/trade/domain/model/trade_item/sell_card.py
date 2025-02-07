@@ -70,20 +70,6 @@ class SellCard:
     ) -> None:
         raise ReplacingItemError()
     
-    def add_stock_item(
-        self, 
-        qty_item: int, 
-        occurred_at: datetime
-    ) -> None:
-        self._inventory_entries.append(
-            InventoryEntry(
-                qty_item,
-                occurred_at,
-                InventoryOperation.UPLOADING
-            )
-        )
-        self._shipment = Shipment.AUTO
-
     @property
     def price(self) -> Money:
         return self._unit_price
