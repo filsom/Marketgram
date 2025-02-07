@@ -4,8 +4,7 @@ from marketgram.trade.domain.model.p2p.payment import Payment
 from marketgram.trade.domain.model.p2p.payout import Payout
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.operations_table import (
-    operations_table,
-    operations_entries_table
+    operations_table
 )
 
 
@@ -18,7 +17,7 @@ def operations_registry_mapper(mapper: registry) -> None:
         polymorphic_identity='payout',
         properties={
             '_payout_id': operations_table.c.operation_id,
-            '_member_id': operations_table.c.member_id,
+            '_user_Id': operations_table.c.user_id,
             '_paycard_synonym': operations_table.c.paycard_synonym,
             '_tax_free': composite(Money, operations_table.c.amount),
             '_created_at': operations_table.c.created_at,
@@ -27,7 +26,7 @@ def operations_registry_mapper(mapper: registry) -> None:
             '_is_blocked': operations_table.c.is_blocked,
             '_entries': relationship(
                 'PostingEntry',
-                secondary=operations_entries_table,
+                primaryjoin='and_(Payment._user_id == foreign(PostingEntry.user_id))',
                 default_factory=list,
                 lazy='noload',
                 overlaps='_entries'
@@ -41,14 +40,14 @@ def operations_registry_mapper(mapper: registry) -> None:
         polymorphic_identity='payment',
         properties={
             '_payment_id': operations_table.c.operation_id,
-            '_member_id': operations_table.c.member_id,
+            '_user_id': operations_table.c.user_id,
             '_amount': composite(Money, operations_table.c.amount),
             '_created_at': operations_table.c.created_at,
             '_is_processed': operations_table.c.is_processed,
             '_is_blocked': operations_table.c.is_blocked,
             '_entries': relationship(
                 'PostingEntry',
-                secondary=operations_entries_table,
+                primaryjoin='and_(Payment._user_id == foreign(PostingEntry.user_id))',
                 default_factory=list,
                 lazy='noload',
                 overlaps='_entries'

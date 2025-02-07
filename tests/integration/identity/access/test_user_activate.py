@@ -32,9 +32,9 @@ class TestUserActivateHandler(IAMTestCase):
 
         # Assert
         user_from_db = await self.query_user_with_id(user.user_id)
-        user_from_db \
-            .should_exist() \
-            .activated()
+
+        assert user_from_db is not None
+        assert user_from_db.is_active
 
     async def execute(
         self, 

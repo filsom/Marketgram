@@ -2,11 +2,11 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import and_, select, func
-from sqlalchemy.orm import with_expression
+from sqlalchemy.orm import with_expression, selectinload
 
 from marketgram.trade.domain.model.p2p.seller import Seller
 from marketgram.trade.domain.model.p2p.user import User
-from marketgram.trade.domain.model.entry_status import EntryStatus
+from marketgram.trade.domain.model.statuses import EntryStatus
 from marketgram.trade.domain.model.types import AccountType
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.entries_table import (
     entries_table
@@ -60,7 +60,7 @@ class SQLAlchemyMembersRepository:
             .options(with_expression(User._balance, self._sum_query(
                 user_id, AccountType.USER
             )))
-            .with_for_update()
+            .with_for_update(of=User)
         )
         result = await self._async_session.execute(stmt)
         

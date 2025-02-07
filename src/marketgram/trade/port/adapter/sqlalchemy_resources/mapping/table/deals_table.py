@@ -13,7 +13,7 @@ from sqlalchemy import (
 
 from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
-from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
+from marketgram.trade.domain.model.statuses import StatusDeal
 
 
 
@@ -41,12 +41,4 @@ deals_members_table = Table(
     Column('deal_id', BigInteger, ForeignKey('deals.deal_id', ondelete='CASCADE'), primary_key=True, nullable=False),
     Column('seller_id', BigInteger, ForeignKey('members.member_id'), primary_key=True, nullable=False),
     Column('buyer_id', BigInteger, ForeignKey('members.member_id'), primary_key=True, nullable=False),
-)
-
-
-deals_entries_table = Table(
-    'deals_entries',
-    metadata,
-    Column('deal_id', BigInteger, ForeignKey('deals.deal_id', ondelete='CASCADE'), primary_key=True, nullable=False),
-    Column('entry_id', UUID, ForeignKey('entries.entry_id'), primary_key=True, nullable=False),
 )

@@ -44,13 +44,12 @@ class TestUserRegistrationHandler(IAMTestCase):
         email_sender.send_message.assert_called_once()
 
         user_from_db = await self.query_user_with_email('test@mail.ru')
-        user_from_db \
-            .should_exist() \
-            .with_email('test@mail.ru') \
-            .not_activated() \
-            .with_hashed_password('unprotected', password_hasher)
-        
         role_from_db = await self.query_role(user_from_db.user_id)
+        
+        assert user_from_db is not None
+        assert user_from_db.email == 'test@mail.ru'
+        assert not user_from_db.is_active
+        assert password_hasher.verify(user_from_db.password, 'unprotected')
         assert role_from_db.permission == Permission.USER
 
     async def execute(

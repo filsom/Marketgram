@@ -30,12 +30,11 @@ class TestUserLoginHandler(IAMTestCase):
         web_session_from_db = await self.query_web_session(
             UUID(result['session_id'])
         )
-        web_session_from_db \
-            .should_exist() \
-            .with_user_id(result['user_id']) \
-            .with_session_id(result['session_id']) \
-            .with_device('Nokia 3210') \
-            .with_service_life_of_up_to(result['expires_in'])
+        assert web_session_from_db is not None
+        assert web_session_from_db.to_string_id() == result['session_id']
+        assert str(web_session_from_db.user_id) == result['user_id']
+        assert web_session_from_db.device == 'Nokia 3210'
+        assert web_session_from_db.to_formatted_time() == result['expires_in']
 
     async def execute(
         self, 

@@ -31,10 +31,6 @@ from marketgram.identity.access.port.adapter.sqlalchemy_resources.roles_reposito
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.users_repository import (
     UsersRepository
 )
-from tests.integration.identity.access.extensions import (
-    UserExtensions, 
-    WebSessionExtensions
-)
     
 
 class IAMTestCase:
@@ -104,24 +100,21 @@ class IAMTestCase:
 
             return web_session
         
-    async def query_web_session(self, session_id: UUID) -> WebSessionExtensions:
+    async def query_web_session(self, session_id: UUID) -> WebSession | None:
         async with AsyncSession(self._engine) as session:
             await session.begin()
             stmt = select(WebSession).where(WebSession.session_id == session_id)
-            result = (await session.execute(stmt)).scalar_one_or_none()
-            return WebSessionExtensions(result)
+            return (await session.execute(stmt)).scalar_one_or_none()
 
-    async def query_user_with_email(self, email: str) -> UserExtensions:
+    async def query_user_with_email(self, email: str) -> User | None:
         async with AsyncSession(self._engine) as session:
             await session.begin()
-            result = await UsersRepository(session).with_email(email)
-            return UserExtensions(result)
+            return await UsersRepository(session).with_email(email)
         
-    async def query_user_with_id(self, user_id: UUID) -> UserExtensions:
+    async def query_user_with_id(self, user_id: UUID) -> User | None:
         async with AsyncSession(self._engine) as session:
             await session.begin()
-            result = await UsersRepository(session).with_id(user_id)
-            return UserExtensions(result)
+            return await UsersRepository(session).with_id(user_id)
                     
     async def query_role(self, user_id: UUID) -> Role:
         async with AsyncSession(self._engine) as session:

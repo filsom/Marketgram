@@ -39,9 +39,9 @@ class TestNewPasswordHandler(IAMTestCase):
 
         # Assert
         user_from_db = await self.query_user_with_id(user.user_id)
-        user_from_db \
-            .should_exist() \
-            .with_hashed_password('new_protected', password_hasher)
+
+        assert user_from_db is not None
+        assert password_hasher.verify(user_from_db.password, 'new_protected')
 
         count_web_sessions = await self.query_count_web_sessions(user_from_db.user_id)
         assert count_web_sessions == 0

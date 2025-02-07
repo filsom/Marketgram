@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
+from uuid import UUID
 
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.statuses import EntryStatus
@@ -10,9 +11,9 @@ from marketgram.trade.domain.model.types import (
 )
 
 
-@dataclass(frozen=True)
+@dataclass
 class PostingEntry:
-    member_id: int
+    user_id: UUID
     amount: Money
     posted_in: datetime
     account_type: AccountType

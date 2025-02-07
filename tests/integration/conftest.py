@@ -44,16 +44,11 @@ from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.categories
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.deals_registry import deals_registry_mapper
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.deals_table import (
     deals_table,
-    deals_entries_table,
     deals_members_table
 )
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.entries_registry import entries_registry_mapper
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.entries_table import (
     entries_table
-)
-from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.inventory_entries_registry import inventory_entries_registry_mapper
-from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.inventory_entries_table import (
-    inventory_entries_table
 )
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.members_registry import members_registry_mapper
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.members_table import (
@@ -62,7 +57,6 @@ from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.members_ta
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.operations_registry import operations_registry_mapper
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.operations_table import (
     operations_table,
-    operations_entries_table
 )
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.service_agreements_registry import service_agreements_registry_mapper
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.service_agreements_table import (
@@ -72,12 +66,6 @@ from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.services_r
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.services_table import (
     services_table
 )
-from datetime import UTC, datetime
-from decimal import Decimal
-from typing import AsyncGenerator
-from uuid import UUID
-import pytest_asyncio
-from sqlalchemy.ext.asyncio import AsyncEngine
 
 
 mapper = registry()
@@ -88,7 +76,6 @@ cards_registry_mapper(mapper)
 categories_registry_mapper(mapper)
 deals_registry_mapper(mapper)
 entries_registry_mapper(mapper)
-inventory_entries_registry_mapper(mapper)
 members_registry_mapper(mapper)
 operations_registry_mapper(mapper)
 service_agreements_registry_mapper(mapper)

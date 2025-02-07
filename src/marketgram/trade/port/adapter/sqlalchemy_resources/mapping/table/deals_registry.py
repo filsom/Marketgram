@@ -11,7 +11,6 @@ from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.deals_table import (
     deals_table, 
-    deals_entries_table,
     deals_members_table
 )
 
@@ -66,7 +65,7 @@ def deals_registry_mapper(mapper: registry) -> None:
             '_inspected_at': deals_table.c.inspected_at,
             '_entries': relationship(
                 'PostingEntry', 
-                secondary=deals_entries_table,
+                primaryjoin=...,
                 uselist=True,
                 default_factory=list,
                 lazy='noload',
@@ -89,7 +88,7 @@ def deals_registry_mapper(mapper: registry) -> None:
             '_status': deals_table.c.status,
             '_entries': relationship(
                 'PostingEntry', 
-                secondary=deals_entries_table,
+                primaryjoin=...,
                 uselist=True,
                 default_factory=list,
                 lazy='noload',
@@ -116,7 +115,7 @@ def deals_registry_mapper(mapper: registry) -> None:
             ),
             '_entries': relationship(
                 'PostingEntry',
-                secondary=deals_entries_table,
+                primaryjoin=...,
                 uselist=True,
                 default_factory=list,
                 lazy='noload',
@@ -140,7 +139,7 @@ def deals_registry_mapper(mapper: registry) -> None:
             '_status': deals_table.c.status,
             '_entries': relationship(
                 'PostingEntry', 
-                secondary=deals_entries_table,
+                primaryjoin=...,
                 uselist=True,
                 default_factory=list,
                 lazy='noload',
