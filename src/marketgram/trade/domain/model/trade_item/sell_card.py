@@ -9,7 +9,6 @@ from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.statuses import StatusCard, StatusDeal
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
-from marketgram.trade.domain.model.types import InventoryOperation
 
 
 class SellCard:
