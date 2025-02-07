@@ -67,6 +67,13 @@ class ModerationCard:
     def add_desciption(self, description: Description) -> None:
         self._descriptions.append(description)
 
+    def add_stock_item(
+        self,
+        qty_item: int,
+        occurred_at: datetime
+    ) -> None:
+        pass
+
     @property
     def status(self) -> StatusCard:
         return self._status
