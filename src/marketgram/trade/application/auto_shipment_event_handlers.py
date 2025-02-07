@@ -48,7 +48,7 @@ class SellerAutoReplacementEventHandler:
         self, 
         event: SellerShippedReplacementWithAutoShipmentEvent
     ) -> None:
-        await self._session.trading_lock(event.dispute.card_id)
+        await self._session.card_lock(event.dispute.card_id)
 
         card = await self._cards_repository \
             .sell_card_with_id(event.dispute.card_id)
@@ -84,7 +84,7 @@ class AdminAutoReplacementEventHandler:
         self, 
         event: AdminShippedReplacementWithAutoShipmentEvent
     ) -> None:
-        await self._session.trading_lock(event.dispute.card_id)
+        await self._session.card_lock(event.dispute.card_id)
 
         card = await self._cards_repository \
             .sell_card_with_id(event.dispute.card_id)

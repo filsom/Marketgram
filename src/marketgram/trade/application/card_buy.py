@@ -34,7 +34,9 @@ class CardBuyHandler:
 
     async def handle(self, command: CardBuyCommand) -> None:
         async with self._session.begin():
-            await self._session.trading_lock()
+            await self._session.trading_lock(
+                command.card_id, self._id_provider.provided_id()
+            )
             card = await self._cards_repository \
                 .for_sale_with_price_and_id(
                     Money(command.price), command.card_id
