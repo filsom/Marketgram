@@ -20,7 +20,6 @@ class SellCard:
         shipment: Shipment,
         action_time: ActionTime,
         status: StatusCard,
-        inventory_entries: list[InventoryEntry]
     ) -> None:
         self._card_id = card_id
         self._owner_id = owner_id
@@ -28,7 +27,6 @@ class SellCard:
         self._shipment = shipment
         self._action_time = action_time
         self._status = status
-        self._inventory_entries = inventory_entries
         self.events = []
 
     def purchase(
