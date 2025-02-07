@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from marketgram.trade.domain.model.entries import InventoryEntry
 from marketgram.trade.domain.model.notifications import ReissuePurchasedCardNotification
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
@@ -8,6 +9,7 @@ from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.statuses import StatusCard, StatusDeal
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
+from marketgram.trade.domain.model.types import InventoryOperation
 
 
 class SellCard:
@@ -18,7 +20,8 @@ class SellCard:
         unit_price: Money,
         shipment: Shipment,
         action_time: ActionTime,
-        status: StatusCard
+        status: StatusCard,
+        inventory_entries: list[InventoryEntry]
     ) -> None:
         self._card_id = card_id
         self._owner_id = owner_id
@@ -26,6 +29,7 @@ class SellCard:
         self._shipment = shipment
         self._action_time = action_time
         self._status = status
+        self._inventory_entries = inventory_entries
         self.events = []
 
     def purchase(
@@ -65,6 +69,16 @@ class SellCard:
         occurred_at: datetime
     ) -> None:
         raise ReplacingItemError()
+    
+    def add_stock_item(self, qty_item: int, occurred_at: datetime) -> None:
+        self._inventory_entries.append(
+            InventoryEntry(
+                qty_item,
+                occurred_at,
+                InventoryOperation.UPLOADING
+            )
+        )
+        self._shipment = Shipment.AUTO
 
     @property
     def price(self) -> Money:

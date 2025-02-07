@@ -81,6 +81,15 @@ class SellStockCard(SellCard):
         except QuantityItemError:
             raise ReplacingItemError()
         
+    def add_stock_item(self, qty_item: int, occurred_at: datetime) -> None:
+        self._inventory_entries.append(
+            InventoryEntry(
+                qty_item,
+                occurred_at,
+                InventoryOperation.UPLOADING
+            )
+        )
+        
     def _take_inventory(
         self, 
         quantity: int, 
