@@ -1,5 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime
+from uuid import UUID
+
+from marketgram.trade.domain.model.statuses import StatusCard
 
 
 @dataclass(frozen=True)
@@ -64,4 +67,13 @@ class AdminJoinNotification:
 class BuyerRejectedReplacementNotification:
     deal_id: int
     dispute_id: int
+    occurred_at: datetime
+
+
+@dataclass(frozen=True)
+class InventoryBalancesAddedNotification:
+    card_id: int
+    owner_id: UUID
+    qty: int
+    status_card: StatusCard
     occurred_at: datetime
