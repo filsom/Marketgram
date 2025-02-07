@@ -52,15 +52,14 @@ class UserRegistrationHandler:
                 .create(command.email, command.password)
             role = Role(new_user.user_id, Permission.USER)
 
+            self._users_repository.add(new_user)
+            self._roles_repository.add(role)
+            
             jwt_token = self._jwt_manager.encode(
                 datetime.now(UTC),
                 {'sub': new_user.to_string_id(), 'aud': 'user:activate'}
             )
             message = self._message_renderer.render(command.email, jwt_token)
-            
-            self._users_repository.add(new_user)
-            self._roles_repository.add(role)
-
             await self._email_sender.send_message(message)
 
             await self._session.commit()

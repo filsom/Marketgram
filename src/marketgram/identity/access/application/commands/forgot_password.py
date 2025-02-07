@@ -41,7 +41,6 @@ class ForgotPasswordHandler:
                 {'sub': user.to_string_id(), 'aud': 'user:password'}
             )
             message = self._message_renderer.render(user.email, jwt_token)
-
             await self._email_sender.send_message(message)
             
             await self._session.commit()
