@@ -76,6 +76,9 @@ class EditableCard:
         )
         self._status = StatusCard.ON_MODERATION
 
+    def can_add_item(self) -> bool:
+        return self._shipment != Shipment.CHAT
+
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, EditableCard):
             return False

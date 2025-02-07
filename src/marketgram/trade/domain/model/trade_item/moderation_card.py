@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from marketgram.trade.domain.model.entries import InventoryEntry
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.statuses import StatusCard
@@ -8,6 +9,7 @@ from marketgram.trade.domain.model.trade_item.description import (
     Description, 
     StatusDescription
 )
+from marketgram.trade.domain.model.types import InventoryOperation
 
 
 class ModerationCard:
@@ -23,6 +25,7 @@ class ModerationCard:
         shipment: Shipment,
         created_at: datetime,
         status: StatusCard,
+        inventory_entries: list[InventoryEntry] | None = None,
         card_id: int | None = None,
     ) -> None:
         self._card_id = card_id
@@ -36,6 +39,7 @@ class ModerationCard:
         self._shipment = shipment
         self._created_at = created_at
         self._status = status
+        self._inventory_entries = inventory_entries
 
     def accept(self, current_time: datetime) -> None:
         match self._status:
@@ -72,7 +76,20 @@ class ModerationCard:
         qty_item: int,
         occurred_at: datetime
     ) -> None:
-        pass
+        if self._status == StatusCard.PURCHASED:
+            # Добавить уведомление! 
+            pass
+
+        if self._shipment.is_hand():
+            self._shipment = Shipment.AUTO
+
+        self._inventory_entries.append(
+            InventoryEntry(
+                qty_item,
+                occurred_at,
+                InventoryOperation.UPLOADING
+            )
+        )
 
     @property
     def status(self) -> StatusCard:

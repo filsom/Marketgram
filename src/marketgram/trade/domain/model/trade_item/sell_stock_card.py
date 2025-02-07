@@ -96,7 +96,7 @@ class SellStockCard(SellCard):
         
         if remainder == 0:
             self._shipment = Shipment.HAND
-            self._status = StatusCard.EDITING
+            self._status = StatusCard.PURCHASED
             self.events.append(
                 ZeroInventoryBalanceNotification(
                     self._owner_id,
