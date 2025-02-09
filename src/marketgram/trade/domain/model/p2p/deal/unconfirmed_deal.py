@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from marketgram.common.domain.model.entity import Entity
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.notifications import DisputeOpenedNotification
 from marketgram.trade.domain.model.p2p.deal.claim import Claim, ReturnType
@@ -19,7 +20,7 @@ from marketgram.trade.domain.model.statuses import EntryStatus, StatusDeal
 from marketgram.trade.domain.model.types import AccountType, Operation
 
 
-class UnconfirmedDeal:
+class UnconfirmedDeal(Entity):
     def __init__(
         self, 
         deal_id: int,
@@ -33,6 +34,7 @@ class UnconfirmedDeal:
         inspected_at: datetime | None,
         entries: list[PostingEntry]
     ) -> None:
+        super().__init__()
         self._deal_id = deal_id
         self._card_id = card_id
         self._members = members
@@ -43,7 +45,6 @@ class UnconfirmedDeal:
         self._status = status
         self._inspected_at = inspected_at
         self._entries = entries
-        self.events = []
 
     def confirm(self, occurred_at: datetime, agreement: ServiceAgreement) -> None:
         if not self._deadlines.check(self._status, occurred_at):
@@ -86,7 +87,7 @@ class UnconfirmedDeal:
             raise QuantityItemError()
 
         self._status = StatusDeal.DISPUTE
-        self.events.append(
+        self.add_event(
             DisputeOpenedNotification(
                 self._members.seller_id, 
                 occurred_at

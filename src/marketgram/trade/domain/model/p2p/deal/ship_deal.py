@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from marketgram.common.domain.model.entity import Entity
 from marketgram.trade.domain.model.events import SellerShippedItemManuallyEvent
 from marketgram.trade.domain.model.notifications import (
     DealCreatedNotification,
@@ -18,7 +19,7 @@ from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.statuses import StatusDeal
 
 
-class ShipDeal:
+class ShipDeal(Entity):
     def __init__(
         self,
         card_id: int,
@@ -32,6 +33,7 @@ class ShipDeal:
         deal_id: int = None,
         shipped_at: datetime = None
     ) -> None:
+        super().__init__()
         self._deal_id = deal_id
         self._card_id = card_id
         self._members = members
@@ -42,7 +44,6 @@ class ShipDeal:
         self._status = status
         self._created_at = created_at
         self._shipped_at = shipped_at
-        self.events = []
 
     def confirm_shipment(
         self, 
@@ -57,14 +58,14 @@ class ShipDeal:
                 if download_link is None:
                     raise AddLinkError(MISSING_DOWNLOAD_LINK)   
 
-                self.events.append(
+                self.add_event(
                     SellerShippedItemManuallyEvent(
                         self._deal_id,
                         download_link,
                         occurred_at
                     )
                 ) 
-            self.events.append(
+            self.add_event(
                 ShippedByDealNotification(
                     self._members.buyer_id,
                     self._deal_id,
@@ -76,7 +77,7 @@ class ShipDeal:
 
     def notify_seller(self) -> None:
         if self._shipment.is_notify_to_the_seller():
-            self.events.append(
+            self.add_event(
                 DealCreatedNotification(
                     self._members.seller_id,
                     self._deal_id,

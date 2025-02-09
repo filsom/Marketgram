@@ -16,7 +16,7 @@ class OverdueDeal:
         unit_price: Money,
         status: StatusDeal,
         entries: list[PostingEntry]
-    ):
+    ) -> None:
         self._deal_id = deal_id
         self._members = members
         self._unit_price = unit_price

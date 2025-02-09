@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from marketgram.common.domain.model.entity import Entity
 from marketgram.trade.domain.model.events import (
     BuyerClosedDisputeEvent,
     SellerShippedItemManuallyEvent, 
@@ -22,7 +23,7 @@ from marketgram.trade.domain.model.p2p.members import DisputeMembers
 from marketgram.trade.domain.model.statuses import StatusDispute
 
 
-class OpenedDispute:
+class OpenedDispute(Entity):
     def __init__(
         self,
         card_id: int,
@@ -35,6 +36,7 @@ class OpenedDispute:
         dispute_id: int | None = None,
         confirm_in: datetime | None = None,
     ) -> None:
+        super().__init__()
         self._dispute_id = dispute_id
         self._card_id = card_id
         self._claim = claim
@@ -44,7 +46,6 @@ class OpenedDispute:
         self._admin_join_in = admin_join_in
         self._status = status
         self._confirm_in = confirm_in
-        self.events = []   
 
     def provide_replacement(
         self, 
@@ -55,7 +56,7 @@ class OpenedDispute:
             raise OpenedDisputeError()
 
         if self._shipment.is_auto_link():
-            self.events.append(
+            self.add_event(
                 SellerShippedReplacementWithAutoShipmentEvent(
                     self,
                     self._claim.qty_return,
@@ -66,14 +67,14 @@ class OpenedDispute:
             if download_link is None:
                 raise AddLinkError(MISSING_DOWNLOAD_LINK)
             
-            self.events.append(
+            self.add_event(
                 SellerShippedItemManuallyEvent(
                     self._dispute_members.deal_id,
                     download_link,
                     occurred_at
                 )
             ) 
-        self.events.append(
+        self.add_event(
             ShippedReplacementByDisputeNotification(
                 self._dispute_members.buyer_id,
                 self._dispute_members.deal_id,
@@ -87,7 +88,7 @@ class OpenedDispute:
         self._claim = self._claim.change_return_type(
             ReturnType.MONEY
         )
-        self.events.append(
+        self.add_event(
             SellerClosedDisputeWithRefundEvent(
                 self._dispute_members.deal_id,
                 self._claim.qty_return,
@@ -97,7 +98,7 @@ class OpenedDispute:
         self._status = StatusDispute.CLOSED
 
     def satisfy_seller(self, occurred_at: datetime) -> None:        
-        self.events.append(
+        self.add_event(
             BuyerClosedDisputeEvent(
                 self._dispute_members.deal_id,
                 occurred_at
@@ -110,7 +111,7 @@ class OpenedDispute:
             if self._admin_join_in > occurred_at:
                 raise OpenedDisputeError()
         
-        self.events.append(
+        self.add_event(
             AdminJoinNotification(
                 self._dispute_members.deal_id,
                 occurred_at
@@ -119,7 +120,7 @@ class OpenedDispute:
         self._status = StatusDispute.ADMIN_JOINED
 
     def open_again(self) -> None:
-        self.events.clear()
+        self.clear_events()
         self._confirm_in = None
         self._status = StatusDispute.OPEN
 

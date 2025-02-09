@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from marketgram.common.domain.model.entity import Entity
 from marketgram.trade.domain.model.events import (
     AdminShippedReplacementWithAutoShipmentEvent, 
     AdminClosedDisputeWithRefundEvent
@@ -10,7 +11,7 @@ from marketgram.trade.domain.model.p2p.members import DisputeMembers
 from marketgram.trade.domain.model.statuses import StatusDispute
 
 
-class AdminDispute:
+class AdminDispute(Entity):
     def __init__(
         self,
         dispute_id: int,
@@ -21,6 +22,7 @@ class AdminDispute:
         status: StatusDispute,
         confirm_in: datetime | None
     ) -> None:
+        super().__init__()
         self._dispute_id = dispute_id
         self._card_id = card_id
         self._claim = claim
@@ -28,12 +30,11 @@ class AdminDispute:
         self._shipment = shipment
         self._status = status
         self._confirm_in = confirm_in
-        self.events = []   
 
     def satisfy_buyer(self, occurred_at: datetime) -> None:
         if self._claim.is_replacement():
             if self._shipment.is_auto_link():
-                self.events.append(
+                self.add_event(
                     AdminShippedReplacementWithAutoShipmentEvent(
                         self,
                         self._claim.qty_return,
@@ -54,7 +55,7 @@ class AdminDispute:
             )
             self._confirm_in = None
 
-        self.events.append(
+        self.add_event(
             AdminClosedDisputeWithRefundEvent(
                 self._dispute_members.deal_id,
                 self._claim.qty_return,

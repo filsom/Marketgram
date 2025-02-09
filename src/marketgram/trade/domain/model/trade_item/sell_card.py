@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Any
 
+from marketgram.common.domain.model.entity import Entity
 from marketgram.trade.domain.model.notifications import (
     ReissuePurchasedCardNotification
 )
@@ -17,7 +18,7 @@ from marketgram.trade.domain.model.statuses import StatusCard, StatusDeal
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
 
 
-class SellCard:
+class SellCard(Entity):
     def __init__(
         self,
         card_id: int,
@@ -27,13 +28,13 @@ class SellCard:
         action_time: ActionTime,
         status: StatusCard,
     ) -> None:
+        super().__init__()
         self._card_id = card_id
         self._owner_id = owner_id
         self._unit_price = unit_price
         self._shipment = shipment
         self._action_time = action_time
         self._status = status
-        self.events = []
 
     def purchase(
         self, 
@@ -49,7 +50,7 @@ class SellCard:
             raise QuantityItemError()
         
         self._status = StatusCard.PURCHASED
-        self.events.append(
+        self.add_event(
             ReissuePurchasedCardNotification(
                 self._owner_id,
                 self._card_id,

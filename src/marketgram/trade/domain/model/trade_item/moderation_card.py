@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from marketgram.common.domain.model.entity import Entity
 from marketgram.trade.domain.model.entries import InventoryEntry
 from marketgram.trade.domain.model.notifications import InventoryBalancesAddedNotification
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
@@ -13,7 +14,7 @@ from marketgram.trade.domain.model.trade_item.description import (
 from marketgram.trade.domain.model.types import InventoryOperation
 
 
-class ModerationCard:
+class ModerationCard(Entity):
     def __init__(
         self,
         owner_id: int,
@@ -29,6 +30,7 @@ class ModerationCard:
         inventory_entries: list[InventoryEntry] | None = None,
         card_id: int | None = None,
     ) -> None:
+        super().__init__()
         self._card_id = card_id
         self._owner_id = owner_id
         self._category_id = category_id
@@ -41,7 +43,6 @@ class ModerationCard:
         self._created_at = created_at
         self._status = status
         self._inventory_entries = inventory_entries
-        self.events = []
 
     def accept(self, current_time: datetime) -> None:
         match self._status:
@@ -81,7 +82,7 @@ class ModerationCard:
         if self._shipment.is_hand():
             self._shipment = Shipment.AUTO
 
-        self.events.append(
+        self.add_event(
             InventoryBalancesAddedNotification(
                 self._card_id,
                 self._owner_id,

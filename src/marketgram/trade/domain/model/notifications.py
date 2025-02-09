@@ -2,17 +2,18 @@ from dataclasses import dataclass
 from datetime import datetime
 from uuid import UUID
 
+from marketgram.common.domain.model.entity import IntegrationEvent
 from marketgram.trade.domain.model.statuses import StatusCard
 
 
 @dataclass(frozen=True)
-class DisputeOpenedNotification:
+class DisputeOpenedNotification(IntegrationEvent):
     seller_id: int
     occurred_at: datetime
 
 
 @dataclass(frozen=True)
-class DealCreatedNotification:
+class DealCreatedNotification(IntegrationEvent):
     seller_id: int
     deal_id: int
     card_id: int
@@ -22,56 +23,56 @@ class DealCreatedNotification:
 
 
 @dataclass(frozen=True)
-class ShippedByDealNotification:
+class ShippedByDealNotification(IntegrationEvent):
     buyer_id: int
     deal_id: int
     occurred_at: datetime
 
 
 @dataclass(frozen=True)
-class ShippedReplacementByDisputeNotification:
+class ShippedReplacementByDisputeNotification(IntegrationEvent):
     buyer_id: int
     deal_id: int
     occurred_at: datetime
 
 
 @dataclass(frozen=True)
-class ZeroInventoryBalanceNotification:
+class ZeroInventoryBalanceNotification(IntegrationEvent):
     seller_id: int
     card_id: int
     occurred_at: datetime
 
 
 @dataclass(frozen=True)
-class SellerCancelledDealNotification:
+class SellerCancelledDealNotification(IntegrationEvent):
     buyer_id: int
     deal_id: int
     occurred_at: datetime
 
 
 @dataclass(frozen=True)
-class ReissuePurchasedCardNotification:
+class ReissuePurchasedCardNotification(IntegrationEvent):
     seller_id: int
     card_id: int
     occurred_at: datetime
 
 
 @dataclass(frozen=True)
-class AdminJoinNotification:
+class AdminJoinNotification(IntegrationEvent):
     deal_id: int
     occurred_at: datetime
 
 
 # Пользователь отклонил возврат товара (некачесвенный). Ждем админа!
 @dataclass(frozen=True)
-class BuyerRejectedReplacementNotification:
+class BuyerRejectedReplacementNotification(IntegrationEvent):
     deal_id: int
     dispute_id: int
     occurred_at: datetime
 
 
 @dataclass(frozen=True)
-class InventoryBalancesAddedNotification:
+class InventoryBalancesAddedNotification(IntegrationEvent):
     card_id: int
     owner_id: UUID
     qty: int
