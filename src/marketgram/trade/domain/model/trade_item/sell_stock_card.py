@@ -53,7 +53,7 @@ class SellStockCard(SellCard):
         quantity: int, 
         occurred_at: datetime
     ) -> ShipDeal:
-        self._check_terms_sale(price, shipment)
+        self._check_terms_purchase(price, shipment)
         self._take_inventory(
             quantity, 
             InventoryOperation.BUY, 
@@ -88,8 +88,8 @@ class SellStockCard(SellCard):
         except QuantityItemError:
             raise ReplacingItemError()
         
-    def _check_terms_sale(self, price: Money, shipment: Shipment) -> None:
-        super()._check_terms_sale(price, shipment)
+    def _check_terms_purchase(self, price: Money, shipment: Shipment) -> None:
+        super()._check_terms_purchase(price, shipment)
     
         if self._shipment != shipment:
             raise CurrentСardStateError()

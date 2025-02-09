@@ -42,7 +42,7 @@ class SellCard:
         quantity: int, 
         occurred_at: datetime
     ) -> ShipDeal:
-        self._check_terms_sale(price, shipment)
+        self._check_terms_purchase(price, shipment)
         
         if quantity <= 0:
             raise QuantityItemError()
@@ -76,7 +76,7 @@ class SellCard:
     ) -> None:
         raise ReplacingItemError()
 
-    def _check_terms_sale(self, price: Money, shipment: Shipment) -> None:
+    def _check_terms_purchase(self, price: Money, shipment: Shipment) -> None:
         if self._status != StatusCard.ON_SALE:
             raise CurrentСardStateError()
         
