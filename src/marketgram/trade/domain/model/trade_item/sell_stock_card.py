@@ -48,9 +48,12 @@ class SellStockCard(SellCard):
     def purchase(
         self, 
         buyer_id: int, 
+        price: Money,
+        shipment: Shipment,
         quantity: int, 
         occurred_at: datetime
     ) -> ShipDeal:
+        self._can_purchase(price, shipment)
         self._take_inventory(
             quantity, 
             InventoryOperation.BUY, 
@@ -71,8 +74,8 @@ class SellStockCard(SellCard):
         )
         return deal
     
-    def can_purchase(self, price: Money, shipment: Shipment) -> None:
-        super().can_purchase(price, shipment)
+    def _can_purchase(self, price: Money, shipment: Shipment) -> None:
+        super()._can_purchase(price, shipment)
     
         if self._shipment != shipment:
             raise CurrentСardStateError()

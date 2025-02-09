@@ -45,14 +45,14 @@ class CardBuyHandler:
             if card is None:
                 raise ApplicationError()
 
-            card.can_purchase(Money(command.price), command.shipment)
-
             buyer = await self._members_repository \
                 .user_with_balance_and_id(self._id_provider.provided_id())
             
             new_deal = buyer.make_deal(
                 command.qty,
                 card,
+                Money(command.price),
+                command.shipment,
                 datetime.now(UTC)
             )
             await self._deals_repository.add(new_deal)

@@ -37,9 +37,13 @@ class SellCard:
     def purchase(
         self, 
         buyer_id: int, 
+        price: Money,
+        shipment: Shipment,
         quantity: int, 
         occurred_at: datetime
     ) -> ShipDeal:
+        self._can_purchase(price, shipment)
+        
         if quantity <= 0:
             raise QuantityItemError()
         
@@ -62,7 +66,7 @@ class SellCard:
             occurred_at
         )
     
-    def can_purchase(self, price: Money, shipment: Shipment) -> None:
+    def _can_purchase(self, price: Money, shipment: Shipment) -> None:
         if self._status != StatusCard.ON_SALE:
             raise CurrentСardStateError()
         
