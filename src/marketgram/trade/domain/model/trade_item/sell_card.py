@@ -65,13 +65,6 @@ class SellCard:
             StatusDeal.NOT_SHIPPED,
             occurred_at
         )
-    
-    def _can_purchase(self, price: Money, shipment: Shipment) -> None:
-        if self._status != StatusCard.ON_SALE:
-            raise CurrentСardStateError()
-        
-        if price != self._unit_price:
-            raise CurrentСardStateError()
             
     def edit(self) -> None:
         self._status = StatusCard.EDITING
@@ -82,6 +75,13 @@ class SellCard:
         occurred_at: datetime
     ) -> None:
         raise ReplacingItemError()
+
+    def _can_purchase(self, price: Money, shipment: Shipment) -> None:
+        if self._status != StatusCard.ON_SALE:
+            raise CurrentСardStateError()
+        
+        if price != self._unit_price:
+            raise CurrentСardStateError()
     
     @property
     def price(self) -> Money:

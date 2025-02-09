@@ -73,12 +73,6 @@ class SellStockCard(SellCard):
             PurchasedCardWithAutoShipmentEvent(deal, occurred_at)
         )
         return deal
-    
-    def _can_purchase(self, price: Money, shipment: Shipment) -> None:
-        super()._can_purchase(price, shipment)
-    
-        if self._shipment != shipment:
-            raise CurrentСardStateError()
 
     def replace(
         self, 
@@ -93,6 +87,12 @@ class SellStockCard(SellCard):
             )
         except QuantityItemError:
             raise ReplacingItemError()
+        
+    def _can_purchase(self, price: Money, shipment: Shipment) -> None:
+        super()._can_purchase(price, shipment)
+    
+        if self._shipment != shipment:
+            raise CurrentСardStateError()
         
     def _take_inventory(
         self, 
