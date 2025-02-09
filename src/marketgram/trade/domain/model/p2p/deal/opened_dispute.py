@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
 
 from marketgram.trade.domain.model.events import (
-    BuyerClosedDisputeEvent, 
+    BuyerClosedDisputeEvent,
+    SellerShippedItemManuallyEvent, 
     SellerShippedReplacementWithAutoShipmentEvent, 
     SellerClosedDisputeWithRefundEvent
 )
@@ -65,6 +66,13 @@ class OpenedDispute:
             if download_link is None:
                 raise AddLinkError(MISSING_DOWNLOAD_LINK)
             
+            self.events.append(
+                SellerShippedItemManuallyEvent(
+                    self._dispute_members.deal_id,
+                    download_link,
+                    occurred_at
+                )
+            ) 
         self.events.append(
             ShippedReplacementByDisputeNotification(
                 self._dispute_members.buyer_id,

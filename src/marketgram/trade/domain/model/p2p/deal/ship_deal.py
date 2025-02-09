@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from marketgram.trade.domain.model.events import SellerShippedItemManuallyEvent
 from marketgram.trade.domain.model.notifications import (
     DealCreatedNotification,
     ShippedByDealNotification,
@@ -54,8 +55,15 @@ class ShipDeal:
         if self._shipment.is_not_auto_link():
             if self._shipment.is_hand():
                 if download_link is None:
-                    raise AddLinkError(MISSING_DOWNLOAD_LINK)    
-                
+                    raise AddLinkError(MISSING_DOWNLOAD_LINK)   
+
+                self.events.append(
+                    SellerShippedItemManuallyEvent(
+                        self._deal_id,
+                        download_link,
+                        occurred_at
+                    )
+                ) 
             self.events.append(
                 ShippedByDealNotification(
                     self._members.buyer_id,

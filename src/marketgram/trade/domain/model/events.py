@@ -65,3 +65,10 @@ class AdminClosedDisputeWithRefundEvent:
 class BuyerConfirmedAndClosedDisputeEvent:
     deal_id: int
     occurred_at: datetime
+
+
+@dataclass(frozen=True)
+class SellerShippedItemManuallyEvent:
+    deal_id: int
+    download_link: str
+    occurred_at: datetime
