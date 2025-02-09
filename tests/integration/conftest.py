@@ -30,56 +30,14 @@ from marketgram.identity.access.settings import (
     Settings, 
     identity_access_load_settings
 )
-from marketgram.trade.domain.model.types import INFINITY
-from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.cards_registry import cards_registry_mapper
-from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.cards_table import (
-    cards_table,
-    cards_descriptions_table
-)
-from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.categories_registry import categories_registry_mapper
-from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.categories_table import (
-    categories_table,
-    category_types_table
-)
-from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.deals_registry import deals_registry_mapper
-from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.deals_table import (
-    deals_table,
-    deals_members_table
-)
-from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.entries_registry import entries_registry_mapper
-from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.entries_table import (
-    entries_table
-)
-from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.members_registry import members_registry_mapper
-from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.members_table import (
-    members_table
-)
-from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.operations_registry import operations_registry_mapper
-from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.operations_table import (
-    operations_table,
-)
-from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.service_agreements_registry import service_agreements_registry_mapper
-from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.service_agreements_table import (
-    service_agreements_table
-)
-from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.services_registry import services_registry_mapper
-from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.services_table import (
-    services_table
-)
+
 
 
 mapper = registry()
 users_registry_mapper(mapper)
 web_sessions_registry_mapper(mapper)
 roles_registry_mapper(mapper)
-cards_registry_mapper(mapper)
-categories_registry_mapper(mapper)
-deals_registry_mapper(mapper)
-entries_registry_mapper(mapper)
-members_registry_mapper(mapper)
-operations_registry_mapper(mapper)
-service_agreements_registry_mapper(mapper)
-services_registry_mapper(mapper)
+
 
 @pytest.fixture(scope='session')
 def settings() -> Settings:
