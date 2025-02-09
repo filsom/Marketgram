@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 from marketgram.common.application.exceptions import ApplicationError
 from marketgram.common.application.id_provider import IdProvider
 from marketgram.trade.domain.model.money import Money
+from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.port.adapter.event_dispatcher import EventDispatcher
 from marketgram.trade.port.adapter.sqlalchemy_resources.cards_repository import CardsRepository
 from marketgram.trade.port.adapter.sqlalchemy_resources.deals_repository import DealsRepository
@@ -16,6 +17,7 @@ class CardBuyCommand:
     card_id: int
     qty: int
     price: str
+    shipment: Shipment
 
 
 class CardBuyHandler:
@@ -38,11 +40,12 @@ class CardBuyHandler:
                 command.card_id, self._id_provider.provided_id()
             )
             card = await self._cards_repository \
-                .for_sale_with_price_and_id(
-                    Money(command.price), command.card_id
-                )
+                .sell_card_with_id(command.card_id)
+            
             if card is None:
                 raise ApplicationError()
+
+            card.can_purchase(Money(command.price), command.shipment)
             
             buyer = await self._members_repository \
                 .user_with_balance_and_id(

@@ -1,9 +1,15 @@
 from datetime import datetime
 
-from marketgram.trade.domain.model.notifications import ReissuePurchasedCardNotification
+from marketgram.trade.domain.model.notifications import (
+    ReissuePurchasedCardNotification
+)
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
-from marketgram.trade.domain.model.errors import QuantityItemError, ReplacingItemError
+from marketgram.trade.domain.model.errors import (
+    QuantityItemError, 
+    ReplacingItemError, 
+    CurrentСardStateError
+)
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.statuses import StatusCard, StatusDeal
@@ -55,6 +61,13 @@ class SellCard:
             StatusDeal.NOT_SHIPPED,
             occurred_at
         )
+    
+    def can_purchase(self, price: Money, shipment: Shipment) -> None:
+        if self._status != StatusCard.ON_SALE:
+            raise CurrentСardStateError()
+        
+        if price != self._unit_price:
+            raise CurrentСardStateError()
             
     def edit(self) -> None:
         self._status = StatusCard.EDITING

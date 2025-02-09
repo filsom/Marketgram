@@ -7,7 +7,11 @@ from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.notifications import ZeroInventoryBalanceNotification
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
-from marketgram.trade.domain.model.errors import QuantityItemError, ReplacingItemError
+from marketgram.trade.domain.model.errors import (
+    QuantityItemError, 
+    ReplacingItemError, 
+    CurrentСardStateError
+)
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.statuses import StatusCard, StatusDeal
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
@@ -67,6 +71,12 @@ class SellStockCard(SellCard):
         )
         return deal
     
+    def can_purchase(self, price: Money, shipment: Shipment) -> None:
+        super().can_purchase(price, shipment)
+    
+        if self._shipment != shipment:
+            raise CurrentСardStateError()
+
     def replace(
         self, 
         qty_replacement: int, 

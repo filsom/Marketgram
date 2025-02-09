@@ -42,3 +42,7 @@ NO_WITHDRAWAL = 'Заявка на вывод средств отсутству�
 
 class ReplacingItemError(DomainError):
     pass
+
+
+class CurrentСardStateError(DomainError):
+    pass
