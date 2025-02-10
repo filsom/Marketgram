@@ -58,9 +58,6 @@ class EditableCard:
     def put_on_sale(self) -> None:
         self._status = StatusCard.ON_SALE
 
-    def mark_sold_out(self) -> None:
-        self._status = StatusCard.PURCHASED
-
     def add_new_description(self, name: str, body: str) -> None: 
         for description in self._descriptions:
             if description.status == StatusDescription.NEW:
