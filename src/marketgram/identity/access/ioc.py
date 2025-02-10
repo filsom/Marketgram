@@ -6,6 +6,14 @@ from jinja2 import Environment
 
 from marketgram.common.application.email_sender import EmailSender
 from marketgram.common.application.message_renderer import MessageRenderer
+from marketgram.identity.access.application.identity_handlers import (
+    ForgotPasswordHandler,
+    NewPasswordHandler,
+    PasswordChangeHandler,
+    UserActivateHandler,
+    UserLoginHandler,
+    UserRegistrationHandler
+)
 from marketgram.identity.access.domain.model.password_hasher import (
     PasswordHasher
 )
@@ -18,31 +26,7 @@ from marketgram.identity.access.settings import (
     identity_access_load_settings
 )
 from marketgram.identity.access.port.adapter.jwt_token_manager import JwtTokenManager
-from marketgram.common.ioc import AS
-from marketgram.identity.access.application.commands.password_change import (
-    PasswordChangeCommand,
-    PasswordChangeHandler,
-)
-from marketgram.identity.access.application.commands.forgot_password import (
-    ForgotPasswordCommand,
-    ForgotPasswordHandler
-)
-from marketgram.identity.access.application.commands.new_password import (
-    NewPasswordCommand,
-    NewPasswordHandler
-)
-from marketgram.identity.access.application.commands.user_activate import (
-    UserAcivateCommand,
-    UserActivateHandler
-)
-from marketgram.identity.access.application.commands.user_login import (
-    UserLoginCommand,
-    UserLoginHandler
-)
-from marketgram.identity.access.application.commands.user_registration import (
-    UserRegistrationHandler,
-    UserRegistrationCommand,
-)
+
 
 
 class IdentityAccessIoC(Provider):
@@ -112,10 +96,3 @@ class IdentityAccessIoC(Provider):
         UserLoginHandler,
         ForgotPasswordHandler
     )
-    
-    # a_user_reg = alias(UserRegistrationHandler, provides=Handler[UserRegistrationCommand, None])
-    # a_pwd_change = alias(PasswordChangeHandler, provides=Handler[PasswordChangeCommand, None])
-    # a_new_pwd = alias(NewPasswordHandler, provides=Handler[NewPasswordCommand, None])
-    # a_user_activate = alias(UserActivateHandler, provides=Handler[UserAcivateCommand, None])
-    # a_user_login = alias(UserLoginHandler, provides=Handler[UserLoginCommand, dict[str, str]])
-    # a_forgot_pwd = alias(ForgotPasswordHandler, provides=Handler[ForgotPasswordCommand, None])
