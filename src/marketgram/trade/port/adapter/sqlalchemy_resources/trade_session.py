@@ -11,3 +11,6 @@ class TradeSession(AsyncSession):
 
     async def card_lock(self, card_id: int) -> None:
         pass
+
+    async def individual_lock(self, user_id: UUID) -> None:
+        pass
