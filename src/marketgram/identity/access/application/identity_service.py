@@ -90,7 +90,6 @@ class IdentityService:
 
             await self.web_sessions_repository.add(web_session)
             await self.session.commit()
-
             return web_session_details
         
     async def activate_user(self, token: str) -> None:
@@ -102,7 +101,6 @@ class IdentityService:
                 raise ApplicationError()
             
             exists_user.activate()
-
             await self.session.commit()
 
     async def change_user_password(self, command: cmd.ChangePasswordCommand) -> None:
@@ -156,5 +154,4 @@ class IdentityService:
                 jwt_token
             )
             await self.email_sender.send_message(message)
-            
             await self.session.commit()
