@@ -64,6 +64,7 @@ async def test_authenticate_activated_user(engine, service: IdentityService) -> 
 async def test_user_activation(engine, service: IdentityService) -> None:
     # Arrange
     await delete_all(engine)
+    
     user = await create_user(engine, is_active=False)
     
     activation_token = service.jwt_manager.encode(
