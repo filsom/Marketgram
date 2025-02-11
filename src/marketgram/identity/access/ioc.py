@@ -5,8 +5,8 @@ from aiosmtplib import SMTP
 from jinja2 import Environment
 
 from marketgram.common.application.email_sender import EmailSender
-from marketgram.common.application.message_renderer import MessageRenderer
-from marketgram.identity.access.application.identity_handlers import (
+from marketgram.identity.access.port.adapter.html_renderer import MessageRenderer
+from marketgram.identity.access.application.commands import (
     ForgotPasswordHandler,
     NewPasswordHandler,
     PasswordChangeHandler,

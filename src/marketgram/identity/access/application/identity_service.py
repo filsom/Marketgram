@@ -1,54 +1,51 @@
-from dataclasses import dataclass
 from datetime import UTC, datetime
-from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from marketgram.common.application.email_sender import EmailSender
 from marketgram.common.application.exceptions import ApplicationError
+from marketgram.identity.access.application import commands as cmd
 from marketgram.identity.access.domain.model.authentication_service import AuthenticationService
 from marketgram.identity.access.domain.model.password_hasher import PasswordHasher
 from marketgram.identity.access.domain.model.role import Role
 from marketgram.identity.access.domain.model.role_permission import Permission
 from marketgram.identity.access.domain.model.user_factory import UserFactory
-from marketgram.common.application.email_sender import EmailSender
-from marketgram.common.application.message_renderer import MessageRenderer
 from marketgram.identity.access.domain.model.web_session_factory import WebSessionFactory
 from marketgram.identity.access.port.adapter.jwt_token_manager import JwtTokenManager
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.roles_repository import (
-    RolesRepository
-)
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.users_repository import (
-    UsersRepository
-)
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.web_sessions_repository import (
+from marketgram.identity.access.port.adapter.html_renderer import HtmlRenderer
+from marketgram.identity.access.port.adapter import (
+    UsersRepository,
+    RolesRepository,
     WebSessionsRepository
 )
 
 
-@dataclass
-class UserRegistrationCommand:
-    email: str
-    password: str
-    
+PASSWORD_TEMPLATE = 'forgot_password.html'
+FORGOT_PASSWORD = 'Установка нового пароля.'
+EMAIL_TEMPLATE = 'email_confirmation.html'
+EMAIL_CONFIRMATION = 'Подтверждение адреса электронной почты.'
 
-class UserRegistrationHandler:
+
+class IdentityService:
     def __init__(
         self,
         session: AsyncSession,
         jwt_manager: JwtTokenManager,
-        message_renderer: MessageRenderer[str],
         email_sender: EmailSender,
+        html_renderer: HtmlRenderer,
         password_hasher: PasswordHasher
     ) -> None:
         self._session = session
         self._jwt_manager = jwt_manager
-        self._message_renderer = message_renderer
         self._email_sender = email_sender
+        self._html_renderer = html_renderer
         self._password_hasher = password_hasher
+
         self._users_repository = UsersRepository(session)
         self._roles_repository = RolesRepository(session)
-        
-    async def execute(self, command: UserRegistrationCommand) -> None:
+        self._web_sessions_repository = WebSessionsRepository(session)
+
+    async def create_user(self, command: cmd.UserCreationCommand) -> None:
         async with self._session.begin():
             user = await self._users_repository.with_email(command.email)
             if user is not None:
@@ -65,31 +62,16 @@ class UserRegistrationHandler:
                 datetime.now(UTC),
                 {'sub': new_user.to_string_id(), 'aud': 'user:activate'}
             )
-            message = self._message_renderer.render(command.email, jwt_token)
+            message = self._html_renderer.render(
+                EMAIL_TEMPLATE,
+                EMAIL_CONFIRMATION,
+                command.email, 
+                jwt_token
+            )
             await self._email_sender.send_message(message)
-
             await self._session.commit()
 
-
-@dataclass
-class UserLoginCommand:
-    email: str
-    password: str
-    device: str
-    
-
-class UserLoginHandler:
-    def __init__(
-        self,
-        session: AsyncSession,
-        password_hasher: PasswordHasher,
-    ) -> None:
-        self._session = session
-        self._password_hasher = password_hasher
-        self._users_repository = UsersRepository(session)
-        self._web_sessions_repository = WebSessionsRepository(session)
-        
-    async def execute(self, command: UserLoginCommand) -> dict[str, str]:
+    async def authenticate_user(self, command: cmd.AuthenticateUserCommand) -> dict[str, str]:
         async with self._session.begin():
             user = await self._users_repository.with_email(command.email)
             if user is None:
@@ -111,57 +93,19 @@ class UserLoginHandler:
 
             return web_session_details
         
-
-@dataclass
-class UserAcivateCommand:
-    token: str
-    
-
-class UserActivateHandler:
-    def __init__(
-        self,
-        session: AsyncSession,
-        jwt_manager: JwtTokenManager
-    ) -> None:
-        self._session = session
-        self._jwt_manager = jwt_manager
-        self._users_repository = UsersRepository(session)
-
-    async def execute(self, command: UserAcivateCommand) -> None:
+    async def activate_user(self, token: str) -> None:
         async with self._session.begin():
-            user_id = self._jwt_manager.decode(
-                command.token, 'user:activate'
-            )
-            exists_user = await self._users_repository \
-                .with_id(user_id)
+            user_id = self._jwt_manager.decode(token, 'user:activate')
+            exists_user = await self._users_repository.with_id(user_id)
             
             if exists_user is None:
                 raise ApplicationError()
             
             exists_user.activate()
-            
+
             await self._session.commit()
 
-
-@dataclass
-class PasswordChangeCommand:
-    session_id: UUID
-    old_password: str
-    new_password: str
-
-
-class PasswordChangeHandler:
-    def __init__(
-        self,
-        session: AsyncSession,
-        password_hasher: PasswordHasher
-    ) -> None:
-        self._session = session
-        self._password_hasher = password_hasher
-        self._users_repository = UsersRepository(session)
-        self._web_sessions_repository = WebSessionsRepository(session)
-
-    async def execute(self, command: PasswordChangeCommand) -> None:
+    async def change_user_password(self, command: cmd.ChangePasswordCommand) -> None:
         async with self._session.begin():
             web_session = await self._web_sessions_repository \
                 .lively_with_id(command.session_id, datetime.now())
@@ -180,27 +124,7 @@ class PasswordChangeHandler:
                 .delete_all_with_user_id(user.user_id)
             await self._session.commit()
 
-
-@dataclass
-class NewPasswordCommand:
-    token: str
-    password: str
-
-
-class NewPasswordHandler:
-    def __init__(
-        self, 
-        session: AsyncSession,
-        jwt_manager: JwtTokenManager,
-        password_hasher: PasswordHasher
-    ) -> None:
-        self._session = session
-        self._jwt_manager = jwt_manager
-        self._password_hasher = password_hasher
-        self._users_repository = UsersRepository(session)
-        self._web_sessions_repository = WebSessionsRepository(session)
-    
-    async def execute(self, command: NewPasswordCommand) -> None:
+    async def set_new_password(self, command: cmd.SetNewPasswordCommand) -> None:
         async with self._session.begin():
             user_id = self._jwt_manager.decode(
                 command.token, 'user:password',
@@ -215,29 +139,9 @@ class NewPasswordHandler:
                 .delete_all_with_user_id(user.user_id)
             await self._session.commit()
 
-
-@dataclass
-class ForgotPasswordCommand:
-    email: str
-
-
-class ForgotPasswordHandler:
-    def __init__(
-        self,
-        session: AsyncSession,
-        jwt_manager: JwtTokenManager,
-        message_renderer: MessageRenderer[str],
-        email_sender: EmailSender
-    ) -> None:
-        self._session = session
-        self._jwt_manager = jwt_manager
-        self._message_renderer = message_renderer
-        self._email_sender = email_sender
-        self._users_repository = UsersRepository(session)
-    
-    async def execute(self, command: ForgotPasswordCommand) -> None:
+    async def user_forgot_password(self, email: str) -> None:
         async with self._session.begin():
-            user = await self._users_repository.with_email(command.email) 
+            user = await self._users_repository.with_email(email) 
             if user is None or not user.is_active:
                 return 
             
@@ -245,7 +149,12 @@ class ForgotPasswordHandler:
                 datetime.now(UTC),
                 {'sub': user.to_string_id(), 'aud': 'user:password'}
             )
-            message = self._message_renderer.render(user.email, jwt_token)
+            message = self._html_renderer.render(
+                PASSWORD_TEMPLATE,
+                FORGOT_PASSWORD,
+                user.email, 
+                jwt_token
+            )
             await self._email_sender.send_message(message)
             
             await self._session.commit()

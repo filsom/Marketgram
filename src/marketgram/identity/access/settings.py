@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from jinja2 import Environment, FileSystemLoader
 
-from marketgram.common.application.message_renderer import HtmlSettings
+from marketgram.identity.access.port.adapter.html_renderer import HtmlSettings
 
 
 @dataclass

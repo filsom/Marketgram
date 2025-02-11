@@ -1,0 +1,3 @@
+from port.adapter.sqlalchemy_resources.users_repository import UsersRepository
+from port.adapter.sqlalchemy_resources.roles_repository import RolesRepository
+from port.adapter.sqlalchemy_resources.web_sessions_repository import WebSessionsRepository
