@@ -64,7 +64,7 @@ async def test_authenticate_activated_user(engine, service: IdentityService) -> 
 async def test_user_activation(engine, service: IdentityService) -> None:
     # Arrange
     await delete_all(engine)
-    
+
     user = await create_user(engine, is_active=False)
     
     activation_token = service.jwt_manager.encode(
@@ -126,15 +126,15 @@ async def test_activated_user_changes_password_using_token(engine, service: Iden
 
 
 async def test_activated_user_forgot_password(engine, service: IdentityService) -> None:
-        # Arrange
-        await delete_all(engine)
-        await create_user(engine)
+    # Arrange
+    await delete_all(engine)
+    await create_user(engine)
 
-        # Act
-        await service.user_forgot_password('test@mail.ru')
+    # Act
+    await service.user_forgot_password('test@mail.ru')
 
-        # Assert 
-        service.email_sender.send_message.assert_called_once()
+    # Assert 
+    service.email_sender.send_message.assert_called_once()
 
 
 async def test_non_activated_user_forgot_password(engine, service: IdentityService) -> None:
