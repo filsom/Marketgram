@@ -64,7 +64,6 @@ async def test_authenticate_activated_user(engine, service: IdentityService) -> 
 async def test_user_activation(engine, service: IdentityService) -> None:
     # Arrange
     await delete_all(engine)
-
     user = await create_user(engine, is_active=False)
     
     activation_token = service.jwt_manager.encode(
@@ -84,7 +83,6 @@ async def test_user_activation(engine, service: IdentityService) -> None:
 async def test_activated_user_changes_password(engine, service: IdentityService) -> None:
     # Arrange
     await delete_all(engine)
-    
     user = await create_user(engine)
     web_session = await create_web_session(engine, user.user_id)
 
@@ -105,7 +103,6 @@ async def test_activated_user_changes_password(engine, service: IdentityService)
 async def test_activated_user_changes_password_using_token(engine, service: IdentityService) -> None:
     # Arrange
     await delete_all(engine)
-
     user = await create_user(engine)
     await create_web_session(engine, user.user_id)
 
