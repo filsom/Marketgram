@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from marketgram.common.domain.model.entity import DomainEvent
+from marketgram.common.entity import DomainEvent
 
 if TYPE_CHECKING:
     from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal

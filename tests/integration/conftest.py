@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine
 from sqlalchemy.orm import registry
 
 from marketgram.identity.access.port.adapter.html_renderer import MessageRenderer
-from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
+from marketgram.common.sqlalchemy_metadata import metadata
 from marketgram.identity.access.port.adapter.html_renderers import JwtTokenHtmlRenderer
 from marketgram.identity.access.port.adapter.sqlalchemy_resources.mapping.table.users_registry import (
     users_registry_mapper

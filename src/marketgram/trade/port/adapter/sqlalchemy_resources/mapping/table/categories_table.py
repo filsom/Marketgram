@@ -1,6 +1,6 @@
 from sqlalchemy import DECIMAL, BigInteger, Column, ForeignKey, Integer, String, Table
 
-from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
+from marketgram.common.sqlalchemy_metadata import metadata
 
 
 

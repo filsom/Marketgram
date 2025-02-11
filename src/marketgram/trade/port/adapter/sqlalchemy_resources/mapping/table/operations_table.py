@@ -12,7 +12,7 @@ from sqlalchemy import (
     event,
 )
 
-from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
+from marketgram.common.sqlalchemy_metadata import metadata
 
 
 operations_table = Table(

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from marketgram.common.domain.model.entity import Entity
+from marketgram.common.entity import Entity
 from marketgram.trade.domain.model.entries import InventoryEntry
 from marketgram.trade.domain.model.notifications import InventoryBalancesAddedNotification
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment

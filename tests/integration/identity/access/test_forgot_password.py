@@ -2,7 +2,7 @@ from unittest.mock import AsyncMock
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from marketgram.common.application.email_sender import EmailSender
+from marketgram.common.email_sender import EmailSender
 from marketgram.identity.access.port.adapter.html_renderer import MessageRenderer
 from marketgram.identity.access.application.commands.forgot_password import (
     ForgotPasswordCommand, 

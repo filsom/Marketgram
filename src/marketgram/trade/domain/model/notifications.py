@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from uuid import UUID
 
-from marketgram.common.domain.model.entity import IntegrationEvent
+from marketgram.common.entity import IntegrationEvent
 from marketgram.trade.domain.model.statuses import StatusCard
 
 

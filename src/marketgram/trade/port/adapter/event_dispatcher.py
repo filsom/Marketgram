@@ -1,4 +1,4 @@
-from marketgram.common.domain.model.entity import DomainEvent, IntegrationEvent
+from marketgram.common.entity import DomainEvent, IntegrationEvent
 
 
 class EventDispatcher:

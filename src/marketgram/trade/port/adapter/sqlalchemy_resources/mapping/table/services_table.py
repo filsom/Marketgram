@@ -1,6 +1,6 @@
 from sqlalchemy import String, Table, Column, BigInteger
 
-from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
+from marketgram.common.sqlalchemy_metadata import metadata
 
 
 services_table = Table(

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any
 
-from marketgram.common.domain.model.entity import Entity
+from marketgram.common.entity import Entity
 from marketgram.trade.domain.model.notifications import (
     ReissuePurchasedCardNotification
 )

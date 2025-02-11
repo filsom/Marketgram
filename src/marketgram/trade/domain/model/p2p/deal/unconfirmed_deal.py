@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from marketgram.common.domain.model.entity import Entity
+from marketgram.common.entity import Entity
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.notifications import DisputeOpenedNotification
 from marketgram.trade.domain.model.p2p.deal.claim import Claim, ReturnType

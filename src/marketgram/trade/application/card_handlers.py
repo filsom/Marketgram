@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from uuid import UUID
 
-from marketgram.common.application.exceptions import ApplicationError
-from marketgram.common.port.adapter.id_provider import IDProvider
+from marketgram.common.errors import ApplicationError
+from marketgram.common.id_provider import IDProvider
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.port.adapter.event_dispatcher import EventDispatcher

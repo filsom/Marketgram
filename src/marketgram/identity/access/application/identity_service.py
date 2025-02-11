@@ -2,8 +2,8 @@ from datetime import UTC, datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from marketgram.common.application.email_sender import EmailSender
-from marketgram.common.application.exceptions import ApplicationError
+from marketgram.common.email_sender import EmailSender
+from marketgram.common.errors import ApplicationError
 from marketgram.identity.access.application import commands as cmd
 from marketgram.identity.access.domain.model.authentication_service import AuthenticationService
 from marketgram.identity.access.domain.model.password_hasher import PasswordHasher

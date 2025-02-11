@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from marketgram.common.domain.model.entity import Entity
+from marketgram.common.entity import Entity
 from marketgram.trade.domain.model.events import (
     AdminShippedReplacementWithAutoShipmentEvent, 
     AdminClosedDisputeWithRefundEvent

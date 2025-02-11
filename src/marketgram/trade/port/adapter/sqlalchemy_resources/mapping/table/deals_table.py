@@ -11,7 +11,7 @@ from sqlalchemy import (
     BigInteger
 )
 
-from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
+from marketgram.common.sqlalchemy_metadata import metadata
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.statuses import StatusDeal
 

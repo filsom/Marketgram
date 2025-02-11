@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import StrEnum, auto
 
-from marketgram.common.application.exceptions import DomainError
+from marketgram.common.errors import DomainError
 from marketgram.trade.domain.model.money import Money
 
 

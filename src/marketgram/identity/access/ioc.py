@@ -4,7 +4,7 @@ from dishka import Provider, Scope, alias, provide, provide_all
 from aiosmtplib import SMTP
 from jinja2 import Environment
 
-from marketgram.common.application.email_sender import EmailSender
+from marketgram.common.email_sender import EmailSender
 from marketgram.identity.access.port.adapter.html_renderer import MessageRenderer
 from marketgram.identity.access.application.commands import (
     ForgotPasswordHandler,

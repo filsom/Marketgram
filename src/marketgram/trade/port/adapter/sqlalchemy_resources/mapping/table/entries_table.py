@@ -14,7 +14,7 @@ from sqlalchemy import (
     text, 
 )
 
-from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
+from marketgram.common.sqlalchemy_metadata import metadata
 
 
 
