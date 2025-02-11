@@ -15,7 +15,7 @@ def users_registry_mapper(mapper: registry):
             '_email': user_table.c.email,
             '_password': user_table.c.password,
             '_is_active': user_table.c.is_active,
-            'roles': relationship('Role')
+            'roles': relationship('Role', cascade='all, delete')
         },
         column_prefix="_",
         version_id_col=user_table.c.version_id,

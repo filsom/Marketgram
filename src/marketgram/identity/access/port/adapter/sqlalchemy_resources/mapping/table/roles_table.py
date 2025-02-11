@@ -14,6 +14,6 @@ role_table = Table(
         nullable=False, 
         server_default=text("gen_random_uuid()")
     ),
-    Column('user_id', UUID, ForeignKey('users.user_id'), nullable=False),
+    Column('user_id', UUID, ForeignKey('users.user_id', ondelete='CASCADE'), nullable=False),
     Column('permission', Enum(Permission), nullable=False),
 )

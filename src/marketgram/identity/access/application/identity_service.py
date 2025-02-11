@@ -35,52 +35,52 @@ class IdentityService:
         html_renderer: HtmlRenderer,
         password_hasher: PasswordHasher
     ) -> None:
-        self._session = session
-        self._jwt_manager = jwt_manager
-        self._email_sender = email_sender
-        self._html_renderer = html_renderer
-        self._password_hasher = password_hasher
+        self.session = session
+        self.jwt_manager = jwt_manager
+        self.email_sender = email_sender
+        self.html_renderer = html_renderer
+        self.password_hasher = password_hasher
 
-        self._users_repository = UsersRepository(session)
-        self._roles_repository = RolesRepository(session)
-        self._web_sessions_repository = WebSessionsRepository(session)
+        self.users_repository = UsersRepository(session)
+        self.roles_repository = RolesRepository(session)
+        self.web_sessions_repository = WebSessionsRepository(session)
 
     async def create_user(self, command: cmd.UserCreationCommand) -> None:
-        async with self._session.begin():
-            user = await self._users_repository.with_email(command.email)
+        async with self.session.begin():
+            user = await self.users_repository.with_email(command.email)
             if user is not None:
                 raise ApplicationError()
             
-            new_user = UserFactory(self._password_hasher) \
+            new_user = UserFactory(self.password_hasher) \
                 .create(command.email, command.password)
             role = Role(new_user.user_id, Permission.USER)
 
-            self._users_repository.add(new_user)
-            self._roles_repository.add(role)
+            self.users_repository.add(new_user)
+            self.roles_repository.add(role)
             
-            jwt_token = self._jwt_manager.encode(
+            jwt_token = self.jwt_manager.encode(
                 datetime.now(UTC),
                 {'sub': new_user.to_string_id(), 'aud': 'user:activate'}
             )
-            message = self._html_renderer.render(
+            message = await self.html_renderer.render(
                 EMAIL_TEMPLATE,
                 EMAIL_CONFIRMATION,
                 command.email, 
                 jwt_token
             )
-            await self._email_sender.send_message(message)
-            await self._session.commit()
+            await self.email_sender.send_message(message)
+            await self.session.commit()
 
     async def authenticate_user(self, command: cmd.AuthenticateUserCommand) -> dict[str, str]:
-        async with self._session.begin():
-            user = await self._users_repository.with_email(command.email)
+        async with self.session.begin():
+            user = await self.users_repository.with_email(command.email)
             if user is None:
                 raise ApplicationError()
             
-            AuthenticationService(self._password_hasher) \
+            AuthenticationService(self.password_hasher) \
                 .authenticate(user, command.password)
             
-            await self._web_sessions_repository \
+            await self.web_sessions_repository \
                 .delete_this_device(user.user_id, command.device)       
 
             web_session = WebSessionFactory().create(
@@ -88,73 +88,73 @@ class IdentityService:
             )
             web_session_details = web_session.for_browser()
 
-            await self._web_sessions_repository.add(web_session)
-            await self._session.commit()
+            await self.web_sessions_repository.add(web_session)
+            await self.session.commit()
 
             return web_session_details
         
     async def activate_user(self, token: str) -> None:
-        async with self._session.begin():
-            user_id = self._jwt_manager.decode(token, 'user:activate')
-            exists_user = await self._users_repository.with_id(user_id)
+        async with self.session.begin():
+            user_id = self.jwt_manager.decode(token, 'user:activate')
+            exists_user = await self.users_repository.with_id(user_id)
             
             if exists_user is None:
                 raise ApplicationError()
             
             exists_user.activate()
 
-            await self._session.commit()
+            await self.session.commit()
 
     async def change_user_password(self, command: cmd.ChangePasswordCommand) -> None:
-        async with self._session.begin():
-            web_session = await self._web_sessions_repository \
+        async with self.session.begin():
+            web_session = await self.web_sessions_repository \
                 .lively_with_id(command.session_id, datetime.now())
             
             if web_session is None:
                 raise ApplicationError()
             
-            user = await self._users_repository.with_id(web_session.user_id)
+            user = await self.users_repository.with_id(web_session.user_id)
 
-            AuthenticationService(self._password_hasher) \
+            AuthenticationService(self.password_hasher) \
                 .authenticate(user, command.old_password)
 
-            user.change_password(command.new_password, self._password_hasher)
+            user.change_password(command.new_password, self.password_hasher)
 
-            await self._web_sessions_repository \
+            await self.web_sessions_repository \
                 .delete_all_with_user_id(user.user_id)
-            await self._session.commit()
+            await self.session.commit()
 
     async def set_new_password(self, command: cmd.SetNewPasswordCommand) -> None:
-        async with self._session.begin():
-            user_id = self._jwt_manager.decode(
+        async with self.session.begin():
+            user_id = self.jwt_manager.decode(
                 command.token, 'user:password',
             )      
-            user = await self._users_repository.with_id(user_id)
+            user = await self.users_repository.with_id(user_id)
             if user is None:
                 raise ApplicationError()
             
-            user.change_password(command.password, self._password_hasher)
+            user.change_password(command.password, self.password_hasher)
 
-            await self._web_sessions_repository \
+            await self.web_sessions_repository \
                 .delete_all_with_user_id(user.user_id)
-            await self._session.commit()
+            await self.session.commit()
 
     async def user_forgot_password(self, email: str) -> None:
-        async with self._session.begin():
-            user = await self._users_repository.with_email(email) 
+        async with self.session.begin():
+            user = await self.users_repository.with_email(email) 
             if user is None or not user.is_active:
                 return 
             
-            jwt_token = self._jwt_manager.encode(
+            jwt_token = self.jwt_manager.encode(
                 datetime.now(UTC),
                 {'sub': user.to_string_id(), 'aud': 'user:password'}
             )
-            message = self._html_renderer.render(
+            message = await self.html_renderer.render(
                 PASSWORD_TEMPLATE,
                 FORGOT_PASSWORD,
                 user.email, 
                 jwt_token
             )
-            await self._email_sender.send_message(message)
+            await self.email_sender.send_message(message)
             
-            await self._session.commit()
+            await self.session.commit()
