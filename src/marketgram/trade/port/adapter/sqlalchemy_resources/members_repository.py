@@ -2,7 +2,7 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import and_, select, func
-from sqlalchemy.orm import with_expression, selectinload
+from sqlalchemy.orm import with_expression
 
 from marketgram.trade.domain.model.p2p.seller import Seller
 from marketgram.trade.domain.model.p2p.user import User

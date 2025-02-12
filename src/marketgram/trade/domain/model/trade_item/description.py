@@ -9,7 +9,7 @@ class Description:
         self,
         name: str,
         body: str,
-        status: StatusDescription = StatusDescription.CURRENT,
+        status: StatusDescription = StatusDescription.NEW,
         set_in: datetime | None = None,
         description_id: int = None,
         card_id: int | None = None,
