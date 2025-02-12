@@ -14,21 +14,12 @@ from marketgram.identity.access.port.adapter import (
     role_table,
     web_session_table,    
 )
-from marketgram.identity.access.settings import (
-    Settings, 
-    identity_access_load_settings
-)
 
 
 mapper = registry()
 users_registry_mapper(mapper)
 web_sessions_registry_mapper(mapper)
 roles_registry_mapper(mapper)
-
-
-@pytest.fixture(scope='session')
-def settings() -> Settings:
-    return identity_access_load_settings()
 
 
 @pytest_asyncio.fixture(loop_scope='session', scope='session')

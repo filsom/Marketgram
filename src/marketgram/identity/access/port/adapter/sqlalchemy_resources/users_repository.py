@@ -1,12 +1,9 @@
 from typing import Optional
 from uuid import UUID
 
-from sqlalchemy import insert, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from marketgram.identity.access.port.adapter.sqlalchemy_resources.mapping.table.users_table import (
-    user_table
-)
 from marketgram.identity.access.domain.model.user import User
 
 
@@ -16,6 +13,9 @@ class UsersRepository:
         session: AsyncSession
     ) -> None:
         self.session = session
+
+    def add(self, user: User) -> None:
+        self.session.add(user)
     
     async def with_id(self, user_id: UUID) -> Optional[User]:
         stmt = select(User).where(User._user_id == user_id)
@@ -28,6 +28,3 @@ class UsersRepository:
         result = await self.session.execute(stmt)
 
         return result.scalar_one_or_none()
-    
-    def add(self, user: User) -> None:
-        self.session.add(user)

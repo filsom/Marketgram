@@ -30,20 +30,22 @@ class IdentityService:
     def __init__(
         self,
         session: AsyncSession,
+        users_repository: UsersRepository,
+        roles_repository: RolesRepository,
+        web_sessions_repository: WebSessionsRepository,
         jwt_manager: JwtTokenManager,
         email_sender: EmailSender,
         html_renderer: HtmlRenderer,
         password_hasher: PasswordHasher
     ) -> None:
         self.session = session
+        self.users_repository = users_repository
+        self.roles_repository = roles_repository
+        self.web_sessions_repository = web_sessions_repository
         self.jwt_manager = jwt_manager
         self.email_sender = email_sender
         self.html_renderer = html_renderer
         self.password_hasher = password_hasher
-
-        self.users_repository = UsersRepository(session)
-        self.roles_repository = RolesRepository(session)
-        self.web_sessions_repository = WebSessionsRepository(session)
 
     async def create_user(self, command: cmd.UserCreationCommand) -> None:
         async with self.session.begin():
@@ -87,8 +89,7 @@ class IdentityService:
                 user.user_id, datetime.now(), command.device
             )
             web_session_details = web_session.for_browser()
-
-            await self.web_sessions_repository.add(web_session)
+            self.web_sessions_repository.add(web_session)
             await self.session.commit()
             return web_session_details
         
@@ -124,9 +125,7 @@ class IdentityService:
 
     async def set_new_password(self, command: cmd.SetNewPasswordCommand) -> None:
         async with self.session.begin():
-            user_id = self.jwt_manager.decode(
-                command.token, 'user:password',
-            )      
+            user_id = self.jwt_manager.decode(command.token, 'user:password')      
             user = await self.users_repository.with_id(user_id)
             if user is None:
                 raise ApplicationError()
@@ -144,8 +143,7 @@ class IdentityService:
                 return 
             
             jwt_token = self.jwt_manager.encode(
-                datetime.now(UTC),
-                {'sub': user.to_string_id(), 'aud': 'user:password'}
+                datetime.now(UTC), {'sub': user.to_string_id(), 'aud': 'user:password'}
             )
             message = await self.html_renderer.render(
                 PASSWORD_TEMPLATE,

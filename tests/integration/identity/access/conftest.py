@@ -20,6 +20,7 @@ from marketgram.identity.access.port.adapter.argon2_password_hasher import (
 from marketgram.identity.access.port.adapter import (
     RolesRepository,
     UsersRepository,
+    WebSessionsRepository,
     user_table,
     role_table,
     web_session_table,    
@@ -32,6 +33,9 @@ async def service(engine) -> IdentityService:
     async with AsyncSession(engine) as session:
         return IdentityService(
             session,
+            UsersRepository(session),
+            RolesRepository(session),
+            WebSessionsRepository(session),
             JwtTokenManager('secret'),
             AsyncMock(),
             AsyncMock(),
