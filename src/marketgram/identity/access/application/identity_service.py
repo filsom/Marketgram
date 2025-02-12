@@ -67,8 +67,8 @@ class IdentityService:
             message = await self.html_renderer.render(
                 EMAIL_TEMPLATE,
                 EMAIL_SUBJECT,
-                command.email, 
-                jwt_token
+                new_user.email, 
+                {'token': jwt_token}
             )
             await self.email_sender.send_message(message)
             await self.session.commit()
@@ -149,7 +149,7 @@ class IdentityService:
                 PASSWORD_TEMPLATE,
                 PASSWORD_SUBJECT,
                 user.email, 
-                jwt_token
+                {'token': jwt_token}
             )
             await self.email_sender.send_message(message)
             await self.session.commit()
