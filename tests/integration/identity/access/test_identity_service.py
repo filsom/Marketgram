@@ -34,7 +34,6 @@ async def test_create_new_user(engine, service: IdentityService) -> None:
     user_from_db = await query_user_with_email(engine, 'test@mail.ru')
     role_from_db = await query_role(engine, user_from_db.user_id)
     
-    assert user_from_db is not None
     assert user_from_db.email == 'test@mail.ru'
     assert not user_from_db.is_active
     assert service.password_hasher.verify(user_from_db.password, 'qwerty')
@@ -54,7 +53,6 @@ async def test_authenticate_activated_user(engine, service: IdentityService) -> 
     # Assert
     web_session_from_db = await query_web_session(engine, UUID(result['session_id']))
     
-    assert web_session_from_db is not None
     assert web_session_from_db.to_string_id() == result['session_id']
     assert str(web_session_from_db.user_id) == result['user_id']
     assert web_session_from_db.device == 'Nokia 3210'
@@ -76,7 +74,6 @@ async def test_user_activation(engine, service: IdentityService) -> None:
     # Assert
     user_from_db = await query_user_with_id(engine, user.user_id)
 
-    assert user_from_db is not None
     assert user_from_db.is_active
 
 
@@ -95,7 +92,6 @@ async def test_activated_user_changes_password(engine, service: IdentityService)
     user_from_db = await query_user_with_id(engine, user.user_id)
     count_web_sessions = await query_count_web_sessions(engine, user_from_db.user_id)
 
-    assert user_from_db is not None
     assert service.password_hasher.verify(user_from_db.password, 'new_qwerty')
     assert count_web_sessions == 0
 
@@ -117,7 +113,6 @@ async def test_activated_user_changes_password_using_token(engine, service: Iden
     user_from_db = await query_user_with_id(engine, user.user_id)
     count_web_sessions = await query_count_web_sessions(engine, user_from_db.user_id)
 
-    assert user_from_db is not None
     assert service.password_hasher.verify(user_from_db.password, 'new_qwerty')
     assert count_web_sessions == 0
 
