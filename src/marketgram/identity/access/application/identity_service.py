@@ -2,7 +2,13 @@ from datetime import UTC, datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from marketgram.common.email_sender import EmailSender
+from marketgram.common.email_sender import (
+    EmailSender,
+    EMAIL_TEMPLATE,
+    EMAIL_SUBJECT,
+    PASSWORD_TEMPLATE,
+    PASSWORD_SUBJECT
+)
 from marketgram.common.errors import ApplicationError
 from marketgram.identity.access.application import commands as cmd
 from marketgram.identity.access.domain.model.authentication_service import AuthenticationService
@@ -18,12 +24,6 @@ from marketgram.identity.access.port.adapter import (
     RolesRepository,
     WebSessionsRepository
 )
-
-
-PASSWORD_TEMPLATE = 'forgot_password.html'
-FORGOT_PASSWORD = 'Установка нового пароля.'
-EMAIL_TEMPLATE = 'email_confirmation.html'
-EMAIL_CONFIRMATION = 'Подтверждение адреса электронной почты.'
 
 
 class IdentityService:
@@ -66,7 +66,7 @@ class IdentityService:
             )
             message = await self.html_renderer.render(
                 EMAIL_TEMPLATE,
-                EMAIL_CONFIRMATION,
+                EMAIL_SUBJECT,
                 command.email, 
                 jwt_token
             )
@@ -147,7 +147,7 @@ class IdentityService:
             )
             message = await self.html_renderer.render(
                 PASSWORD_TEMPLATE,
-                FORGOT_PASSWORD,
+                PASSWORD_SUBJECT,
                 user.email, 
                 jwt_token
             )
