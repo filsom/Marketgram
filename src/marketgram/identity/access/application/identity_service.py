@@ -61,7 +61,7 @@ class IdentityService:
             self.roles_repository.add(role)
             
             jwt_token = self.jwt_manager.encode(
-                datetime.now(UTC),
+                datetime.now(UTC), 
                 {'sub': new_user.to_string_id(), 'aud': 'user:activate'}
             )
             message = await self.html_renderer.render(
@@ -143,7 +143,8 @@ class IdentityService:
                 return 
             
             jwt_token = self.jwt_manager.encode(
-                datetime.now(UTC), {'sub': user.to_string_id(), 'aud': 'user:password'}
+                datetime.now(UTC), 
+                {'sub': user.to_string_id(), 'aud': 'user:password'}
             )
             message = await self.html_renderer.render(
                 PASSWORD_TEMPLATE,
