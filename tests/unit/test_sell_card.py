@@ -2,8 +2,11 @@ from datetime import UTC, datetime
 
 import pytest
 
-from marketgram.trade.domain.model.errors import QuantityItemError, CurrentСardStateError
-from marketgram.trade.domain.model.events import PurchasedCardWithAutoShipmentEvent
+from marketgram.trade.domain.model.errors import (
+    QuantityItemError,
+    ReplacingItemError, 
+    CurrentСardStateError
+)
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.statuses import StatusCard
@@ -50,6 +53,26 @@ class TestSellCard:
         assert len(stock_card.inventory_entries) == 0
         assert len(stock_card.release_events()) == 0
         assert stock_card.status == StatusCard.ON_SALE
+
+    def test_replacement_of_a_regular_card(self):
+        # Arrange
+        card = self.make_sell_card(Money(200), Shipment.HAND)
+
+        # Act
+        with pytest.raises(ReplacingItemError):
+            card.replace(20, datetime.now(UTC))
+
+    def test_replacement_of_a_stock_card(self):
+        # Arrange
+        stock_card = self.make_sell_stock_card(Money(200), 200)
+
+        # Act
+        stock_card.replace(100, datetime.now(UTC))
+
+        # Assert
+        assert len(stock_card.inventory_entries) == 1
+        assert stock_card.status == StatusCard.ON_SALE
+        assert stock_card.shipment == Shipment.AUTO
 
     def test_purchase_ended_with_zero_balance_on_the_card(self):
         # Arrange
