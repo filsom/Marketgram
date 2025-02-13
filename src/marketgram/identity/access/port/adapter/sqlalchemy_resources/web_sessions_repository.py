@@ -16,7 +16,7 @@ class WebSessionsRepository:
     ) -> None:
         self.session = session
 
-    async def add(self, web_session: WebSession) -> None:
+    def add(self, web_session: WebSession) -> None:
         self.session.add(web_session)
     
     async def delete_this_device(self, user_id: UUID, device: str) -> None:

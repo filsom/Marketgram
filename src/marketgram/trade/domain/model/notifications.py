@@ -1,15 +1,19 @@
 from dataclasses import dataclass
 from datetime import datetime
+from uuid import UUID
+
+from marketgram.common.entity import IntegrationEvent
+from marketgram.trade.domain.model.statuses import StatusCard
 
 
 @dataclass(frozen=True)
-class DisputeOpenedNotification:
+class DisputeOpenedNotification(IntegrationEvent):
     seller_id: int
     occurred_at: datetime
 
 
 @dataclass(frozen=True)
-class DealCreatedNotification:
+class DealCreatedNotification(IntegrationEvent):
     seller_id: int
     deal_id: int
     card_id: int
@@ -19,43 +23,58 @@ class DealCreatedNotification:
 
 
 @dataclass(frozen=True)
-class ShippedByDealNotification:
-    buyer_id: int
-    deal_id: int
-    download_link: str
-    occurred_at: datetime
-
-
-@dataclass(frozen=True)
-class ZeroInventoryBalanceNotification:
-    seller_id: int
-    card_id: int
-    occurred_at: datetime
-
-
-@dataclass(frozen=True)
-class SellerCancelledDealNotification:
+class ShippedByDealNotification(IntegrationEvent):
     buyer_id: int
     deal_id: int
     occurred_at: datetime
 
 
 @dataclass(frozen=True)
-class ReissuePurchasedCardNotification:
+class ShippedReplacementByDisputeNotification(IntegrationEvent):
+    buyer_id: int
+    deal_id: int
+    occurred_at: datetime
+
+
+@dataclass(frozen=True)
+class ZeroInventoryBalanceNotification(IntegrationEvent):
     seller_id: int
     card_id: int
     occurred_at: datetime
 
 
 @dataclass(frozen=True)
-class AdminJoinNotification:
+class SellerCancelledDealNotification(IntegrationEvent):
+    buyer_id: int
+    deal_id: int
+    occurred_at: datetime
+
+
+@dataclass(frozen=True)
+class ReissuePurchasedCardNotification(IntegrationEvent):
+    seller_id: int
+    card_id: int
+    occurred_at: datetime
+
+
+@dataclass(frozen=True)
+class AdminJoinNotification(IntegrationEvent):
     deal_id: int
     occurred_at: datetime
 
 
 # Пользователь отклонил возврат товара (некачесвенный). Ждем админа!
 @dataclass(frozen=True)
-class BuyerRejectedReplacementNotification:
+class BuyerRejectedReplacementNotification(IntegrationEvent):
     deal_id: int
     dispute_id: int
+    occurred_at: datetime
+
+
+@dataclass(frozen=True)
+class InventoryBalancesAddedNotification(IntegrationEvent):
+    card_id: int
+    owner_id: UUID
+    qty: int
+    status_card: StatusCard
     occurred_at: datetime

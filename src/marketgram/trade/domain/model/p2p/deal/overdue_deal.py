@@ -1,11 +1,10 @@
 from datetime import datetime
 
-from marketgram.trade.domain.model.entry_status import EntryStatus
 from marketgram.trade.domain.model.money import Money
-from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.p2p.service_agreement import ServiceAgreement
-from marketgram.trade.domain.model.posting_entry import PostingEntry
+from marketgram.trade.domain.model.entries import PostingEntry
+from marketgram.trade.domain.model.statuses import EntryStatus, StatusDeal
 from marketgram.trade.domain.model.types import AccountType, Operation
 
 
@@ -17,7 +16,7 @@ class OverdueDeal:
         unit_price: Money,
         status: StatusDeal,
         entries: list[PostingEntry]
-    ):
+    ) -> None:
         self._deal_id = deal_id
         self._members = members
         self._unit_price = unit_price

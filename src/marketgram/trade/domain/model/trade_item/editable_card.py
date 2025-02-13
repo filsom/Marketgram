@@ -3,13 +3,13 @@ from decimal import Decimal
 from marketgram.common.domain.model.errors import DomainError
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
+from marketgram.trade.domain.model.statuses import StatusCard
 from marketgram.trade.domain.model.trade_item.category import ActionTime
 from marketgram.trade.domain.model.trade_item.description import (
     Description, 
     StatusDescription
 )
-from marketgram.trade.domain.model.trade_item.status_card import StatusCard
-from marketgram.trade.domain.model.exceptions import (
+from marketgram.trade.domain.model.errors import (
     DISCOUNT_ERROR, 
     UNACCEPTABLE_DISCOUNT_RANGE
 )
@@ -58,9 +58,6 @@ class EditableCard:
     def put_on_sale(self) -> None:
         self._status = StatusCard.ON_SALE
 
-    def mark_sold_out(self) -> None:
-        self._status = StatusCard.PURCHASED
-
     def add_new_description(self, name: str, body: str) -> None: 
         for description in self._descriptions:
             if description.status == StatusDescription.NEW:
@@ -75,6 +72,9 @@ class EditableCard:
             )    
         )
         self._status = StatusCard.ON_MODERATION
+
+    def can_add_item(self) -> bool:
+        return self._shipment != Shipment.CHAT
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, EditableCard):

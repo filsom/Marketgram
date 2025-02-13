@@ -1,23 +1,25 @@
 from datetime import datetime
 
-from marketgram.common.domain.model.errors import DomainError
 from marketgram.trade.domain.model.events import (
     PurchasedCardWithAutoShipmentEvent, 
-    ZeroInventoryBalanceNotification
 )
 from marketgram.trade.domain.model.money import Money
+from marketgram.trade.domain.model.notifications import ZeroInventoryBalanceNotification
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
-from marketgram.trade.domain.model.p2p.errors import QuantityItemError
+from marketgram.trade.domain.model.errors import (
+    QuantityItemError, 
+    ReplacingItemError, 
+    CurrentСardStateError
+)
 from marketgram.trade.domain.model.p2p.members import Members
-from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
+from marketgram.trade.domain.model.statuses import StatusCard, StatusDeal
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
-from marketgram.trade.domain.model.trade_item.inventory_entry import (
+from marketgram.trade.domain.model.entries import (
     InventoryEntry, 
     InventoryOperation
 )
 from marketgram.trade.domain.model.trade_item.sell_card import SellCard
-from marketgram.trade.domain.model.trade_item.status_card import StatusCard
 
 
 class SellStockCard(SellCard):
@@ -46,32 +48,16 @@ class SellStockCard(SellCard):
     def purchase(
         self, 
         buyer_id: int, 
+        price: Money,
+        shipment: Shipment,
         quantity: int, 
         occurred_at: datetime
     ) -> ShipDeal:
-        if quantity <= 0:
-            raise QuantityItemError()
-        
-        remainder = self._stock_balance - quantity
-        if remainder < 0:
-            raise DomainError()
-        
-        if remainder == 0:
-            self._shipment = Shipment.HAND
-            self._status = StatusCard.EDITING
-            self.events.append(
-                ZeroInventoryBalanceNotification(
-                    self._owner_id,
-                    self._card_id,
-                    occurred_at
-                )
-            )
-        self._inventory_entries.append(
-            InventoryEntry(
-                -quantity, 
-                occurred_at, 
-                InventoryOperation.BUY
-            )
+        self._check_conditions_purchase(price, shipment)
+        self._take_inventory(
+            quantity, 
+            InventoryOperation.BUY, 
+            occurred_at
         )
         deal = ShipDeal(
             self._card_id,
@@ -87,3 +73,54 @@ class SellStockCard(SellCard):
             PurchasedCardWithAutoShipmentEvent(deal, occurred_at)
         )
         return deal
+
+    def replace(
+        self, 
+        qty_replacement: int, 
+        occurred_at: datetime
+    ) -> None:
+        try:
+            self._take_inventory(
+                qty_replacement, 
+                InventoryOperation.REPLACE, 
+                occurred_at
+            )
+        except QuantityItemError:
+            raise ReplacingItemError()
+        
+    def _check_conditions_purchase(self, price: Money, shipment: Shipment) -> None:
+        super()._check_conditions_purchase(price, shipment)
+    
+        if self._shipment != shipment:
+            raise CurrentСardStateError(self._snapshot_of_conditions())
+        
+    def _take_inventory(
+        self, 
+        quantity: int, 
+        operation: InventoryOperation, 
+        occurred_at: datetime
+    ) -> None:
+        if quantity <= 0:
+            raise QuantityItemError()
+        
+        remainder = self._stock_balance - quantity
+        if remainder < 0:
+            raise QuantityItemError()
+        
+        if remainder == 0:
+            self._shipment = Shipment.HAND
+            self._status = StatusCard.PURCHASED
+            self.events.append(
+                ZeroInventoryBalanceNotification(
+                    self._owner_id,
+                    self._card_id,
+                    occurred_at
+                )
+            )
+        self._inventory_entries.append(
+            InventoryEntry(
+                -quantity, 
+                occurred_at, 
+                operation
+            )
+        )

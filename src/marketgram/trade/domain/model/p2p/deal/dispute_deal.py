@@ -1,18 +1,18 @@
 from datetime import datetime
 
+from marketgram.common.entity import Entity
 from marketgram.trade.domain.model.events import DisputeClosedEvent
-from marketgram.trade.domain.model.p2p.errors import QuantityItemError
+from marketgram.trade.domain.model.errors import QuantityItemError
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
-from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
 from marketgram.trade.domain.model.p2p.service_agreement import ServiceAgreement
-from marketgram.trade.domain.model.posting_entry import PostingEntry
-from marketgram.trade.domain.model.entry_status import EntryStatus
+from marketgram.trade.domain.model.entries import PostingEntry
 from marketgram.trade.domain.model.money import Money
+from marketgram.trade.domain.model.statuses import EntryStatus, StatusDeal
 from marketgram.trade.domain.model.types import AccountType, Operation
 
 
-class DisputeDeal:
+class DisputeDeal(Entity):
     def __init__(
         self,
         deal_id: int,
@@ -23,6 +23,7 @@ class DisputeDeal:
         status: StatusDeal,
         entries: list[PostingEntry],
     ) -> None:
+        super().__init__()
         self._deal_id = deal_id
         self._members = members
         self._unit_price = unit_price
@@ -30,9 +31,8 @@ class DisputeDeal:
         self._deadlines = deadlines
         self._entries = entries
         self._status = status
-        self.events = []
 
-    def allocate(
+    def allocate_money(
         self,
         qty_return: int,
         occurred_at: datetime,
@@ -61,7 +61,7 @@ class DisputeDeal:
             )
             self.entries.extend(entries)
 
-        self.events.append(
+        self.add_event(
             DisputeClosedEvent(
                 self._members.seller_id, 
                 occurred_at
@@ -80,7 +80,7 @@ class DisputeDeal:
             occurred_at
         )
         self.entries.extend(entries)
-        self.events.append(
+        self.add_event(
             DisputeClosedEvent(
                 self._members.seller_id, 
                 occurred_at
@@ -94,7 +94,7 @@ class DisputeDeal:
             occurred_at
         )
         self.entries.append(entry)
-        self.events.append(
+        self.add_event(
             DisputeClosedEvent(
                 self._members.seller_id, 
                 occurred_at

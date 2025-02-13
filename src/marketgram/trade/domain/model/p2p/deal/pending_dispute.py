@@ -1,13 +1,14 @@
 from datetime import datetime
 
+from marketgram.common.entity import Entity
 from marketgram.trade.domain.model.events import BuyerConfirmedAndClosedDisputeEvent
 from marketgram.trade.domain.model.notifications import BuyerRejectedReplacementNotification
 from marketgram.trade.domain.model.p2p.deal.claim import Claim, ReturnType
-from marketgram.trade.domain.model.p2p.deal.status_dispute import StatusDispute
-from marketgram.trade.domain.model.p2p.errors import CheckDeadlineError
+from marketgram.trade.domain.model.errors import CheckDeadlineError
+from marketgram.trade.domain.model.statuses import StatusDispute
 
 
-class PendingDispute:
+class PendingDispute(Entity):
     def __init__(
         self,
         dispute_id: int,
@@ -16,18 +17,18 @@ class PendingDispute:
         status: StatusDispute,
         confirm_in: datetime,
     ) -> None:
+        super().__init__()
         self._dispute_id = dispute_id
         self._deal_id = deal_id
         self._claim = claim
         self._status = status
         self._confirm_in = confirm_in
-        self.events = []
 
     def confirm(self, occurred_at: datetime) -> None:
         if self._confirm_in < occurred_at:
             raise CheckDeadlineError()
         
-        self.events.append(
+        self.add_event(
             BuyerConfirmedAndClosedDisputeEvent(
                 self._deal_id,
                 occurred_at
@@ -39,7 +40,7 @@ class PendingDispute:
         if self._confirm_in < occurred_at:
             raise CheckDeadlineError()
         
-        self.events(
+        self.add_event(
             BuyerRejectedReplacementNotification(
                 self._deal_id,
                 self._dispute_id,

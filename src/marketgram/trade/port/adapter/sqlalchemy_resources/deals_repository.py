@@ -9,12 +9,9 @@ from marketgram.trade.domain.model.p2p.deal.fail_deal import FailDeal
 from marketgram.trade.domain.model.p2p.deal.unconfirmed_deal import UnconfirmedDeal
 from marketgram.trade.domain.model.p2p.deal.dispute_deal import DisputeDeal
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
-from marketgram.trade.domain.model.p2p.deal.status_deal import StatusDeal
+from marketgram.trade.domain.model.statuses import StatusDeal
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.deals_table import (
     deals_table
-)
-from marketgram.trade.port.adapter.sqlalchemy_resources.operations_mapper import (
-    SQLAlchemyOperationsMapper
 )
 
 

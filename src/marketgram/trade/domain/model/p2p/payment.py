@@ -1,11 +1,11 @@
 from datetime import datetime
 from uuid import UUID
 
-from marketgram.trade.domain.model.posting_entry import (
+from marketgram.common.domain.model.errors import DomainError
+from marketgram.trade.domain.model.entries import (
     EntryStatus, 
     PostingEntry
 )
-from marketgram.trade.domain.model.exceptions import DomainError
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.types import (
     AccountType, 
@@ -17,14 +17,14 @@ class Payment:
     def __init__(
         self,
         payment_id: UUID,
-        member_id: int,
+        user_id: UUID,
         amount: Money,
         created_at: datetime,
         is_processed: bool = False,
         is_blocked: bool = False,
     ) -> None:
         self._payment_id = payment_id
-        self._member_id = member_id
+        self._user_id = user_id
         self._amount = amount
         self._created_at = created_at
         self._is_processed = is_processed
@@ -36,7 +36,7 @@ class Payment:
             raise DomainError()
             
         new_entry = PostingEntry(
-            self._buyer_id,
+            self._user_id,
             self._amount,
             self._created_at,
             AccountType.USER,

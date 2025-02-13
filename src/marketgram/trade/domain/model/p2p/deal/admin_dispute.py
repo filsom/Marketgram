@@ -1,16 +1,17 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
+from marketgram.common.entity import Entity
 from marketgram.trade.domain.model.events import (
     AdminShippedReplacementWithAutoShipmentEvent, 
     AdminClosedDisputeWithRefundEvent
 )
 from marketgram.trade.domain.model.p2p.deal.claim import Claim, ReturnType
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
-from marketgram.trade.domain.model.p2p.deal.status_dispute import StatusDispute
 from marketgram.trade.domain.model.p2p.members import DisputeMembers
+from marketgram.trade.domain.model.statuses import StatusDispute
 
 
-class AdminDispute:
+class AdminDispute(Entity):
     def __init__(
         self,
         dispute_id: int,
@@ -19,45 +20,42 @@ class AdminDispute:
         dispute_members: DisputeMembers,
         shipment: Shipment,
         status: StatusDispute,
-        download_link: str | None
+        confirm_in: datetime | None
     ) -> None:
+        super().__init__()
         self._dispute_id = dispute_id
         self._card_id = card_id
         self._claim = claim
         self._dispute_members = dispute_members
         self._shipment = shipment
         self._status = status
-        self._download_link = download_link
-        self.events = []   
+        self._confirm_in = confirm_in
 
     def satisfy_buyer(self, occurred_at: datetime) -> None:
         if self._claim.is_replacement():
             if self._shipment.is_auto_link():
-                self.events.append(
+                self.add_event(
                     AdminShippedReplacementWithAutoShipmentEvent(
                         self,
                         self._claim.qty_return,
                         occurred_at
                     )
                 )
+                self._confirm_in = occurred_at + timedelta(hours=1)
                 self._status = StatusDispute.PENDING
                 return 
             
-            elif self._shipment.is_not_auto_link():
-                self._claim = self._claim.change_return_type(
-                    ReturnType.MONEY
-                )
-            
-        elif self._claim.return_is_money():
-            self.buyer_refund(occurred_at)
-
+        self.buyer_refund(occurred_at)
         self._status = StatusDispute.CLOSED
         
     def buyer_refund(self, occurred_at: datetime) -> None:
         if self._claim.is_replacement():
-            self._claim = self._claim.change_return_type(ReturnType.MONEY)
+            self._claim = self._claim.change_return_type(
+                ReturnType.MONEY
+            )
+            self._confirm_in = None
 
-        self.events.append(
+        self.add_event(
             AdminClosedDisputeWithRefundEvent(
                 self._dispute_members.deal_id,
                 self._claim.qty_return,
@@ -67,8 +65,13 @@ class AdminDispute:
         if self._status != StatusDispute.CLOSED:
             self._status = StatusDispute.CLOSED
 
-    def add_download_link(self, download_link: str) -> None:
-        self._download_link = download_link
+    @property
+    def card_id(self) -> int:
+        return self._card_id
+    
+    @property
+    def deal_id(self) -> int:
+        return self._dispute_members.deal_id
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, AdminDispute):

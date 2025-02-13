@@ -1,16 +1,17 @@
 from datetime import datetime
 from uuid import UUID, uuid4
 
+from marketgram.common.domain.model.errors import DomainError
+from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.p2p.sales_manager import ServiceAgreement
 from marketgram.trade.domain.model.trade_item.sell_card import SellCard
-from marketgram.trade.domain.model.exceptions import (
+from marketgram.trade.domain.model.errors import (
     BALANCE_BLOCKED,
     INSUFFICIENT_FUNDS,
     MINIMUM_DEPOSIT, 
-    DomainError
 )
 from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
-from marketgram.trade.domain.model.posting_entry import EntryStatus, PostingEntry
+from marketgram.trade.domain.model.entries import EntryStatus, PostingEntry
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.payment import Payment
 from marketgram.trade.domain.model.types import AccountType, Operation
@@ -36,6 +37,8 @@ class User:
         self, 
         quantity: int, 
         card: SellCard,
+        price: Money,
+        shipment: Shipment,
         current_time: datetime
     ) -> ShipDeal:
         if self._is_blocked:
@@ -45,8 +48,13 @@ class User:
         if remainder < Money(0):
             raise DomainError(INSUFFICIENT_FUNDS)
 
-        deal = card.purchase(self._user_id, quantity, current_time)
-
+        deal = card.purchase(
+            self._user_id, 
+            price, 
+            shipment, 
+            quantity, 
+            current_time
+        )
         self._entries.append(
             PostingEntry(
                 self._member_id,

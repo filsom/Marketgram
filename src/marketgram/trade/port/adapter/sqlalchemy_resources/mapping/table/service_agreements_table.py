@@ -1,6 +1,6 @@
 from sqlalchemy import DECIMAL, UUID, DateTime, ForeignKey, Table, Column, BigInteger
 
-from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
+from marketgram.common.sqlalchemy_metadata import metadata
 from marketgram.trade.domain.model.types import INFINITY
 
 

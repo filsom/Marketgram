@@ -2,11 +2,11 @@ from __future__ import annotations
 from datetime import datetime
 from uuid import UUID
 
-from marketgram.trade.domain.model.posting_entry import PostingEntry
-from marketgram.trade.domain.model.entry_status import EntryStatus
-from marketgram.trade.domain.model.exceptions import DomainError
+from marketgram.common.domain.model.errors import DomainError
+from marketgram.trade.domain.model.entries import PostingEntry
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.sales_manager import ServiceAgreement
+from marketgram.trade.domain.model.statuses import EntryStatus
 from marketgram.trade.domain.model.types import AccountType, Operation
 
 

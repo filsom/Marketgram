@@ -1,6 +1,6 @@
 from sqlalchemy import UUID, Column, DateTime, ForeignKey, Integer, String, Table, text
 
-from marketgram.common.port.adapter.sqlalchemy_metadata import metadata
+from marketgram.common.sqlalchemy_metadata import metadata
 
 
 web_session_table = Table(
