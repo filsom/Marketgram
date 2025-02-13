@@ -45,7 +45,7 @@ def html_renderer():
 
 
 @pytest_asyncio.fixture(scope='function')
-async def service(engine, html_renderer) -> IdentityService:
+async def service(engine, html_renderer):
     async with AsyncSession(engine) as session:
         return IdentityService(
             session,
