@@ -54,7 +54,7 @@ class TestSellCard:
         assert len(stock_card.release_events()) == 0
         assert stock_card.status == StatusCard.ON_SALE
 
-    def test_replacement_of_a_regular_card(self):
+    def test_replacement_of_purchased_item_in_regular_card(self):
         # Arrange
         card = self.make_sell_card(Money(200), Shipment.HAND)
 
@@ -62,7 +62,7 @@ class TestSellCard:
         with pytest.raises(ReplacingItemError):
             card.replace(20, datetime.now(UTC))
 
-    def test_replacement_of_a_stock_card(self):
+    def test_replacement_of_purchased_item_in_stock_card(self):
         # Arrange
         stock_card = self.make_sell_stock_card(Money(200), 200)
 
@@ -73,6 +73,15 @@ class TestSellCard:
         assert len(stock_card.inventory_entries) == 1
         assert stock_card.status == StatusCard.ON_SALE
         assert stock_card.shipment == Shipment.AUTO
+
+    @pytest.mark.parametrize('qty', [0, -1, 1000])
+    def test_replacement_of_incorrect_quantity(self, qty):
+        # Arrange
+        stock_card = self.make_sell_stock_card(Money(200), stock_balance=200)
+
+        # Act
+        with pytest.raises(ReplacingItemError):
+            stock_card.replace(qty, datetime.now(UTC))
 
     def test_editing_sales_card(self):
         # Arrange
