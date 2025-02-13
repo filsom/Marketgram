@@ -1,7 +1,6 @@
 import os
 from typing import AsyncGenerator
 
-import pytest
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine
 from sqlalchemy.orm import registry
