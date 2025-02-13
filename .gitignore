@@ -161,6 +161,5 @@ cython_debug/
 #.idea/!/ngrok.yml
 ngrok.yml
 src/marketgram/common
-.vscode
-src/marketgram/main.py
+src/marketgram/test.py
 .vscode
