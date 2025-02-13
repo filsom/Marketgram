@@ -2,7 +2,8 @@ from datetime import UTC, datetime
 
 import pytest
 
-from marketgram.trade.domain.model.errors import CurrentСardStateError
+from marketgram.trade.domain.model.errors import QuantityItemError, CurrentСardStateError
+from marketgram.trade.domain.model.events import PurchasedCardWithAutoShipmentEvent
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.statuses import StatusCard
@@ -23,6 +24,46 @@ class TestSellCard:
         # Assert
         assert len(card.release()) == 1
         assert card.status == StatusCard.PURCHASED
+
+    def test_purchase_stock_card(self):
+        # Arrange
+        stock_card = self.make_sell_stock_card(Money(200), 200, Shipment.AUTO)
+
+        # Act
+        stock_card.purchase(2, Money(200), Shipment.AUTO, 100, datetime.now(UTC))
+
+        # Assert
+        assert len(stock_card.inventory_entries) == 1
+        assert len(stock_card.release()) == 1
+        assert stock_card.status == StatusCard.ON_SALE
+
+    @pytest.mark.parametrize('qty', [0, -1, 1000])
+    def test_purchase_with_incorrect_quantity(self, qty):
+        # Arrange
+        stock_card = self.make_sell_stock_card(Money(200), stock_balance=200)
+
+        # Act
+        with pytest.raises(QuantityItemError):
+            stock_card.purchase(2, Money(200), Shipment.AUTO, qty, datetime.now(UTC))
+
+        # Assert
+        assert len(stock_card.inventory_entries) == 0
+        assert len(stock_card.release()) == 0
+        assert stock_card.status == StatusCard.ON_SALE
+
+    def test_purchase_ended_with_zero_balance_on_the_card(self):
+        # Arrange
+        qty = 200
+        stock_card = self.make_sell_stock_card(Money(200), stock_balance=qty)
+
+        # Act
+        stock_card.purchase(2, Money(200), Shipment.AUTO, qty, datetime.now(UTC))
+
+        # Assert
+        assert len(stock_card.inventory_entries) == 1
+        assert len(stock_card.release()) == 2
+        assert stock_card.status == StatusCard.PURCHASED
+        assert stock_card.shipment == Shipment.HAND
 
     @pytest.mark.parametrize('status', [StatusCard.EDITING, StatusCard.PURCHASED])
     def test_purchase_of_a_non_sale_card(self, status):

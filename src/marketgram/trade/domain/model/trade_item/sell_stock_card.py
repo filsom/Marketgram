@@ -124,3 +124,11 @@ class SellStockCard(SellCard):
                 operation
             )
         )
+
+    @property
+    def inventory_entries(self) -> list[InventoryEntry]:
+        return self._inventory_entries
+    
+    @property
+    def shipment(self) -> Shipment:
+        return self._shipment
