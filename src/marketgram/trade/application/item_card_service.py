@@ -47,10 +47,7 @@ class ItemCardService:
             )
             new_card = category.new_card(
                 seller.seller_id,
-                Description(
-                    command.name,
-                    command.body
-                ),
+                Description(command.name, command.body),
                 Money(command.unit_price),
                 command.features,
                 command.action_time,
