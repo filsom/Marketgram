@@ -3,7 +3,7 @@ from datetime import datetime
 from unittest.mock import AsyncMock
 from uuid import UUID
 
-from jinja2 import Environment, PackageLoader
+from jinja2 import Environment, FileSystemLoader
 import pytest
 import pytest_asyncio
 from sqlalchemy import delete, func, insert, select
@@ -36,10 +36,12 @@ from marketgram.identity.access.port.adapter.jwt_token_manager import JwtTokenMa
 def html_renderer():
     html_renderer = HtmlRenderer(
         os.getenv('EMAIL_SENDER'),
-        Environment(loader=PackageLoader(os.getenv('APP_NAME')))
+        Environment(
+            loader=FileSystemLoader('templates'), 
+            enable_async=True
+        )
     )
     return html_renderer
-
 
 
 @pytest_asyncio.fixture(scope='function')
