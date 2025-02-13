@@ -79,6 +79,6 @@ class ItemCardService:
             )
             await self._deals_repository.add(new_deal)
             await self._event_dispatcher.dispatch(
-                *card.release(), *new_deal.release()
+                *card.release_events(), *new_deal.release_events()
             )
             await self._session.commit()

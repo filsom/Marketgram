@@ -22,7 +22,7 @@ class TestSellCard:
         card.purchase(2, Money(200), shipment, 10, datetime.now(UTC))
 
         # Assert
-        assert len(card.release()) == 1
+        assert len(card.release_events()) == 1
         assert card.status == StatusCard.PURCHASED
 
     def test_purchase_stock_card(self):
@@ -34,7 +34,7 @@ class TestSellCard:
 
         # Assert
         assert len(stock_card.inventory_entries) == 1
-        assert len(stock_card.release()) == 1
+        assert len(stock_card.release_events()) == 1
         assert stock_card.status == StatusCard.ON_SALE
 
     @pytest.mark.parametrize('qty', [0, -1, 1000])
@@ -48,7 +48,7 @@ class TestSellCard:
 
         # Assert
         assert len(stock_card.inventory_entries) == 0
-        assert len(stock_card.release()) == 0
+        assert len(stock_card.release_events()) == 0
         assert stock_card.status == StatusCard.ON_SALE
 
     def test_purchase_ended_with_zero_balance_on_the_card(self):
@@ -61,7 +61,7 @@ class TestSellCard:
 
         # Assert
         assert len(stock_card.inventory_entries) == 1
-        assert len(stock_card.release()) == 2
+        assert len(stock_card.release_events()) == 2
         assert stock_card.status == StatusCard.PURCHASED
         assert stock_card.shipment == Shipment.HAND
 
