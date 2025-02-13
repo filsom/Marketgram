@@ -74,6 +74,16 @@ class TestSellCard:
         assert stock_card.status == StatusCard.ON_SALE
         assert stock_card.shipment == Shipment.AUTO
 
+    def test_editing_sales_card(self):
+        # Arrange
+        card = self.make_sell_card(Money(200), Shipment.HAND)
+
+        # Act
+        card.edit()
+
+        # Assert
+        assert card.status == StatusCard.EDITING        
+
     def test_purchase_ended_with_zero_balance_on_the_card(self):
         # Arrange
         qty = 200
