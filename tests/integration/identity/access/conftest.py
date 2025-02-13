@@ -1,7 +1,10 @@
+import os
 from datetime import datetime
 from unittest.mock import AsyncMock
 from uuid import UUID
 
+from jinja2 import Environment, PackageLoader
+import pytest
 import pytest_asyncio
 from sqlalchemy import delete, func, insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -25,11 +28,22 @@ from marketgram.identity.access.port.adapter import (
     role_table,
     web_session_table,    
 )
+from marketgram.identity.access.port.adapter.html_renderer import HtmlRenderer
 from marketgram.identity.access.port.adapter.jwt_token_manager import JwtTokenManager
 
 
+@pytest.fixture(scope='session')
+def html_renderer():
+    html_renderer = HtmlRenderer(
+        os.getenv('EMAIL_SENDER'),
+        Environment(loader=PackageLoader(os.getenv('APP_NAME')))
+    )
+    return html_renderer
+
+
+
 @pytest_asyncio.fixture(scope='function')
-async def service(engine) -> IdentityService:
+async def service(engine, html_renderer) -> IdentityService:
     async with AsyncSession(engine) as session:
         return IdentityService(
             session,
@@ -38,7 +52,7 @@ async def service(engine) -> IdentityService:
             WebSessionsRepository(session),
             JwtTokenManager('secret'),
             AsyncMock(),
-            AsyncMock(),
+            html_renderer,
             Argon2PasswordHasher()
         )
 

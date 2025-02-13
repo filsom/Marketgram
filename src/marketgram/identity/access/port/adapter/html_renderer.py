@@ -8,10 +8,10 @@ class HtmlRenderer:
     def __init__(
         self,
         sender: str,
-        jinja: Environment,
+        jinja_env: Environment,
     ) -> None:
         self._sender = sender
-        self._jinja = jinja
+        self._jinja = jinja_env
 
     async def render(
         self, 
