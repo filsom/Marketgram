@@ -9,13 +9,11 @@ class Description:
         self,
         name: str,
         body: str,
-        status: StatusDescription = StatusDescription.NEW,
+        status: StatusDescription,
         set_in: datetime | None = None,
         description_id: int = None,
-        card_id: int | None = None,
         archived_in: datetime | str = INFINITY
     ) -> None:
-        self._card_id = card_id
         self._description_id = description_id
         self._name = name
         self._body = body

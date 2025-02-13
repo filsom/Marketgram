@@ -6,10 +6,7 @@ from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.statuses import StatusCard
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
-from marketgram.trade.domain.model.trade_item.description import Description
-from marketgram.trade.domain.model.trade_item.moderation_card import (
-    ModerationCard, 
-)
+from marketgram.trade.domain.model.trade_item.moderation_card import ModerationCard
 
 
 class Category:
@@ -36,7 +33,8 @@ class Category:
     def new_card(
         self, 
         user_id: int,
-        description: Description,
+        name: str,
+        body: str,
         unit_price: Money,
         features: dict[str, str], 
         action_time: dict[str, int] | None,
@@ -48,18 +46,19 @@ class Category:
         if action_time is None:  
             action_time = self._action_time
         
-        return ModerationCard(
+        card = ModerationCard(
             user_id,
             self._category_id,
             unit_price,
             unit_price,
-            [description],
             features,
             action_time,
             self._shipment,
             current_date,
             StatusCard.ON_FIRST_MODERATION
         )
+        card.add_desciption(name, body)
+        return card
     
     @property
     def category_id(self) -> int:
@@ -68,6 +67,10 @@ class Category:
     @property
     def service_id(self) -> int:
         return self._service_id
+    
+    @property
+    def action_time(self) -> ActionTime:
+        return self._action_time
     
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Category):

@@ -18,5 +18,5 @@ class CreateNewCardCommand:
     name: str
     body: str
     unit_price: str
-    features: dict[str, str]
+    features: dict[str, str] | None
     action_time: dict[str, int] | None 

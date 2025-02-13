@@ -78,3 +78,11 @@ class InventoryBalancesAddedNotification(IntegrationEvent):
     qty: int
     status_card: StatusCard
     occurred_at: datetime
+
+
+@dataclass(frozen=True)
+class AdminRejectedModerationCardNotification(IntegrationEvent):
+    card_id: int
+    status_card: StatusCard
+    reason: str
+    occurred_at: datetime

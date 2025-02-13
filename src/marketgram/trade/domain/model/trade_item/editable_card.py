@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from marketgram.common.domain.model.errors import DomainError
+from marketgram.common.errors import DomainError
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
 from marketgram.trade.domain.model.statuses import StatusCard
