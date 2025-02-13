@@ -2,6 +2,9 @@ from uuid import uuid4
 
 import pytest
 
+from marketgram.identity.access.domain.model.authentication_service import (
+    AuthenticationService
+)
 from marketgram.identity.access.domain.model.errors import PersonalDataError
 from marketgram.identity.access.domain.model.user import User
 from marketgram.identity.access.domain.model.user_factory import UserFactory
@@ -10,7 +13,7 @@ from marketgram.identity.access.port.adapter.argon2_password_hasher import (
 )
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope='session')
 def password_hasher() -> Argon2PasswordHasher:
     return Argon2PasswordHasher(
         time_cost=2,
@@ -36,6 +39,27 @@ class TestUser:
         # Assert
         assert password_hasher.verify(new_user.password, password)
         assert new_user.email.islower()
+
+    def test_successful_authenticate(
+        self,
+        password_hasher: Argon2PasswordHasher
+    ) -> None:
+        # Arrange
+        email = 'test@mail.ru'
+        password = 'unprotected'
+
+        user = User(
+            uuid4(),
+            email,
+            password_hasher.hash(password)
+
+        )
+        user.activate()
+
+        sut = AuthenticationService(password_hasher)
+        
+        # Act
+        sut.authenticate(user, password)
 
     def test_create_new_user_with_same_password_and_email(
         self, 

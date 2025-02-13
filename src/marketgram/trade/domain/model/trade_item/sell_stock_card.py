@@ -69,7 +69,7 @@ class SellStockCard(SellCard):
             StatusDeal.NOT_SHIPPED,
             occurred_at
         )  
-        self.events.append(
+        self.add_event(
             PurchasedCardWithAutoShipmentEvent(deal, occurred_at)
         )
         return deal
@@ -110,7 +110,7 @@ class SellStockCard(SellCard):
         if remainder == 0:
             self._shipment = Shipment.HAND
             self._status = StatusCard.PURCHASED
-            self.events.append(
+            self.add_event(
                 ZeroInventoryBalanceNotification(
                     self._owner_id,
                     self._card_id,
