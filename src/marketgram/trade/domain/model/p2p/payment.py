@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from marketgram.common.domain.model.errors import DomainError
+from marketgram.common.errors import DomainError
 from marketgram.trade.domain.model.entries import (
     EntryStatus, 
     PostingEntry

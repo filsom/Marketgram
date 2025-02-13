@@ -97,6 +97,10 @@ class SellCard(Entity):
     def price(self) -> Money:
         return self._unit_price
     
+    @property
+    def status(self) -> StatusCard:
+        return self._status
+    
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, SellCard):
             return False
