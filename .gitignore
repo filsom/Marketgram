@@ -162,4 +162,3 @@ cython_debug/
 ngrok.yml
 src/marketgram/common
 src/marketgram/test.py
-.vscode
