@@ -50,7 +50,7 @@ class Seller:
         
         return Payout(
             uuid4(),
-            self._seller_id,
+            self._user_id,
             self._paycard.synonym,
             amount,
             current_time,
@@ -59,6 +59,10 @@ class Seller:
         
     def change_paycard(self, paycard: Paycard) -> None:
         self._paycard = paycard
+
+    def can_create_card(self) -> None:
+        if self._is_blocked:
+            raise DomainError(BALANCE_BLOCKED)
 
     @property
     def seller_id(self) -> int:
