@@ -12,7 +12,7 @@ from marketgram.trade.port.adapter.sqlalchemy_resources.members_repository impor
 from marketgram.trade.port.adapter.sqlalchemy_resources.trade_session import TradeSession
 
 
-class ServiceP2P:
+class P2PService:
     def __init__(
         self,
         session: TradeSession,
