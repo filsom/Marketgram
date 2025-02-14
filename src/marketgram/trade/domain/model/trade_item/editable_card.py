@@ -62,6 +62,10 @@ class EditableCard:
         for description in self._descriptions:
             if description.status == StatusDescription.NEW:
                 raise DomainError()
+            
+        for field in [name, body]:
+            if len(field) < 10:
+                raise DomainError()
         
         self._descriptions.append(
             Description(
