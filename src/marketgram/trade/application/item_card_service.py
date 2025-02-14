@@ -8,7 +8,6 @@ from marketgram.trade.domain.model.trade_item.description import Description
 from marketgram.trade.port.adapter import (
     MembersRepository,
     CardsRepository,
-    DealsRepository,
     TradeSession,
     EventDispatcher
 )
@@ -21,7 +20,6 @@ class ItemCardService:
         session: TradeSession,
         members_repository: MembersRepository,
         cards_repository: CardsRepository,
-        deals_repository: DealsRepository,
         categories_repository: CategoriesRepository,
         id_provider: IdProvider,
         event_dispatcher: EventDispatcher,
@@ -31,7 +29,6 @@ class ItemCardService:
         self.event_dispatcher = event_dispatcher
         self.members_repository = members_repository
         self.cards_repository = cards_repository
-        self.deals_repository = deals_repository
         self.categories_repository = categories_repository
 
     async def create_new_card(self, command: cmd.CreateNewCardCommand) -> None:
@@ -56,33 +53,4 @@ class ItemCardService:
                 datetime.now(UTC)
             )
             self.cards_repository.add(new_card)
-            await self.session.commit()
-
-    async def purchase_card(self, command: cmd.CardPurchaseCommand) -> None:
-        async with self.session.begin():
-            await self.session.trading_lock(
-                command.card_id, self.id_provider.user_id()
-            )
-            card = await self.cards_repository \
-                .sell_card_with_id(command.card_id)
-            
-            if card is None:
-                raise ApplicationError()
-
-            buyer = await self.members_repository \
-                .user_with_balance_and_id(self.id_provider.user_id())
-            
-            new_deal = buyer.make_deal(
-                command.qty,
-                card,
-                Money(command.price),
-                command.shipment,
-                datetime.now(UTC)
-            )
-            new_deal.notify_seller()
-            
-            await self.deals_repository.add(new_deal)
-            await self.event_dispatcher.dispatch(
-                *card.release_events(), *new_deal.release_events()
-            )
             await self.session.commit()
