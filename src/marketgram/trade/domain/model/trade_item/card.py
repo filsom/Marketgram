@@ -38,7 +38,7 @@ class Card(Entity):
         return hash(self._card_id)
     
 
-class EditCard(Card):
+class EditorialCard(Card):
     def __init__(
         self,
         card_id: int,
