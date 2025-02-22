@@ -55,11 +55,9 @@ class Category:
         if action_time is None:  
             action_time = self._action_time
         
-        return ModerationCard(
+        card = ModerationCard(
             user_id,
             self._category_id,
-            unit_price,
-            unit_price,
             name,
             body,
             features,
@@ -68,6 +66,8 @@ class Category:
             current_date,
             StatusCard.ON_MODERATION
         )
+        card.add_starting_price(unit_price)
+        return card
 
     def create_subcategory(
         self, 
@@ -91,8 +91,8 @@ class Category:
         path = "{}/{}".format(path, alias)
     
         if self._subcategories:
-            for sub in self._subcategories:
-                if sub.type_category_id == type_category_id:
+            for sub_id in self._subcategories:
+                if sub_id == type_category_id:
                     raise DomainError()
         else:
             self._path = path

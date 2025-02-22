@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from marketgram.common.entity import Entity
 from marketgram.common.errors import DomainError
-from marketgram.trade.domain.model.entries import InventoryEntry
+from marketgram.trade.domain.model.entries import InventoryEntry, PriceEntry
 from marketgram.trade.domain.model.errors import (
     DISCOUNT_ERROR, 
     UNACCEPTABLE_DISCOUNT_RANGE
@@ -88,8 +88,6 @@ class ModerationCard(Card):
         self,
         owner_id: int,
         category_id: int,
-        unit_price: Money,
-        init_price: Money,
         name: str,
         body: str,
         features: dict,
@@ -97,14 +95,13 @@ class ModerationCard(Card):
         shipment: Shipment,
         created_at: datetime,
         status: StatusCard,
-        inventory_entries: list[InventoryEntry] | None = None,
         card_id: int | None = None,
+        inventory_entries: list[InventoryEntry] | None = None,
+        price_entries: list[PriceEntry] | None = None
     ) -> None:
         super().__init__(card_id)
         self._owner_id = owner_id
         self._category_id = category_id
-        self._unit_price = unit_price
-        self._init_price = init_price
         self._name = name
         self._body = body
         self._features = features
@@ -113,6 +110,7 @@ class ModerationCard(Card):
         self._created_at = created_at
         self._status = status
         self._inventory_entries = inventory_entries
+        self._price_entries = price_entries
 
     def accept(self) -> None:
         self._status = StatusCard.ON_SALE
@@ -152,6 +150,9 @@ class ModerationCard(Card):
                 InventoryOperation.UPLOADING
             )
         )
+
+    def add_starting_price(self, unit_price: Money) -> None:
+        self._price_entries.append(PriceEntry(1, unit_price))
 
     @property
     def status(self) -> StatusCard:
