@@ -5,7 +5,6 @@ from marketgram.trade.domain.model.events import (
     SellerShippedReplacementWithAutoShipmentEvent
 )
 from marketgram.trade.domain.model.trade_item.cards_repository import CardsRepository
-from marketgram.trade.domain.model.trade_item.file_storage import FileStorage
 from marketgram.trade.port.adapter.event_dispatcher import EventDispatcher
 from marketgram.trade.port.adapter.sqlalchemy_resources.trade_session import TradeSession
 

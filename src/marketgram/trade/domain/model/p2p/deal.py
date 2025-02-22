@@ -81,10 +81,11 @@ class ShipDeal(Deal):
         deadlines: Deadlines,
         status: StatusDeal,
         created_at: datetime,
-        shipped_at: datetime = None
+        shipped_at: datetime | None = None,
+        deal_id: int | None = None
     ) -> None:
         super().__init__(
-            None,
+            deal_id,
             status,
             unit_price,
             qty_purchased
