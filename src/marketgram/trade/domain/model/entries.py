@@ -1,7 +1,9 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
+from decimal import Decimal
 from uuid import UUID
 
+from marketgram.common.errors import DomainError
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.statuses import EntryStatus
 from marketgram.trade.domain.model.types import (
@@ -32,3 +34,25 @@ class InventoryEntry:
 class PriceEntry:
     start_qty: int
     unit_price: Money
+    discount: list[Decimal] = field(default_factory=list)
+
+    def set_discount(
+        self,
+        new_price: Money, 
+        minimum_price: Money, 
+        minimum_procent_discount: Decimal
+    ) -> None:
+        if len(self.discount):
+            raise DomainError()
+        
+        if new_price < minimum_price or new_price >= self.unit_price:
+            raise DomainError()
+        
+        discount_procent = 100 - new_price._value / self.unit_price._value * 100
+        if discount_procent < minimum_procent_discount:
+            raise DomainError()
+        
+        self.discount.append(discount_procent)
+
+    def remove_discount(self) -> None:
+        self.discount.clear()    

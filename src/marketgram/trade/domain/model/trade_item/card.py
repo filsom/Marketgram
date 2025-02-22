@@ -42,45 +42,71 @@ class EditorialCard(Card):
     def __init__(
         self,
         card_id: int,
-        unit_price: Money,
-        init_price: Money,
         action_time: ActionTime,
         shipment: Shipment,
         minimum_price: Money,
         minimum_procent_discount: Decimal,
         status: StatusCard,
+        price_entries: list[PriceEntry] | None = None
     ) -> None:
         super().__init__(card_id)
-        self._unit_price = unit_price
-        self._init_price = init_price
         self._action_time = action_time
         self._shipment = shipment
         self._minimum_price = minimum_price
         self._minimum_procent_discount = minimum_procent_discount
         self._status = status
-
-    def set_discounted_price(self, new_unit_price: Money) -> None:
-        if self._init_price < (self._minimum_price 
-                                + self._minimum_price 
-                                * self._minimum_procent_discount):
-            raise DomainError(DISCOUNT_ERROR)
-        
-        max_limit = self._init_price - self._init_price * self._minimum_procent_discount
-        
-        if new_unit_price < self._minimum_price or new_unit_price > max_limit.round_up():
-            raise DomainError(
-                UNACCEPTABLE_DISCOUNT_RANGE.format(self._minimum_price, max_limit)
-            )
-        self._unit_price = new_unit_price
-
-    def remove_discount(self) -> None:
-        self._unit_price = self._init_price
+        self._price_entries = price_entries
 
     def put_on_sale(self) -> None:
         self._status = StatusCard.ON_SALE
 
     def can_add_item(self) -> bool:
         return self._shipment != Shipment.CHAT
+    
+
+# class EditorialCard(Card):
+#     def __init__(
+#         self,
+#         card_id: int,
+#         unit_price: Money,
+#         init_price: Money,
+#         action_time: ActionTime,
+#         shipment: Shipment,
+#         minimum_price: Money,
+#         minimum_procent_discount: Decimal,
+#         status: StatusCard,
+#     ) -> None:
+#         super().__init__(card_id)
+#         self._unit_price = unit_price
+#         self._init_price = init_price
+#         self._action_time = action_time
+#         self._shipment = shipment
+#         self._minimum_price = minimum_price
+#         self._minimum_procent_discount = minimum_procent_discount
+#         self._status = status
+
+#     def set_discounted_price(self, new_unit_price: Money) -> None:
+#         if self._init_price < (self._minimum_price 
+#                                 + self._minimum_price 
+#                                 * self._minimum_procent_discount):
+#             raise DomainError(DISCOUNT_ERROR)
+        
+#         max_limit = self._init_price - self._init_price * self._minimum_procent_discount
+        
+#         if new_unit_price < self._minimum_price or new_unit_price > max_limit.round_up():
+#             raise DomainError(
+#                 UNACCEPTABLE_DISCOUNT_RANGE.format(self._minimum_price, max_limit)
+#             )
+#         self._unit_price = new_unit_price
+
+#     def remove_discount(self) -> None:
+#         self._unit_price = self._init_price
+
+#     def put_on_sale(self) -> None:
+#         self._status = StatusCard.ON_SALE
+
+#     def can_add_item(self) -> bool:
+#         return self._shipment != Shipment.CHAT
     
 
 class ModerationCard(Card):
