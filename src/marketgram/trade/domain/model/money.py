@@ -57,6 +57,16 @@ class Money:
     def __neg__(self) -> Money:
         return Money(-self._value)
     
+    def __lt__(self, value: Money) -> bool:
+        self._isinstance(value)
+
+        return self._value < value._value
+    
+    def __eq__(self, value: Money) -> bool:
+        self._isinstance(value)
+
+        return self._value == value._value
+
     def _isinstance(self, value: Money) -> None:
         if not isinstance(value, Money):
             raise TypeError
