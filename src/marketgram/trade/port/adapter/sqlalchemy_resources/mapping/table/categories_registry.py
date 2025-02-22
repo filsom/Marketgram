@@ -2,7 +2,7 @@ from sqlalchemy.orm import registry, composite, relationship
 
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
-from marketgram.trade.domain.model.trade_item.category import Category
+from marketgram.trade.domain.model.trade_item.c1ategory import Category
 from marketgram.trade.domain.model.trade_item.type_category import TypeCategory
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.categories_table import (
     categories_table,

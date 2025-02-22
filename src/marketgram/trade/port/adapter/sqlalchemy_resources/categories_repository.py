@@ -1,4 +1,4 @@
-from marketgram.trade.domain.model.trade_item.category import Category
+from marketgram.trade.domain.model.trade_item.c1ategory import Category
 
 
 class CategoriesRepository:
