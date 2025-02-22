@@ -1,24 +1,111 @@
 from datetime import datetime
+from decimal import Decimal
 
 from marketgram.common.entity import Entity
 from marketgram.common.errors import DomainError
 from marketgram.trade.domain.model.entries import InventoryEntry
+from marketgram.trade.domain.model.errors import (
+    DISCOUNT_ERROR, 
+    UNACCEPTABLE_DISCOUNT_RANGE
+)
+from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.notifications import (
     AdminRejectedModerationCardNotification, 
     InventoryBalancesAddedNotification
 )
 from marketgram.trade.domain.model.p2p.shipment import Shipment
-from marketgram.trade.domain.model.money import Money
-from marketgram.trade.domain.model.statuses import StatusCard
-from marketgram.trade.domain.model.trade_item.category import ActionTime
-from marketgram.trade.domain.model.trade_item.description import (
-    Description, 
-    StatusDescription
-)
+from marketgram.trade.domain.model.statuses import StatusCard, StatusDescription
+from marketgram.trade.domain.model.trade_item.action_time import ActionTime
+from marketgram.trade.domain.model.trade_item.description import Description
 from marketgram.trade.domain.model.types import InventoryOperation
 
 
-class ModerationCard(Entity):
+class Card(Entity):
+    def __init__(self, card_id: int | None) -> None:
+        super().__init__()
+        self._card_id = card_id
+
+    @property
+    def card_id(self) -> int | None:
+        return self._card_id
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Card):
+            return False
+
+        return self._card_id == other._card_id
+    
+    def __hash__(self) -> int:
+        return hash(self._card_id)
+    
+
+class EditCard(Card):
+    def __init__(
+        self,
+        card_id: int,
+        unit_price: Money,
+        init_price: Money,
+        action_time: ActionTime,
+        shipment: Shipment,
+        minimum_price: Money,
+        minimum_procent_discount: Decimal,
+        status: StatusCard,
+        descriptions: list[Description]
+    ) -> None:
+        super().__init__(card_id)
+        self._unit_price = unit_price
+        self._init_price = init_price
+        self._action_time = action_time
+        self._shipment = shipment
+        self._minimum_price = minimum_price
+        self._minimum_procent_discount = minimum_procent_discount
+        self._status = status
+        self._descriptions = descriptions
+
+    def set_discounted_price(self, new_unit_price: Money) -> None:
+        if self._init_price < (self._minimum_price 
+                                + self._minimum_price 
+                                * self._minimum_procent_discount):
+            raise DomainError(DISCOUNT_ERROR)
+        
+        max_limit = self._init_price - self._init_price * self._minimum_procent_discount
+        
+        if new_unit_price < self._minimum_price or new_unit_price > max_limit.round_up():
+            raise DomainError(
+                UNACCEPTABLE_DISCOUNT_RANGE.format(self._minimum_price, max_limit)
+            )
+        self._unit_price = new_unit_price
+
+    def remove_discount(self) -> None:
+        self._unit_price = self._init_price
+
+    def put_on_sale(self) -> None:
+        self._status = StatusCard.ON_SALE
+
+    def add_new_description(self, name: str, body: str) -> None: 
+        for description in self._descriptions:
+            if description.status == StatusDescription.NEW:
+                raise DomainError()
+            
+        for field in [name, body]:
+            if len(field) < 10:
+                raise DomainError()
+        
+        self._descriptions.append(
+            Description(
+                self._card_id, 
+                name, 
+                body, 
+                StatusDescription.NEW
+            )    
+        )
+        self._status = StatusCard.ON_MODERATION
+
+    def can_add_item(self) -> bool:
+        return self._shipment != Shipment.CHAT
+    
+
+class ModerationCard(Card):
     def __init__(
         self,
         owner_id: int,
@@ -33,8 +120,7 @@ class ModerationCard(Entity):
         inventory_entries: list[InventoryEntry] | None = None,
         card_id: int | None = None,
     ) -> None:
-        super().__init__()
-        self._card_id = card_id
+        super().__init__(card_id)
         self._owner_id = owner_id
         self._category_id = category_id
         self._unit_price = unit_price
@@ -130,18 +216,18 @@ class ModerationCard(Entity):
         return self._action_time
     
     @property
-    def card_id(self) -> int:
-        return self._card_id
-    
-    @property
     def descriptions(self) -> list[Description]:
         return self._descriptions
-
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, ModerationCard):
-            return False
-
-        return self._card_id == other._card_id
     
-    def __hash__(self) -> int:
-        return hash(self._card_id)
+
+class PurchasedCard:
+    def __init__(
+        self,
+        card_id: int,
+        status: StatusCard
+    ) -> None:
+        super().__init__(card_id)
+        self._status = status
+
+    def reissue(self) -> None:
+        self._status = StatusCard.ON_SALE

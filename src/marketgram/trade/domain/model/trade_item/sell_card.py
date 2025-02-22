@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Any
 
-from marketgram.common.entity import Entity
 from marketgram.trade.domain.model.entries import InventoryEntry
 from marketgram.trade.domain.model.events import PurchasedCardWithAutoShipmentEvent
 from marketgram.trade.domain.model.notifications import (
@@ -19,10 +18,11 @@ from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.statuses import StatusCard, StatusDeal
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
+from marketgram.trade.domain.model.trade_item.card import Card
 from marketgram.trade.domain.model.types import InventoryOperation
 
 
-class SellCard(Entity):
+class SellCard(Card):
     def __init__(
         self,
         card_id: int,
@@ -32,8 +32,7 @@ class SellCard(Entity):
         action_time: ActionTime,
         status: StatusCard,
     ) -> None:
-        super().__init__()
-        self._card_id = card_id
+        super().__init__(card_id)
         self._owner_id = owner_id
         self._unit_price = unit_price
         self._shipment = shipment
@@ -105,15 +104,6 @@ class SellCard(Entity):
     @property
     def status(self) -> StatusCard:
         return self._status
-    
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, SellCard):
-            return False
-
-        return self._card_id == other._card_id
-    
-    def __hash__(self) -> int:
-        return hash(self._card_id)
     
 
 class SellStockCard(SellCard):
