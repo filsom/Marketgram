@@ -87,7 +87,7 @@ class Category:
         if shipment.is_auto_link():
             raise DomainError()
         
-        alias = Category.make_alias(name)
+        alias = Category._make_alias(name)
         path = "{}/{}".format(path, alias)
     
         if self._subcategories:
@@ -115,13 +115,13 @@ class Category:
     ) -> "Category":
         return Category(
             name.lower(),
-            Category.make_alias(name),
+            Category._make_alias(name),
             None,
             type_category_id
         )
     
     @staticmethod
-    def make_alias(name: str) -> str:
+    def _make_alias(name: str) -> str:
         salt = str(uuid4()).split()[-1]
         alias = "{}-{}".format(name.lower(), salt)
         return alias
