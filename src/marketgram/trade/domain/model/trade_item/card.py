@@ -14,9 +14,8 @@ from marketgram.trade.domain.model.notifications import (
     InventoryBalancesAddedNotification
 )
 from marketgram.trade.domain.model.p2p.shipment import Shipment
-from marketgram.trade.domain.model.statuses import StatusCard, StatusDescription
+from marketgram.trade.domain.model.statuses import StatusCard
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
-from marketgram.trade.domain.model.trade_item.description import Description
 from marketgram.trade.domain.model.types import InventoryOperation
 
 
