@@ -8,10 +8,10 @@ class HtmlRenderer:
     def __init__(
         self,
         sender: str,
-        jinja: Environment,
+        jinja_env: Environment,
     ) -> None:
         self._sender = sender
-        self._jinja = jinja
+        self._jinja_env = jinja_env
 
     async def render(
         self, 
@@ -20,7 +20,7 @@ class HtmlRenderer:
         recipient: str, 
         fields: dict[str, str]
     ) -> MIMEMultipart:
-        template = self._jinja.get_template(template_name)
+        template = self._jinja_env.get_template(template_name)
         html_page = await template.render_async(fields)
 
         message = MIMEMultipart('alternative')

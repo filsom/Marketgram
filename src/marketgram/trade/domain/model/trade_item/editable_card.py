@@ -1,8 +1,8 @@
 from decimal import Decimal
 
-from marketgram.common.domain.model.errors import DomainError
+from marketgram.common.errors import DomainError
 from marketgram.trade.domain.model.money import Money
-from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
+from marketgram.trade.domain.model.p2p.shipment import Shipment
 from marketgram.trade.domain.model.statuses import StatusCard
 from marketgram.trade.domain.model.trade_item.category import ActionTime
 from marketgram.trade.domain.model.trade_item.description import (
@@ -61,6 +61,10 @@ class EditableCard:
     def add_new_description(self, name: str, body: str) -> None: 
         for description in self._descriptions:
             if description.status == StatusDescription.NEW:
+                raise DomainError()
+            
+        for field in [name, body]:
+            if len(field) < 10:
                 raise DomainError()
         
         self._descriptions.append(

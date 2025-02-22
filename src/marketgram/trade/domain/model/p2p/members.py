@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from marketgram.common.domain.model.errors import DomainError
+from marketgram.common.errors import DomainError
 from marketgram.trade.domain.model.errors import BUY_FROM_YOURSELF
 
 

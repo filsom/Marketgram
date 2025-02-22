@@ -5,9 +5,9 @@ from marketgram.trade.domain.model.p2p.deal.overdue_deal import OverdueDeal
 from marketgram.trade.domain.model.p2p.members import Members
 from marketgram.trade.domain.model.p2p.deal.fail_deal import FailDeal
 from marketgram.trade.domain.model.p2p.deal.unconfirmed_deal import UnconfirmedDeal
-from marketgram.trade.domain.model.p2p.deal.deadlines import Deadlines
+from marketgram.trade.domain.model.p2p.deadlines import Deadlines
 from marketgram.trade.domain.model.p2p.deal.dispute_deal import DisputeDeal
-from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
+from marketgram.trade.domain.model.p2p.deal.deal import ShipDeal
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.deals_table import (
     deals_table, 

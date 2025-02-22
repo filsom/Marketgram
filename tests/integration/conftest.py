@@ -1,6 +1,6 @@
+import os
 from typing import AsyncGenerator
 
-import pytest
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine
 from sqlalchemy.orm import registry
@@ -25,7 +25,7 @@ roles_registry_mapper(mapper)
 @pytest_asyncio.fixture(loop_scope='session', scope='session')
 async def engine() -> AsyncGenerator[AsyncEngine, None]:
     engine = create_async_engine(
-        'postgresql+psycopg://postgres:som@localhost:5433',
+        os.getenv('DB_URL'),
         echo=False,
     )
     async with engine.begin() as connection:

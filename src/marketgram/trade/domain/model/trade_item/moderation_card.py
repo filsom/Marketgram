@@ -1,9 +1,13 @@
 from datetime import datetime
 
 from marketgram.common.entity import Entity
+from marketgram.common.errors import DomainError
 from marketgram.trade.domain.model.entries import InventoryEntry
-from marketgram.trade.domain.model.notifications import InventoryBalancesAddedNotification
-from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
+from marketgram.trade.domain.model.notifications import (
+    AdminRejectedModerationCardNotification, 
+    InventoryBalancesAddedNotification
+)
+from marketgram.trade.domain.model.p2p.shipment import Shipment
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.statuses import StatusCard
 from marketgram.trade.domain.model.trade_item.category import ActionTime
@@ -21,7 +25,6 @@ class ModerationCard(Entity):
         category_id: int,
         unit_price: Money,
         init_price: Money,
-        descriptions: list[Description],
         features: dict,
         action_time: ActionTime,
         shipment: Shipment,
@@ -36,13 +39,13 @@ class ModerationCard(Entity):
         self._category_id = category_id
         self._unit_price = unit_price
         self._init_price = init_price
-        self._descriptions = descriptions
         self._features = features
         self._action_time = action_time
         self._shipment = shipment
         self._created_at = created_at
         self._status = status
         self._inventory_entries = inventory_entries
+        self._descriptions: list[Description] = []
 
     def accept(self, current_time: datetime) -> None:
         match self._status:
@@ -59,7 +62,7 @@ class ModerationCard(Entity):
 
         self._status = StatusCard.ON_SALE
 
-    def reject(self) -> None:
+    def reject(self, reason: str, occurred_at: datetime) -> None:
         match self._status:
             case StatusCard.ON_FIRST_MODERATION:
                 self._status = StatusCard.REJECTED
@@ -71,8 +74,27 @@ class ModerationCard(Entity):
                 
                 self._status = StatusCard.ON_SALE
 
-    def add_desciption(self, description: Description) -> None:
-        self._descriptions.append(description)
+        self.add_event(
+            AdminRejectedModerationCardNotification(
+                self._card_id,
+                self._status,
+                reason,
+                occurred_at
+            )
+        )
+
+    def add_desciption(self, name: str, body: str) -> None:
+        for field in [name, body]:
+            if len(field) < 10:
+                raise DomainError()
+            
+        self._descriptions.append(
+            Description(
+                name,
+                body,
+                StatusDescription.NEW
+            )
+        )
 
     def add_stock_item(
         self,
@@ -110,6 +132,10 @@ class ModerationCard(Entity):
     @property
     def card_id(self) -> int:
         return self._card_id
+    
+    @property
+    def descriptions(self) -> list[Description]:
+        return self._descriptions
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ModerationCard):

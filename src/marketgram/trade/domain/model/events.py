@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from marketgram.common.entity import DomainEvent
 
 if TYPE_CHECKING:
-    from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
+    from marketgram.trade.domain.model.p2p.deal.deal import ShipDeal
     from marketgram.trade.domain.model.p2p.deal.opened_dispute import OpenedDispute
     from marketgram.trade.domain.model.p2p.deal.admin_dispute import AdminDispute
 

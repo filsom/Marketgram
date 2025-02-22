@@ -160,10 +160,7 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/!/ngrok.yml
 ngrok.yml
-src/marketgram/test.py
-src/marketgram/main.py
-tests/main.py
-tests/test.py
 src/marketgram/common
-src/marketgram/main2.py
-/Users/filippsomov/Desktop/Marketgram/src/marketgram/main2.py
+src/marketgram/test.py
+.vscode
+templates
