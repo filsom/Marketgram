@@ -118,7 +118,7 @@ class ModerationCard(Card):
         self._status = StatusCard.ON_SALE
 
     def reject(self, reason: str, occurred_at: datetime) -> None:        
-        self._status = StatusCard.ON_SALE
+        self._status = StatusCard.REJECTED
         self.add_event(
             AdminRejectedModerationCardNotification(
                 self._card_id,
