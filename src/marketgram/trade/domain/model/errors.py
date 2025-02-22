@@ -46,3 +46,7 @@ class ReplacingItemError(DomainError):
 
 class CurrentСardStateError(DomainError):
     pass
+
+
+class DiscountPriceError(DomainError):
+    pass

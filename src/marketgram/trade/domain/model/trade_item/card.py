@@ -6,7 +6,8 @@ from marketgram.common.errors import DomainError
 from marketgram.trade.domain.model.entries import InventoryEntry, PriceEntry
 from marketgram.trade.domain.model.errors import (
     DISCOUNT_ERROR, 
-    UNACCEPTABLE_DISCOUNT_RANGE
+    UNACCEPTABLE_DISCOUNT_RANGE,
+    DiscountPriceError
 )
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.notifications import (
@@ -57,56 +58,38 @@ class EditorialCard(Card):
         self._status = status
         self._price_entries = price_entries
 
+    def set_discount(self, discounts: list[dict[str, int]]) -> None:
+        for price_entry in self._price_entries:
+            if discounts['qty'] == price_entry.start_qty:
+                price_entry.set_discount(
+                    discounts['price'],
+                    self._minimum_price,
+                    self._minimum_procent_discount
+                )
+
+    def remove_discount(self, discounts: list[dict[str, int]]) -> None:
+        for price_entry in self._price_entries:
+            if discounts['qty'] == price_entry.start_qty:
+                price_entry.remove_discount()
+
+    def add_qty_price(self, qty: int, price: Money) -> None:
+        if qty <= 1:
+            raise DomainError()
+        
+        for price_entry in self._price_entries:
+            if qty == price_entry.start_qty:
+                raise DomainError()
+            
+            if price < self._minimum_price:
+                raise DomainError()
+            
+            self._price_entries.append(PriceEntry(qty, price))
+
     def put_on_sale(self) -> None:
         self._status = StatusCard.ON_SALE
 
     def can_add_item(self) -> bool:
         return self._shipment != Shipment.CHAT
-    
-
-# class EditorialCard(Card):
-#     def __init__(
-#         self,
-#         card_id: int,
-#         unit_price: Money,
-#         init_price: Money,
-#         action_time: ActionTime,
-#         shipment: Shipment,
-#         minimum_price: Money,
-#         minimum_procent_discount: Decimal,
-#         status: StatusCard,
-#     ) -> None:
-#         super().__init__(card_id)
-#         self._unit_price = unit_price
-#         self._init_price = init_price
-#         self._action_time = action_time
-#         self._shipment = shipment
-#         self._minimum_price = minimum_price
-#         self._minimum_procent_discount = minimum_procent_discount
-#         self._status = status
-
-#     def set_discounted_price(self, new_unit_price: Money) -> None:
-#         if self._init_price < (self._minimum_price 
-#                                 + self._minimum_price 
-#                                 * self._minimum_procent_discount):
-#             raise DomainError(DISCOUNT_ERROR)
-        
-#         max_limit = self._init_price - self._init_price * self._minimum_procent_discount
-        
-#         if new_unit_price < self._minimum_price or new_unit_price > max_limit.round_up():
-#             raise DomainError(
-#                 UNACCEPTABLE_DISCOUNT_RANGE.format(self._minimum_price, max_limit)
-#             )
-#         self._unit_price = new_unit_price
-
-#     def remove_discount(self) -> None:
-#         self._unit_price = self._init_price
-
-#     def put_on_sale(self) -> None:
-#         self._status = StatusCard.ON_SALE
-
-#     def can_add_item(self) -> bool:
-#         return self._shipment != Shipment.CHAT
     
 
 class ModerationCard(Card):

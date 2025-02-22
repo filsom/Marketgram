@@ -3,7 +3,7 @@ from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
 
-from marketgram.common.errors import DomainError
+from marketgram.trade.domain.model.errors import DiscountPriceError
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.statuses import EntryStatus
 from marketgram.trade.domain.model.types import (
@@ -43,14 +43,14 @@ class PriceEntry:
         minimum_procent_discount: Decimal
     ) -> None:
         if len(self.discount):
-            raise DomainError()
+            raise DiscountPriceError()
         
         if new_price < minimum_price or new_price >= self.unit_price:
-            raise DomainError()
+            raise DiscountPriceError()
         
         discount_procent = 100 - new_price._value / self.unit_price._value * 100
         if discount_procent < minimum_procent_discount:
-            raise DomainError()
+            raise DiscountPriceError()
         
         self.discount.append(discount_procent)
 
