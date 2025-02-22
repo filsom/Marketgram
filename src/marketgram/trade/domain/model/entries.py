@@ -21,8 +21,14 @@ class PostingEntry:
     entry_status: EntryStatus
         
 
-@dataclass(frozen=True)
+@dataclass
 class InventoryEntry:
     qty: int
     posted_in: datetime
     operation: InventoryOperation
+
+
+@dataclass
+class PriceEntry:
+    start_qty: int
+    unit_price: Money
