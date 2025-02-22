@@ -98,7 +98,7 @@ class Category:
         else:
             self._path = path
 
-        subcategory = Category(
+        return Category(
             name,
             alias,
             path,
@@ -108,7 +108,6 @@ class Category:
             minimum_unit_price,
             minimum_procent_discount
         )  
-        return subcategory
 
     @staticmethod
     def create_basic(
