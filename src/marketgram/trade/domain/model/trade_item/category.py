@@ -55,7 +55,7 @@ class Category:
         if action_time is None:  
             action_time = self._action_time
         
-        card = ModerationCard(
+        return ModerationCard(
             user_id,
             self._category_id,
             unit_price,
@@ -66,9 +66,8 @@ class Category:
             action_time,
             self._shipment,
             current_date,
-            StatusCard.ON_FIRST_MODERATION
+            StatusCard.ON_MODERATION
         )
-        return card
 
     def create_subcategory(
         self, 
