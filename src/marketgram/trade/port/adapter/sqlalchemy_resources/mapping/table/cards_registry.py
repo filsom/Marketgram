@@ -2,7 +2,7 @@ from sqlalchemy.orm import registry, composite, column_property, relationship
 from sqlalchemy import case, event, func, select
 
 from marketgram.trade.domain.model.money import Money
-from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
+from marketgram.trade.domain.model.p2p.shipment import Shipment
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
 from marketgram.trade.domain.model.trade_item.description import Description
 from marketgram.trade.domain.model.trade_item.editable_card import EditableCard

@@ -8,7 +8,7 @@ from marketgram.trade.domain.model.errors import (
     CurrentСardStateError
 )
 from marketgram.trade.domain.model.money import Money
-from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
+from marketgram.trade.domain.model.p2p.shipment import Shipment
 from marketgram.trade.domain.model.statuses import StatusCard
 from marketgram.trade.domain.model.trade_item.action_time import ActionTime
 from marketgram.trade.domain.model.trade_item.sell_card import SellCard

@@ -8,8 +8,8 @@ from marketgram.trade.domain.model.notifications import (
     ReissuePurchasedCardNotification,
     ZeroInventoryBalanceNotification
 )
-from marketgram.trade.domain.model.p2p.deal.ship_deal import ShipDeal
-from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
+from marketgram.trade.domain.model.p2p.deal.deal import ShipDeal
+from marketgram.trade.domain.model.p2p.shipment import Shipment
 from marketgram.trade.domain.model.errors import (
     QuantityItemError, 
     ReplacingItemError, 

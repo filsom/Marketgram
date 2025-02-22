@@ -7,7 +7,7 @@ from marketgram.trade.domain.model.notifications import (
     AdminRejectedModerationCardNotification, 
     InventoryBalancesAddedNotification
 )
-from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
+from marketgram.trade.domain.model.p2p.shipment import Shipment
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.statuses import StatusCard
 from marketgram.trade.domain.model.trade_item.category import ActionTime

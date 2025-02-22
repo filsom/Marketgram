@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from marketgram.trade.domain.model.p2p.deal.claim import ReturnType
-from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
+from marketgram.trade.domain.model.p2p.claim import ReturnType
+from marketgram.trade.domain.model.p2p.shipment import Shipment
 
 
 @dataclass

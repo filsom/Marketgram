@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from marketgram.common.errors import DomainError
 from marketgram.trade.domain.model.money import Money
-from marketgram.trade.domain.model.p2p.deal.shipment import Shipment
+from marketgram.trade.domain.model.p2p.shipment import Shipment
 from marketgram.trade.domain.model.statuses import StatusCard
 from marketgram.trade.domain.model.trade_item.category import ActionTime
 from marketgram.trade.domain.model.trade_item.description import (
