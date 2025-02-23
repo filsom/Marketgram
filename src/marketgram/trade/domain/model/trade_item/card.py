@@ -92,7 +92,7 @@ class EditorialCard(Card):
     def can_add_item(self) -> bool:
         return self._shipment != Shipment.CHAT
     
-    def __contains__(self, value: PriceEntry):
+    def __contains__(self, value: PriceEntry) -> bool:
         return any(value.start_qty == obj.start_qty for obj in self._price_entries)
     
 
