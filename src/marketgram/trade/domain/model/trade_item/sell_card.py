@@ -91,8 +91,7 @@ class SellCard(Card):
         if self._status != StatusCard.ON_SALE:
             raise CurrentСardStateError(conditions)
         
-        price = self._get_price(qty)
-        if current_price != price:
+        if current_price != conditions['current_price']:
             raise CurrentСardStateError(conditions)
         
     def _current_conditions(self, qty: str) -> dict[str, Any]:
