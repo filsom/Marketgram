@@ -46,12 +46,11 @@ class SellCard(Card):
         shipment: Shipment,
         qty: int, 
         occurred_at: datetime
-    ) -> ShipDeal:
-        self._check_conditions(qty, price, shipment)
-        
+    ) -> ShipDeal:        
         if qty <= 0:
             raise QuantityItemError()
         
+        self._check_conditions(qty, price, shipment)
         self._status = StatusCard.PURCHASED
         self.add_event(
             ReissuePurchasedCardNotification(
@@ -112,7 +111,7 @@ class SellStockCard(SellCard):
         self,
         card_id: int,
         owner_id: int,
-        unit_price: Money,
+        price_entries: list[PriceEntry],
         shipment: Shipment,
         action_time: ActionTime,
         status: StatusCard,
@@ -122,7 +121,7 @@ class SellStockCard(SellCard):
         super().__init__(
             card_id, 
             owner_id, 
-            unit_price, 
+            price_entries, 
             shipment, 
             action_time, 
             status
@@ -138,6 +137,9 @@ class SellStockCard(SellCard):
         qty: int, 
         occurred_at: datetime
     ) -> ShipDeal:
+        if qty <= 0:
+            raise QuantityItemError()
+        
         self._check_conditions(qty, price, shipment)
         self._take_inventory(qty, InventoryOperation.BUY, occurred_at)
 
@@ -157,6 +159,9 @@ class SellStockCard(SellCard):
         return deal
 
     def replace(self, qty: int, occurred_at: datetime) -> None:
+        if qty <= 0:
+            raise ReplacingItemError()
+        
         try:
             self._take_inventory(
                 qty, 
@@ -177,9 +182,6 @@ class SellStockCard(SellCard):
         operation: InventoryOperation, 
         occurred_at: datetime
     ) -> None:
-        if quantity <= 0:
-            raise QuantityItemError()
-        
         remainder = self._stock_balance - quantity
         if remainder < 0:
             raise QuantityItemError()
