@@ -34,7 +34,7 @@ class InventoryEntry:
 class PriceEntry:
     start_qty: int
     unit_price: Money
-
+    
     def __eq__(self, value: object) -> bool:
         if not isinstance(value, PriceEntry):
             return False

@@ -2,7 +2,6 @@ from datetime import datetime
 from decimal import Decimal
 
 from marketgram.common.entity import Entity
-from marketgram.common.errors import DomainError
 from marketgram.trade.domain.model.entries import InventoryEntry, PriceEntry
 from marketgram.trade.domain.model.errors import (
     DISCOUNT_ERROR, 
@@ -58,42 +57,37 @@ class EditorialCard(Card):
         self._status = status
         self._price_entries = price_entries
 
-    def set_quantity_discount(self, price_entry: PriceEntry) -> None:
-        if price_entry.unit_price < self._minimum_price:
-            raise DiscountPriceError()
-        
-        for sorted_price in sorted(self._price_entries):
-            if price_entry.start_qty >= sorted_price.start_qty:
-                if price_entry.unit_price >= sorted_price.unit_price:
+    def set_quantity_discount(self, new_prices: list[PriceEntry]) -> None:
+        self.remove_quantity_discount()
+        for price_entry in sorted(new_prices):
+            if self._price_entries:
+                last_entry = self._price_entries[-1]
+                if last_entry < price_entry:
                     raise DiscountPriceError()
+                
+                if last_entry.unit_price < price_entry.unit_price:
+                    raise DiscountPriceError()
+                
+            if price_entry.unit_price < self._minimum_price:
+                raise DiscountPriceError()
             
-                discount_procent = 100 - price_entry.unit_price.value \
-                                        / sorted_price.unit_price.value * 100
-                if discount_procent < self._minimum_procent_discount:
-                    raise DiscountPriceError()
+            if price_entry.start_qty % 50 != 0:
+                raise DiscountPriceError()
+            
+            self._price_entries.append(price_entry)
+            if len(self._price_entries) > 3:
+                raise DiscountPriceError()
 
-        if price_entry in self:
-            self._price_entries.remove(price_entry)
-            
-        self._price_entries.append(price_entry)
-        if len(self._price_entries) > 3:
-            raise DiscountPriceError()
-        
-    def remove_quantity_discount(self, price_entry: PriceEntry) -> None:
-        if price_entry.start_qty == 1:
-            raise DiscountPriceError()
-        
-        if price_entry in self:
-            self._price_entries.remove(price_entry)
+    def remove_quantity_discount(self) -> None:
+        defualt_price = sorted(self._price_entries)[0]
+        self._price_entries.clear()
+        self._price_entries.append(defualt_price)
 
     def put_on_sale(self) -> None:
         self._status = StatusCard.ON_SALE
 
     def can_add_item(self) -> bool:
         return self._shipment != Shipment.CHAT
-    
-    def __contains__(self, value: PriceEntry) -> bool:
-        return any(value.start_qty == obj.start_qty for obj in self._price_entries)
     
 
 class ModerationCard(Card):
