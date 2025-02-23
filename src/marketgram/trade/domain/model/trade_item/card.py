@@ -78,6 +78,13 @@ class EditorialCard(Card):
         self._price_entries.append(price_entry)
         if len(self._price_entries) > 3:
             raise DiscountPriceError()
+        
+    def remove_quantity_discount(self, price_entry: PriceEntry) -> None:
+        if price_entry.start_qty == 1:
+            raise DiscountPriceError()
+        
+        if price_entry in self:
+            self._price_entries.remove(price_entry)
 
     def put_on_sale(self) -> None:
         self._status = StatusCard.ON_SALE

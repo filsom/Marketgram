@@ -21,10 +21,10 @@ def test_set_quantity_discount_price() -> None:
 
     # Act
     card.set_quantity_discount(PriceEntry(3, Money(102)))
-    card.set_quantity_discount(PriceEntry(5, Money(90)))
+    card.set_quantity_discount(PriceEntry(2, Money(146)))
     # card.set_quantity_discount(PriceEntry(10, Money(80)))
     # card.set_quantity_discount(PriceEntry(10, Money(70)))
 
     # Assert
     assert len(card._price_entries) == 3
-    # assert not len(card._price_entries)
+    assert not len(card._price_entries)
