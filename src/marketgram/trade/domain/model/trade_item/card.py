@@ -48,7 +48,7 @@ class EditorialCard(Card):
         minimum_price: Money,
         minimum_procent_discount: Decimal,
         status: StatusCard,
-        price_entries: list[PriceEntry] | None = None
+        price_entries: list[PriceEntry]
     ) -> None:
         super().__init__(card_id)
         self._action_time = action_time
@@ -58,38 +58,35 @@ class EditorialCard(Card):
         self._status = status
         self._price_entries = price_entries
 
-    def set_discount(self, discounts: list[dict[str, int]]) -> None:
-        for price_entry in self._price_entries:
-            if discounts['qty'] == price_entry.start_qty:
-                price_entry.set_discount(
-                    discounts['price'],
-                    self._minimum_price,
-                    self._minimum_procent_discount
-                )
-
-    def remove_discount(self, discounts: list[dict[str, int]]) -> None:
-        for price_entry in self._price_entries:
-            if discounts['qty'] == price_entry.start_qty:
-                price_entry.remove_discount()
-
-    def add_qty_price(self, qty: int, price: Money) -> None:
-        if qty <= 1:
-            raise DomainError()
+    def set_quantity_discount(self, price_entry: PriceEntry) -> None:
+        if price_entry.unit_price < self._minimum_price:
+            raise DiscountPriceError()
         
-        for price_entry in self._price_entries:
-            if qty == price_entry.start_qty:
-                raise DomainError()
+        for sorted_price in sorted(self._price_entries):
+            if price_entry.start_qty >= sorted_price.start_qty:
+                if price_entry.unit_price >= sorted_price.unit_price:
+                    raise DiscountPriceError()
             
-            if price < self._minimum_price:
-                raise DomainError()
+                discount_procent = 100 - price_entry.unit_price.value \
+                                        / sorted_price.unit_price.value * 100
+                if discount_procent < self._minimum_procent_discount:
+                    raise DiscountPriceError()
+
+        if price_entry in self:
+            self._price_entries.remove(price_entry)
             
-            self._price_entries.append(PriceEntry(qty, price))
+        self._price_entries.append(price_entry)
+        if len(self._price_entries) > 3:
+            raise DiscountPriceError()
 
     def put_on_sale(self) -> None:
         self._status = StatusCard.ON_SALE
 
     def can_add_item(self) -> bool:
         return self._shipment != Shipment.CHAT
+    
+    def __contains__(self, value: PriceEntry):
+        return any(value.start_qty == obj.start_qty for obj in self._price_entries)
     
 
 class ModerationCard(Card):
