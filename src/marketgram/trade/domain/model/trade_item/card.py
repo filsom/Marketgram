@@ -75,7 +75,7 @@ class EditorialCard(Card):
                 raise DiscountPriceError()
             
             self._price_entries.append(price_entry)
-            if len(self._price_entries) > 3:
+            if len(self._price_entries) > 4:
                 raise DiscountPriceError()
 
     def remove_quantity_discount(self) -> None:
