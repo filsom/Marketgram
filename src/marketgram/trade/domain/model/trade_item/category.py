@@ -77,7 +77,7 @@ class Category:
         action_time: ActionTime,
         minimum_unit_price: Money,
         minimum_procent_discount: Decimal
-    ) -> "Category":
+    ) -> None:
         if minimum_unit_price <= Money(0):
             raise DomainError()
         
@@ -97,16 +97,18 @@ class Category:
         else:
             self._path = path
 
-        return Category(
-            name,
-            alias,
-            path,
-            type_category_id,
-            action_time,
-            shipment,
-            minimum_unit_price,
-            minimum_procent_discount
-        )  
+        self._subcategories.append(
+            Category(
+                name,
+                alias,
+                path,
+                type_category_id,
+                action_time,
+                shipment,
+                minimum_unit_price,
+                minimum_procent_discount
+            )  
+        )
 
     @staticmethod
     def create_basic(
