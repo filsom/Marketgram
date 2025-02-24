@@ -66,7 +66,11 @@ class Money:
         self._isinstance(value)
 
         return self._value == value._value
-
+    
+    @property
+    def value(self) -> Decimal:
+        return self._value
+    
     def _isinstance(self, value: Money) -> None:
         if not isinstance(value, Money):
             raise TypeError

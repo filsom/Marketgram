@@ -29,13 +29,6 @@ class StatusDispute(StrEnum):
     CLOSED = auto()
 
 
-class StatusDescription(StrEnum):
-    NEW = auto()
-    CURRENT = auto()
-    ARCHIVED = auto()
-    CANCELLED = auto()
-
-
 class EntryStatus(StrEnum):
     FREEZ = auto()
     CANCELLED = auto()

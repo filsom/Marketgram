@@ -1,7 +1,9 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
+from decimal import Decimal
 from uuid import UUID
 
+from marketgram.trade.domain.model.errors import DiscountPriceError
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.statuses import EntryStatus
 from marketgram.trade.domain.model.types import (
@@ -21,8 +23,20 @@ class PostingEntry:
     entry_status: EntryStatus
         
 
-@dataclass(frozen=True)
+@dataclass
 class InventoryEntry:
     qty: int
     posted_in: datetime
     operation: InventoryOperation
+
+
+@dataclass(order=True)
+class PriceEntry:
+    start_qty: int
+    unit_price: Money
+    
+    def __eq__(self, value: object) -> bool:
+        if not isinstance(value, PriceEntry):
+            return False
+        
+        return self.start_qty == value.start_qty
