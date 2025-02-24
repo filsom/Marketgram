@@ -232,9 +232,9 @@ class AdminDispute(Dispute):
                         occurred_at
                     )
                 )
-                self._confirm_in = occurred_at + timedelta(hours=1)
-                self._status = StatusDispute.PENDING
-                return 
+            self._confirm_in = occurred_at + timedelta(hours=1)
+            self._status = StatusDispute.PENDING
+            return 
             
         self.buyer_refund(occurred_at)
         self._status = StatusDispute.CLOSED
