@@ -69,7 +69,7 @@ class Category:
         card.add_starting_price(unit_price)
         return card
 
-    def create_subcategory(
+    def add_subcategory(
         self, 
         name: str, 
         type_category_id: int,
