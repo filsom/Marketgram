@@ -180,7 +180,7 @@ class UnconfirmedDeal(Deal):
         self._inspected_at = inspected_at
         self._entries = entries
 
-    def confirm(self, occurred_at: datetime, agreement: ServiceAgreement) -> None:
+    def confirm_quality(self, occurred_at: datetime, agreement: ServiceAgreement) -> None:
         if not self._deadlines.check(self._status, occurred_at):
             raise CheckDeadlineError(LATE_CONFIRMATION)
 

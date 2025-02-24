@@ -101,7 +101,7 @@ class P2PService:
                 raise ApplicationError()
             
             agreement = await self.agreements_repository.actual()
-            deal.confirm(command.occurred_at, agreement)
+            deal.confirm_quality(command.occurred_at, agreement)
             await self.session.commit()
 
     async def open_dispute(self, command: cmd.OpenDisputeCommand) -> None:
