@@ -2,6 +2,7 @@ from datetime import datetime
 from uuid import UUID, uuid4
 
 from marketgram.common.errors import DomainError
+from marketgram.trade.domain.model.p2p.deal import ShipDeal
 from marketgram.trade.domain.model.p2p.shipment import Shipment
 from marketgram.trade.domain.model.p2p.sales_manager import ServiceAgreement
 from marketgram.trade.domain.model.trade_item.sell_card import SellCard
@@ -10,7 +11,6 @@ from marketgram.trade.domain.model.errors import (
     INSUFFICIENT_FUNDS,
     MINIMUM_DEPOSIT, 
 )
-from marketgram.trade.domain.model.p2p.deal.deal import ShipDeal
 from marketgram.trade.domain.model.entries import EntryStatus, PostingEntry
 from marketgram.trade.domain.model.money import Money
 from marketgram.trade.domain.model.p2p.payment import Payment

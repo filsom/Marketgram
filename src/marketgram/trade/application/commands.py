@@ -38,7 +38,7 @@ class ConfirmCommand:
 
 
 @dataclass
-class CloseCommand:
+class CancelCommand:
     deal_id: int
     occurred_at: datetime
 

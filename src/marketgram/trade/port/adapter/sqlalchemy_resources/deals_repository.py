@@ -4,11 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import and_, select
 from sqlalchemy.orm import with_polymorphic
 
+from marketgram.trade.domain.model.p2p.deal import DisputeDeal, FailDeal, ShipDeal, UnconfirmedDeal
 from marketgram.trade.domain.model.p2p.members import Members
-from marketgram.trade.domain.model.p2p.deal.fail_deal import FailDeal
-from marketgram.trade.domain.model.p2p.deal.unconfirmed_deal import UnconfirmedDeal
-from marketgram.trade.domain.model.p2p.deal.dispute_deal import DisputeDeal
-from marketgram.trade.domain.model.p2p.deal.deal import ShipDeal
 from marketgram.trade.domain.model.statuses import StatusDeal
 from marketgram.trade.port.adapter.sqlalchemy_resources.mapping.table.deals_table import (
     deals_table
